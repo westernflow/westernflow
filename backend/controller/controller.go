@@ -46,7 +46,7 @@ type CourseQueryParams struct {
 	SectionComponent   []string `json:"section-component" schema:"section-component" example:"exact:TUT"`
 	SectionClassNumber []string `json:"section-class-number" schema:"section-class-number" example:"lt:1000"`
 	SectionLocation    []string `json:"section-location" schema:"section-location" example:"exact:NS-145"`
-	SecionInstructor   []string `json:"section-instructor" schema:"section-instructor" example:"exact:Rahman"`
+	SectionInstructor   []string `json:"section-instructor" schema:"section-instructor" example:"exact:Rahman"`
 	SectionReqs        []string `json:"section-reqs" schema:"section-reqs"`
 	SectionStatus      []string `json:"section-status" schema:"section-status" example:"exact:Full"`
 	SectionCampus      []string `json:"section-campus" schema:"section-campus"	example:"exact:Main"`
@@ -71,7 +71,6 @@ type CourseQueryParams struct {
 
 // ExtractCourseFilter extracts course filters from request
 func ExtractCourseFilter(r *http.Request) (bson.M, error) {
-
 	if r == nil {
 		return bson.M{}, errors.New("Request object is nil")
 	}
@@ -153,7 +152,7 @@ func ExtractCourseFilter(r *http.Request) (bson.M, error) {
 		}
 	}
 
-	for _, value := range params.SecionInstructor {
+	for _, value := range params.SectionInstructor {
 		f := strings.Split(value, ":")
 
 		op := f[0]
