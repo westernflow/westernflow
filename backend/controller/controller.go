@@ -49,7 +49,7 @@ type CourseQueryParams struct {
 	SectionInstructor   []string `json:"section-instructor" schema:"section-instructor" example:"exact:Rahman"`
 	SectionReqs        []string `json:"section-reqs" schema:"section-reqs"`
 	SectionStatus      []string `json:"section-status" schema:"section-status" example:"exact:Full"`
-	SectionCampus      []string `json:"section-campus" schema:"section-campus"	example:"exact:Main"`
+	SectionCampus      []string `json:"section-campus" schema:"section-campus" example:"exact:Main"`
 	SectionDelivery    []string `json:"section-delivery" schema:"section-delivery" example:"exact:Distance Studies/Online"`
 	SectionDay         []string `json:"section-time-day" schema:"section-time-day" example:"exact:M"`
 	SectionStartTime   []string `json:"section-time-start-time" schema:"section-time-start-time" example:"except:8:30 AM"`

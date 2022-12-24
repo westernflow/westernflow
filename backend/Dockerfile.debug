@@ -1,0 +1,42 @@
+FROM golang:alpine3.17 as builder
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+
+# # We want to populate the module cache based on the go.{mod,sum} files.
+# COPY go.mod .
+# COPY go.sum .
+
+# RUN go mod download -x
+
+# COPY --from=itinance/swag /root/swag /usr/local/bin
+# COPY . .
+
+# Retrieve application dependencies using go modules.
+# Allows container builds to reuse downloaded dependencies.
+COPY go.* ./
+RUN go mod download -x
+
+# Copy local code to the container image.
+COPY --from=itinance/swag /root/swag /usr/local/bin
+COPY . ./
+# COPY ./.env /
+RUN go get github.com/go-delve/delve/cmd/dlv
+RUN go install github.com/go-delve/delve/cmd/dlv
+RUN swag init
+RUN apk add build-base
+RUN go mod tidy
+# Build the binary.
+# -mod=readonly ensures immutable go.mod and go.sum in container builds.
+RUN CGO_ENABLED=0 GOOS=linux go build -gcflags="all=-N -l" -mod=readonly -v -o server
+RUN apk add --no-cache ca-certificates
+
+# This container exposes port 8080 to the outside world
+EXPOSE 8080 40000
+# # Run the binary program produced by `go install`
+# COPY ./.env /
+RUN touch .env
+
+# Run the web service on container startup.
+# CMD [ "dlv", "debug", "/app/server", "--listen=40000", "--headless=true", "--api-version=2", "--log" ]
