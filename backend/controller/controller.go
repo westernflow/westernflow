@@ -55,7 +55,7 @@ type CourseQueryParams struct {
 	SectionStartTime   []string `json:"section-time-start-time" schema:"section-time-start-time" example:"except:8:30 AM"`
 	SectionEndTime     []string `json:"section-time-end-time" schema:"section-time-end-time" example:"lte:7:00 PM"`
 
-	ClassFaculty     []string `json:"course-faculty" schema:"course-faculty" example:"exact:PSYCH"`
+	ClassFaculty     []string `json:"course-faculty" schema:"course-faculty" example:"exact:PSYCHOL"`
 	ClassNumber      []string `json:"course-number" schema:"course-number" example:"gte:3000"`
 	ClassSuffix      []string `json:"course-suffix" schema:"course-suffix" example:"exact:F"`
 	ClassName        []string `json:"course-name" schema:"course-name" example:"exact:INTRODUCTION TO PSYCHOLOGY"`
