@@ -23,6 +23,7 @@ func (c *Controller) ListSections(w http.ResponseWriter, r *http.Request) {
 
 	// Set response headers
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	// Connect to courses collection
 	collection := c.DB.Collection("courses")
@@ -97,6 +98,7 @@ func (c *Controller) ListCourses(w http.ResponseWriter, r *http.Request) {
 
 	// Set response headers
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	// Connect to courses collection
 	collection := c.DB.Collection("courses")
@@ -186,6 +188,7 @@ func (c *Controller) ListCourses(w http.ResponseWriter, r *http.Request) {
 	//Close the cursor once finished
 	cur.Close(context.TODO())
 
+	// include cors header for local development
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(courses)
 }
