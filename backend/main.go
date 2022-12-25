@@ -113,8 +113,8 @@ func main() {
 		if localOK {
 			dbURL = localDB
 		} else {
-			log.Printf("Local database url not found, using localhost 27018")
-			dbURL = "mongodb://mongodb:27018"
+			log.Printf("Local database url not found, using localhost 27017")
+			dbURL = "mongodb://mongodb:27017"
 		}
 	}
 

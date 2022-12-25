@@ -39,4 +39,4 @@ EXPOSE 8080 40000
 RUN touch .env
 
 # Run the web service on container startup.
-# CMD [ "dlv", "debug", "/app/server", "--listen=40000", "--headless=true", "--api-version=2", "--log" ]
+CMD ["dlv", "exec", "--headless=true", "--api-version=2", "--log", "--log-output=debugger,dap,rpc", "--listen=127.0.0.1:8181", "/app/server"]
