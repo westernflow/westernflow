@@ -1,8 +1,5 @@
 version: '3'
 services:
-  frontend:
-    build:
-      
   web:
     build:
       context: .
