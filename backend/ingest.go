@@ -9,7 +9,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"strings"
+
+	// "io/ioutil"
 	"log"
 
 	"uwo-tt-api/model"
@@ -61,7 +63,7 @@ func ingest() {
 	elasticURI, elasticURIOK := viper.Get("ELASTIC_URI").(string)
 	// if ELASTIC_URI is not set, use localhost:9200
 	if !elasticURIOK {
-		elasticURI = "http://localhost:9200"
+		elasticURI = "https://localhost:9200"
 	}
 
 	fmt.Println("Fetching password...")
@@ -69,24 +71,52 @@ func ingest() {
 	if !ELASTIC_PASSWORDOK {
 		log.Fatal("ELASTIC_PASSWORD not set!")
 	}
-	fmt.Println("Attempting to connect to:", elasticURI)
-	// re-write this line of code with the new library: elasticClient, err := elastic.NewClient(elastic.SetURL(elasticURI))
-	cert, _ := ioutil.ReadFile("./http_ca.crt")
 
+	fmt.Println("Fetching fingerprint...")
+	CERT_FINGERPRINT, CERT_FINGERPRINTOK := viper.Get("CERT_FINGERPRINT").(string)
+	if !CERT_FINGERPRINTOK {
+		log.Fatal("CERT_FINGERPRINT not set!")
+	}
+
+	fmt.Println("Parsing Fingerprint:", CERT_FINGERPRINT)
+
+	PARSED_FINGERPRINT := ""
+	// B9:8A:E8 current form of the fingerprint, parse to remove colons and lowercase it
+	for _, c := range CERT_FINGERPRINT {
+		if c == ':' {
+			continue
+		}
+		PARSED_FINGERPRINT += strings.ToLower(string(c))
+	}
+	fmt.Println("Parsed Fingerprint:", CERT_FINGERPRINT)
+
+	fmt.Println("Attempting to connect to:", elasticURI)
+	// read the certificate
+	// cert, _ := ioutil.ReadFile("./http_ca.crt")
+	// set the client config
 	cfg := elastic.Config{
         Addresses: []string{
-            "https://localhost:9200",
-        },
+						elasticURI,
+				        },
         Username: "elastic",
         Password: ELASTIC_PASSWORD,
-        CACert:   cert,
+        CertificateFingerprint: PARSED_FINGERPRINT,
 	}
+	// create the client
 	elasticClient, err := elastic.NewClient(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println("Connected to Elasticsearch!")
 	fmt.Println(ELASTIC_PASSWORD)
+
+	// ping the client to make sure it is up
+	fmt.Println("Pinging Elasticsearch...")
+	_, err = elasticClient.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Elasticsearch is up!")
 	// get the collection
 	collection := client.Database("uwo-tt-api").Collection("courses")
 	fmt.Println("Collection created!")
