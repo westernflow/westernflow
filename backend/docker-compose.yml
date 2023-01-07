@@ -8,6 +8,7 @@ services:
       - "8080:8080"
     depends_on:
       - 'mongodb'
+      - 'elasticsearch'
   mongodb:
     image: 'mongo:latest'
     container_name: 'mongodb'
@@ -15,4 +16,13 @@ services:
       - '27018:27017'
     logging:
       driver: "none"
-
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.3
+    container_name: 'elasticsearch'
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+    logging:
+      driver: "none"
+    # environment:
+    #   - xpack.ssl.verification_mode=none
