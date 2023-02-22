@@ -24,5 +24,3 @@ services:
       - '9300:9300'
     logging:
       driver: "none"
-    # environment:
-    #   - xpack.ssl.verification_mode=none
