@@ -102,7 +102,7 @@ func ExtractCourseFilter(r *http.Request) (bson.M, error) {
 		if val, ok := FilterToDBOp[op]; ok {
 			filters = append(filters, bson.M{"sectionData.number": bson.M{val: num}})
 		} else {
-			return bson.M{}, fmt.Errorf("Invalid section number command %d", op)
+			return bson.M{}, fmt.Errorf("Invalid section number command %s", op)
 		}
 	}
 
@@ -135,7 +135,7 @@ func ExtractCourseFilter(r *http.Request) (bson.M, error) {
 		if val, ok := FilterToDBOp[op]; ok {
 			filters = append(filters, bson.M{"sectionData.classNumber": bson.M{val: num}})
 		} else {
-			return bson.M{}, fmt.Errorf("Invalid section course number  %d", op)
+			return bson.M{}, fmt.Errorf("Invalid section course number  %s", op)
 		}
 	}
 
@@ -397,9 +397,9 @@ func ExtractCourseParams(r *http.Request) (*options.FindOptions, error) {
 
 		// By default, sort ascending unless descending is specfied
 		if params.Dec == true {
-			result.SetSort(bson.D{{sortParam, -1}})
+			result.SetSort(bson.D{{Key: sortParam, Value: -1}})
 		} else {
-			result.SetSort(bson.D{{sortParam, 1}})
+			result.SetSort(bson.D{{Key: sortParam, Value: 1}})
 		}
 	}
 
@@ -505,9 +505,9 @@ func ExtractOptParams(r *http.Request) (*options.FindOptions, error) {
 	if params.SortBy != "" {
 		// By default, sort ascending unless descending is specfied
 		if params.Dec == true {
-			result.SetSort(bson.D{{"data." + params.SortBy, -1}})
+			result.SetSort(bson.D{{Key: "data." + params.SortBy, Value: -1}})
 		} else {
-			result.SetSort(bson.D{{"data." + params.SortBy, 1}})
+			result.SetSort(bson.D{{Key: "data." + params.SortBy, Value: 1}})
 		}
 	}
 
