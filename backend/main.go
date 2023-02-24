@@ -162,7 +162,7 @@ func main() {
 	moesifOptions := getMoesifOptions()
 
 	// Define a limit rate to 4 requests per hour.
-	rate, err := limiter.NewRateFromFormatted("1200-H")
+	rate, err := limiter.NewRateFromFormatted("120-H")
 	if err != nil {
 		log.Fatal(err)
 		return
@@ -198,8 +198,12 @@ func main() {
 		// Course data endpoint
 		api.GET("/courses", wrapHandlerMoesif(c.ListCourses, moesifOptions))
 		api.GET("/sections", wrapHandlerMoesif(c.ListSections, moesifOptions))
+
+		// Professor data endpoint to accept routes for /professors/:professorname
+		api.GET("/professors/:profName", wrapHandlerMoesif(c.ListProfessors, moesifOptions))
+		api.GET("/search/:query")
 	}
 
-	port := getPort()
-	router.Run(port)
+	// port := getPort()
+	router.Run(":8090")
 }
