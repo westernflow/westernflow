@@ -221,16 +221,9 @@ func extractCourseInfo(courseList *goquery.Selection, courseIndex int) model.Cou
 		number = number[:4]
 	}
 
-	num, err := strconv.Atoi(Trim(number))
-	if err != nil {
-		// handle error
-		fmt.Println(err)
-		num = 0
-	}
-
 	return model.CourseComponent{
 		Faculty:     Trim(faculty),
-		Number:      num,
+		Number:      Trim(number),
 		Suffix:      Trim(suffix),
 		Name:        Trim(name),
 		Description: Trim(desc)}
@@ -297,7 +290,7 @@ func extractSectionInfo(section *goquery.Selection) model.SectionComponent {
 	// Collect days and times
 	for _, day := range days {
 		if day != "" {
-			s.Times = append(s.Times, model.TimeComponent{day, start, end})
+			s.Times = append(s.Times, model.TimeComponent{Day: day, StartTime: start, EndTime: end})
 		}
 	}
 

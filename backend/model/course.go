@@ -24,7 +24,7 @@ type SectionComponent struct {
 // CourseComponent - represents the specific data common to all courses sections of any given course
 type CourseComponent struct {
 	Faculty     string `bson:"faculty" json:"faculty" example:"CLASSICS"`
-	Number      int    `bson:"number" json:"number" example:"2053"`
+	Number      string    `bson:"number" json:"number" example:"2053"`
 	Suffix      string `bson:"suffix" json:"suffix" example:"B"`
 	Name        string `bson:"name" json:"name" example:"MATH FOR FINANCIAL ANALYSIS"`
 	Description string `bson:"description" json:"description" example:"Course description"`
