@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -11,11 +12,15 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+
+	"uwo-tt-api/model"
+	"uwo-tt-api/trie"
 )
 
 // Controller struct which acts as base for all endpoint methods
 type Controller struct {
 	DB *mongo.Database
+	Trie *trie.Trie
 }
 
 // NewController example
@@ -26,6 +31,44 @@ func NewController() *Controller {
 // HitEndpoint simple helper to log when an endpoint was hit
 func HitEndpoint(name string) {
 	fmt.Printf("*** ENDPOINT RESOURCE HIT --> %s\n", name)
+}
+
+func(c *Controller) CreateTrie() {
+	t := trie.NewTrie()
+	
+	courses := c.DB.Collection("courses")
+	
+	// Define a filter to retrieve all documents in the collection
+	filter := bson.M{}
+
+	// Retrieve a cursor from the collection using the filter and options
+	cursor, err := courses.Find(context.Background(), filter)
+	if err != nil {
+			panic(err)
+	}
+	defer cursor.Close(context.Background())
+
+	// Iterate through the cursor and print the results
+	for cursor.Next(context.Background()) {
+			var course model.Section
+			err := cursor.Decode(&course)
+			if err != nil {
+					panic(err)
+			}
+
+			var courseData = course.CourseData
+			var courseName = courseData.Faculty + courseData.Number
+			
+			// to lower case and remove spaces course name
+			courseName = strings.ToLower(courseName)
+			t.Insert(courseName)
+	}
+
+	if err := cursor.Err(); err != nil {
+			panic(err)
+	}
+
+	c.Trie = t
 }
 
 // FilterToDBOp lookup table for query parameter filter commands to mongo command

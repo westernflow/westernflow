@@ -145,11 +145,10 @@ func main() {
 	client := getMongoClient()
 
 	db := client.Database("uwo-tt-api")
-
 	// Start a scheduler with worker task
-	s1 := gocron.NewScheduler(time.UTC)
-	s1.Every(1).Day().StartImmediately().Do(worker.ScrapeTimeTable, db)
-	s1.StartAsync()
+	// s1 := gocron.NewScheduler(time.UTC)
+	// s1.Every(1).Day().StartImmediately().Do(worker.ScrapeTimeTable, db)
+	// s1.StartAsync()
 
 	// Endpoint router
 	router := gin.Default()
@@ -157,6 +156,7 @@ func main() {
 	// Define controller instance for endpoints
 	c := controller.NewController()
 	c.DB = db
+	c.CreateTrie()
 
 	// Get moesif configuration
 	moesifOptions := getMoesifOptions()
@@ -177,7 +177,7 @@ func main() {
 
 	// Swagger documentation
 	router.NoRoute(func(c *gin.Context) {
-		c.Redirect(http.StatusMovedPermanently, "/docs/index.html")
+		c.Redirect(http.StatusMovedPermanently, "/routeNotFound")
 		c.Abort()
 	})
 
@@ -199,9 +199,9 @@ func main() {
 
 		// Professor data endpoint to accept routes for /professors/:professorname
 		api.GET("/professors/:profName", wrapHandlerMoesif(c.ListProfessors, moesifOptions))
-		api.GET("/search/:query")
+		api.GET("/search/:query", wrapHandlerMoesif(c.Search, moesifOptions))
 	}
 
 	// port := getPort()
-	router.Run(":8090")
+	router.Run(":8080")
 }

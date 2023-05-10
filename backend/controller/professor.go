@@ -5,10 +5,39 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"uwo-tt-api/model"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
+
+func (c *Controller) Search(w http.ResponseWriter, r *http.Request) {
+	HitEndpoint("search")
+
+	// Set headers
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	fmt.Println("Headers set")
+	
+	// Return the top 5 results from the controller trie
+	query := r.URL.Path[len("/api/v1/search/"):]
+	query = strings.ToLower(query)
+	fmt.Printf("Query: %s\n", query)
+	results := c.Trie.GetKWordsWithPrefix(query, 5)
+	fmt.Println("Results: ", results)
+
+	// Convert the results to json
+	resultsJSON, err := json.Marshal(results)
+	if err != nil {
+		w = NewError(w, http.StatusBadRequest, err, "Failed to marshal results")
+		return
+	}
+
+	// Write the results to the response
+	w.Write(resultsJSON)
+	w.WriteHeader(http.StatusOK)
+}
 
 func (c *Controller) ListProfessors(w http.ResponseWriter, r *http.Request) {
 	HitEndpoint("professors")
