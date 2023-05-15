@@ -14,7 +14,7 @@ function SearchBar (){
   useEffect(() => {
     function handleClickOutside(event: any) {
       if (searchRef.current && !searchRef.current.contains(event.target)) { // check if user clicked on outside (not contained in event.target)
-        setTimeout(()=>setShowResults(false),100);
+        setShowResults(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -56,13 +56,13 @@ function SearchBar (){
   }
 
   return (
-    <div className="flex flex-col border-2 border-gray-300">
+    <div ref={searchRef} className="flex flex-col border-2 border-gray-300">
           <input
-            ref={searchRef}
             onFocus={() => setShowResults(true)}
             className="truncate flex-grow py-3 px-4 text-gray-700 leading-tight text-lg focus:outline-1 focus:border-blue-500"
             id="search"
             type="text"
+            autoComplete="off"
             placeholder="Search for a professor or course..."
             onChange={(e) => handleInputChange(e)}
           />
