@@ -131,53 +131,18 @@ func (c *Controller) ListCourses(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Define an array to store the decoded documents
-	var sections []model.Section
+	var courses []model.Course
 
 	for cur.Next(context.TODO()) {
 		//Create a value into which the single document can be decoded
-		var elem model.Section
+		var elem model.Course
 		err := cur.Decode(&elem)
 		if err != nil {
 			w = NewError(w, http.StatusBadRequest, err, "Failed to decode db result")
 			return
 		}
 
-		sections = append(sections, elem)
-	}
-
-	// Create list of courses
-	var courses []model.Course
-
-	// Combine sections into SectioData slice in course
-	for _, section := range sections {
-		if len(courses) == 0 {
-			// If the first course, simply copy section data into course and append
-			var course model.Course
-			course.Source = section.Source
-			course.Time = section.Time
-			course.CourseData = section.CourseData
-			course.SectionData = append(course.SectionData, section.SectionData)
-
-			courses = append(courses, course)
-		} else {
-
-			// Get last course in list
-			last := courses[len(courses)-1]
-
-			if last.CourseData == section.CourseData {
-				// If the last course in the list matches the section data, append section data
-				courses[len(courses)-1].SectionData = append(courses[len(courses)-1].SectionData, section.SectionData)
-			} else {
-				// If the last course in the list does not match the section data, create a new course in the list
-				var course model.Course
-				course.Source = section.Source
-				course.Time = section.Time
-				course.CourseData = section.CourseData
-				course.SectionData = append(course.SectionData, section.SectionData)
-
-				courses = append(courses, course)
-			}
-		}
+		courses = append(courses, elem)
 	}
 
 	if err := cur.Err(); err != nil {

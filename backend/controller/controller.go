@@ -50,7 +50,7 @@ func(c *Controller) CreateTrie() {
 
 	// Iterate through the cursor and print the results
 	for cursor.Next(context.Background()) {
-			var course model.Section
+			var course model.Course
 			err := cursor.Decode(&course)
 			if err != nil {
 					panic(err)
