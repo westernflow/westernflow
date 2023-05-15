@@ -32,7 +32,6 @@ type CourseComponent struct {
 
 // Course - Returned as endpoint only, stores the information of a course and all its related section information
 type Course struct {
-	ID          string             `bson:"_id" json:"id"`
 	Source      SourceInfo         `bson:"source" json:"source"`
 	Time        TimeInfo           `bson:"time" json:"time"`
 	CourseData  CourseComponent    `bson:"courseData" json:"courseData"`

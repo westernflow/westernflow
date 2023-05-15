@@ -301,10 +301,10 @@ func extractSectionInfo(section *goquery.Selection) model.SectionComponent {
 func (page *PageScraper) ScrapeCoursesToDB(c chan PageResult, size int) {
 
 	// Connect to temporary collection
-	tempCollection := page.DB.Collection("courses_temp")
+	tempCoursesCollection := page.DB.Collection("courses_temp")
 
 	// Delete all existing documents if recovering from crash
-	res, err := tempCollection.DeleteMany(context.TODO(), bson.M{})
+	res, err := tempCoursesCollection.DeleteMany(context.TODO(), bson.M{})
 	if err != nil {
 		fmt.Println("DeleteMany() ERROR:", err)
 		return
@@ -326,29 +326,26 @@ func (page *PageScraper) ScrapeCoursesToDB(c chan PageResult, size int) {
 
 			// Course info and section info are not grouped into a div so need to match table to header/p with index
 			courseData := extractCourseInfo(courses, i)
-
+			
 			// Filter course into each individual course section
 			course.ChildrenFiltered("tbody").ChildrenFiltered("tr").Each(func(_ int, section *goquery.Selection) {
 
 				sectionData := extractSectionInfo(section)
 
-				courseSection := model.Section{
+				courseSection := model.Course{
 					Source:      page.BuildSourceInfo(),
 					Time:        page.BuildTimeInfo(),
 					CourseData:  courseData,
-					SectionData: sectionData,
+					SectionData: []model.SectionComponent{sectionData},
 				}
 
 				// Update all components with the section information and component by adding new time information
-				query := bson.M{"$and": bson.A{
-					bson.M{"courseData": courseData},
-					bson.M{"sectionData.number": sectionData.Number},
-					bson.M{"sectionData.component": sectionData.Component}}}
+				query := bson.M{"courseData": courseData}
 
-				changes := bson.M{"$push": bson.M{"sectionData.times": bson.M{"$each": sectionData.Times}}}
+				changes := bson.M{"$push": bson.M{"sectionData": sectionData}}
 
 				// Update
-				updateResult, err := tempCollection.UpdateMany(context.TODO(), query, changes)
+				updateResult, err := tempCoursesCollection.UpdateMany(context.TODO(), query, changes)
 				if err != nil {
 					if len(sectionData.Times) != 0 {
 						fmt.Println(err)
@@ -357,7 +354,7 @@ func (page *PageScraper) ScrapeCoursesToDB(c chan PageResult, size int) {
 
 				// If no modifications were made, insert the document
 				if updateResult.ModifiedCount == 0 {
-					_, insertErr := tempCollection.InsertOne(context.TODO(), courseSection)
+					_, insertErr := tempCoursesCollection.InsertOne(context.TODO(), courseSection)
 					if insertErr != nil {
 						fmt.Println(insertErr)
 					}
@@ -375,12 +372,12 @@ func (page *PageScraper) ScrapeCoursesToDB(c chan PageResult, size int) {
 
 	// Use aggregation to make sure main collection is never empty
 	startTime := time.Now()
-	tempCollection.Aggregate(context.TODO(), pipeline)
+	tempCoursesCollection.Aggregate(context.TODO(), pipeline)
 
 	fmt.Printf("Course aggregation time: %s\n", time.Since(startTime).String())
 
 	// Drop temporary collection
-	err = tempCollection.Drop(context.TODO())
+	err = tempCoursesCollection.Drop(context.TODO())
 	if err != nil {
 		fmt.Println(err)
 	}
