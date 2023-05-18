@@ -59,18 +59,20 @@ func (c *Controller) ListSections(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Define an array to store the decoded documents
-	var sections []domain.Section
+	var sections []domain.SectionComponent
 
 	for cur.Next(context.TODO()) {
 		//Create a value into which the single document can be decoded
-		var elem domain.Section
+		var elem domain.Course
 		err := cur.Decode(&elem)
 		if err != nil {
 			w = NewError(w, http.StatusBadRequest, err, "Failed to decode db result")
 			return
 		}
 
-		sections = append(sections, elem)
+		for _, section := range elem.SectionData {
+			sections = append(sections, section)
+		}
 	}
 
 	if err := cur.Err(); err != nil {

@@ -301,7 +301,6 @@ func ExtractCourseFilter(r *http.Request) (bson.M, error) {
 
 	for _, value := range params.ClassFaculty {
 		f := strings.Split(value, ":")
-
 		op := f[0]
 		opValue := f[1]
 
@@ -314,19 +313,11 @@ func ExtractCourseFilter(r *http.Request) (bson.M, error) {
 
 	for _, value := range params.ClassNumber {
 		f := strings.Split(value, ":")
-
 		op := f[0]
 		opValue := f[1]
 
-		num, err := strconv.Atoi(opValue)
-		if err != nil {
-			// handle error
-			fmt.Println(err)
-			num = 0
-		}
-
 		if val, ok := FilterToDBOp[op]; ok {
-			filters = append(filters, bson.M{"courseData.number": bson.M{val: num}})
+			filters = append(filters, bson.M{"courseData.number": bson.M{val: opValue}})
 		} else {
 			return bson.M{}, fmt.Errorf("Invalid course number command %s", op)
 		}
