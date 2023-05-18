@@ -13,7 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"uwo-tt-api/model"
+	"uwo-tt-api/model/domain"
 	"uwo-tt-api/trie"
 )
 

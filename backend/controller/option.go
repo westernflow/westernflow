@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"uwo-tt-api/model"
+	"uwo-tt-api/model/domain"
 )
 
 func (c *Controller) optionsEndpoint(collectionName string, w http.ResponseWriter, r *http.Request) {

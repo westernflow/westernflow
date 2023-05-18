@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"uwo-tt-api/model"
+	"uwo-tt-api/model/domain"
 
 	"go.mongodb.org/mongo-driver/bson"
 )

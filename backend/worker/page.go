@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"uwo-tt-api/model"
+	"uwo-tt-api/model/domain"
 
 	"github.com/PuerkitoBio/goquery"
 	"go.mongodb.org/mongo-driver/bson"

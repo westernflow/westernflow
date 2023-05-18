@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"github.com/go-co-op/gocron"
+	// "github.com/go-co-op/gocron"
 
 	"github.com/gin-gonic/gin"
 
@@ -21,7 +21,7 @@ import (
 	memory "github.com/ulule/limiter/v3/drivers/store/memory"
 
 	"uwo-tt-api/controller"
-	"uwo-tt-api/worker"
+	// "uwo-tt-api/worker"
 )
 
 func wrapHandlerMoesif(f http.HandlerFunc, s map[string]interface{}) gin.HandlerFunc {
@@ -143,9 +143,9 @@ func main() {
 
 	db := client.Database("uwo-tt-api")
 	// Start a scheduler with worker task
-	s1 := gocron.NewScheduler(time.UTC)
-	s1.Every(1).Day().StartImmediately().Do(worker.ScrapeTimeTable, db)
-	s1.StartAsync()
+	// s1 := gocron.NewScheduler(time.UTC)
+	// s1.Every(1).Day().StartImmediately().Do(worker.ScrapeTimeTable, db)
+	// s1.StartAsync()
 
 	// Endpoint router
 	router := gin.Default()
@@ -159,7 +159,7 @@ func main() {
 	moesifOptions := getMoesifOptions()
 
 	// Define a limit rate to 4 requests per hour.
-	rate, err := limiter.NewRateFromFormatted("120-H")
+	rate, err := limiter.NewRateFromFormatted("480-H")
 	if err != nil {
 		log.Fatal(err)
 		return
@@ -193,6 +193,7 @@ func main() {
 		// Course data endpoint
 		api.GET("/courses", wrapHandlerMoesif(c.ListCourses, moesifOptions))
 		api.GET("/sections", wrapHandlerMoesif(c.ListSections, moesifOptions))
+		api.GET("/indexed_search_data", wrapHandlerMoesif(c.ListIndexedSearchData, moesifOptions))
 
 		// Professor data endpoint to accept routes for /professors/:professorname
 		api.GET("/professors/:profName", wrapHandlerMoesif(c.ListProfessors, moesifOptions))
