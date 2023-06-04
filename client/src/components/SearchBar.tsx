@@ -56,18 +56,31 @@ function SearchBar (){
   }
 
   return (
-    <div ref={searchRef} className="flex flex-col border-2 border-gray-300">
-          <input
-            onFocus={() => setShowResults(true)}
-            className="truncate flex-grow py-3 px-4 text-gray-700 leading-tight text-lg focus:outline-1 focus:border-blue-500"
-            id="search"
-            type="text"
-            autoComplete="off"
-            placeholder="Search for a professor or course..."
-            onChange={(e) => handleInputChange(e)}
-          />
-          {showResults ? searchResults.map((result, i) => (<div key={i} onClick={() => goToSearchResult(result)} className="font-bold border-t-2 border-b-1 border-gray-300 bg-white flex-grow py-2 px-4 text-gray-700 leading-tight text-lg focus:outline-1 hover:bg-blue-500 hover:text-white cursor-pointer">{result}</div>)) : null}
+    <div ref={searchRef} className="relative flex flex-col border-2 border-gray-300">
+    <input
+        onFocus={() => setShowResults(true)}
+        className="truncate flex-grow py-3 px-4 text-gray-700 leading-tight text-lg focus:outline-1 focus:border-blue-500"
+        id="search"
+        type="text"
+        autoComplete="off"
+        placeholder="Search for a professor or course..."
+        onChange={(e) => handleInputChange(e)}
+    />
+    {showResults ? (
+        <div className="absolute z-50 w-full mt-12">
+            {searchResults.map((result, i) => (
+                <div 
+                    key={i} 
+                    onClick={() => goToSearchResult(result)} 
+                    className="font-bold border-t-2 border-b-1 border-gray-300 bg-white flex-grow py-2 px-4 text-gray-700 leading-tight text-lg focus:outline-1 hover:bg-blue-500 hover:text-white cursor-pointer"
+                >
+                    {result}
+                </div>
+            ))}
         </div>
+    ) : null}
+</div>
+
   )
 }
 
