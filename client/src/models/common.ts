@@ -11,7 +11,7 @@ export interface SectionComponent {
   component: string;
   classNumber: number;
   location: string;
-  instructor: string;
+  instructors: string[];
   requisites: string;
   status: string;
   campus: string;

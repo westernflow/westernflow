@@ -1,18 +1,22 @@
-import { useState, useContext, createContext, useEffect, ReactNode } from 'react';
+import { useState, createContext, useEffect, ReactNode } from 'react';
 import { IndexedCourse, IndexedProfessor, IndexedSearchData } from '../models/search';
+import { Trie } from '../trie/trie';
 
 
-export const searchContext = createContext<{ courseData?: IndexedCourse[]; profData?: IndexedProfessor[] }>({});
+export const searchContext = createContext<{ courseData?: IndexedCourse[]; profData?: IndexedProfessor[], courseTrie?: Trie, professorTrie?: Trie }>({});
 
 export const SearchContext = ({ children }:{ children: ReactNode }) => {
   // use state which holds the results from the query and passes it into the provider as the value for the consumer
   const [data, setData] = useState<IndexedSearchData | undefined>()
   const [courseData, setCourseData] = useState<IndexedCourse[] | undefined>();
   const [profData, setProfData] = useState<IndexedProfessor[] | undefined>();
+
+  const [courseTrie, setCourseTrie] = useState<Trie>(new Trie());
+  const [professorTrie, setProfessorTrie] = useState<Trie>(new Trie());
   // use effect which fetches the data from our local endpoint
   useEffect(()=>
   {
-    const response = fetch("http://localhost:8080/api/v1/indexed_search_data").then(result => result.json()).then(resultJson => {setData(resultJson as IndexedSearchData); console.log("sanity check",data);});
+    fetch("http://localhost:8080/api/v1/indexed_search_data").then(result => result.json()).then(resultJson => {setData(resultJson as IndexedSearchData);});
   }, [])
 
   useEffect(()=>{
@@ -20,8 +24,26 @@ export const SearchContext = ({ children }:{ children: ReactNode }) => {
     setProfData(data?.indexed_profs)
   }, [data])
 
+  useEffect(() => {
+    // create a new trie from the course data
+    const newCourseTrie = new Trie();
+    courseData?.forEach(course => {
+      newCourseTrie.insert((course.faculty + course.number).toLowerCase());
+    })
+    setCourseTrie(newCourseTrie);
+  }, [courseData])
+
+  useEffect(() => {
+    // create a new trie from the professor data
+    const newProfessorTrie = new Trie();
+    profData?.forEach(prof => {
+      newProfessorTrie.insert(prof.name.toLowerCase());
+    })
+    setProfessorTrie(newProfessorTrie);
+  }, [profData])
+
   return (
-    <searchContext.Provider value={{courseData: courseData, profData: profData}}>
+    <searchContext.Provider value={{courseData: courseData, profData: profData, courseTrie: courseTrie, professorTrie: professorTrie}}>
       {children}
     </searchContext.Provider>
   )

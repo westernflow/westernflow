@@ -1,8 +1,8 @@
 import { Route, Routes, BrowserRouter } from "react-router-dom";
-import HomePresenter from "./components/HomePresenter";
+import HomePresenter from "./presenters/HomePresenter";
 import { SearchContext } from "./contexts/SearchContext";
-import { useContext } from "react";
-import { CoursePresenter } from "./components/CoursePresenter";
+import { CoursePresenter } from "./presenters/CoursePresenter";
+import { ProfessorPresenter } from "./presenters/ProfessorPresenter";
 
 function App() {
 
@@ -13,6 +13,7 @@ function App() {
         <Routes>
           <Route path="/" Component={HomePresenter} />
           <Route path="/course/:courseCode" Component={CoursePresenter} />
+          <Route path="/professor/:professorName" Component={ProfessorPresenter} />
         </Routes>
       </BrowserRouter>  
     </SearchContext>
