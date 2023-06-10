@@ -2,7 +2,7 @@ package model
 
 // TimeComponent represents a single meeting time for a course section
 type TimeComponent struct {
-	Day       string `bson:"days" json:"days" example:"M"`
+	Days       string `bson:"days" json:"days" example:"M"`
 	StartTime string `bson:"startTime" json:"startTime" example:"8:30 AM"`
 	EndTime   string `bson:"endTime" json:"endTime" example:"1:30 PM"`
 }
@@ -13,7 +13,7 @@ type SectionComponent struct {
 	Component   string          `bson:"component" json:"component" example:"LEC"`
 	ClassNumber int             `bson:"classNumber" json:"classNumber" example:"5000"`
 	Location    string          `bson:"location" json:"location" example:"NS 145"`
-	Instructor  string          `bson:"instructor" json:"instructor" example:"Haffie"`
+	Instructors  []string          `bson:"instructors" json:"instructors" example:"Haffie"`
 	Reqs        string          `bson:"requisites" json:"requisites" example:"REQUISITES:..."`
 	Status      string          `bson:"status" json:"status" example:"Full"`
 	Campus      string          `bson:"campus" json:"campus" example:"Main"`

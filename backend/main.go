@@ -12,8 +12,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	// "github.com/go-co-op/gocron"
-
+	//"github.com/go-co-op/gocron"
+	"github.com/go-redis/redis/v8"
 	"github.com/gin-gonic/gin"
 
 	limiter "github.com/ulule/limiter/v3"
@@ -21,7 +21,8 @@ import (
 	memory "github.com/ulule/limiter/v3/drivers/store/memory"
 
 	"uwo-tt-api/controller"
-	// "uwo-tt-api/worker"
+	"net/url"
+	//"uwo-tt-api/worker"
 )
 
 func wrapHandlerMoesif(f http.HandlerFunc, s map[string]interface{}) gin.HandlerFunc {
@@ -74,6 +75,40 @@ func loadConfig() {
 	viper.AutomaticEnv()
 }
 
+func getRedisClient() *redis.Client {
+	// connect to redis
+	redisURL, redisOK := viper.Get("REDIS_URL").(string)
+	redisPassword, redisPasswordOK := viper.Get("REDIS_PASSWORD").(string)
+
+	if !redisOK {
+		log.Fatalf("Redis url not found")
+	}
+
+	if !redisPasswordOK {
+		log.Fatalf("Redis password not found")
+	}
+
+	u, err := url.Parse(redisURL)
+	if err != nil {
+		panic(err)
+	}
+
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     u.Host,
+		Password: redisPassword, // use the password
+		DB:       0,             // use default DB
+	})
+
+	// check connection
+	_, err = rdb.Ping(context.Background()).Result()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return rdb
+}
+
 func getMongoClient() *mongo.Client {
 	mode, modeOK := viper.Get("GIN_MODE").(string)
 	localDB, localOK := viper.Get("LOCAL_MONGODB").(string)
@@ -124,6 +159,8 @@ func getMongoClient() *mongo.Client {
 	return client
 }
 
+
+
 // @title Unofficial UWO Timetable API
 // @version 1.0
 // @description This is an API based on UWO's most update time table for undergraduate courses. Search options and course data is scraped from https://studentservices.uwo.ca/secure/timetables/mastertt/ttindex.cfm and stored in a database to avoid overloading the website with scrape requests. Data is scraped daily to ensure data is up-to-date.
@@ -142,6 +179,7 @@ func main() {
 	client := getMongoClient()
 
 	db := client.Database("uwo-tt-api")
+	redisClient := getRedisClient()
 	// Start a scheduler with worker task
 	// s1 := gocron.NewScheduler(time.UTC)
 	// s1.Every(1).Day().StartImmediately().Do(worker.ScrapeTimeTable, db)
@@ -153,6 +191,7 @@ func main() {
 	// Define controller instance for endpoints
 	c := controller.NewController()
 	c.DB = db
+	c.Redis = redisClient
 	c.CreateTrie()
 
 	// Get moesif configuration

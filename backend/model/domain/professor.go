@@ -4,7 +4,7 @@ package model
 type Professor struct {
 	ID             string   `bson:"_id" json:"id"`
 	Name           string   `bson:"name" json:"name" examples:"J. Smith"`
-	RMPName        string   `bson:"RMPName" json:"RMPName" examples:"John Smith"`
+	RMPName        string   `bson:"rmpName" json:"rmpName" examples:"John Smith"`
 	RMPId          string   `bson:"rmpId" json:"rmpId" examples:"VGVhY2hlci0yMTM5MjE0"`
 	Rating         float64  `bson:"rating" json:"rating" examples:"4.5"`
 	Difficulty     float64  `bson:"difficulty" json:"difficulty" examples:"3.5"`

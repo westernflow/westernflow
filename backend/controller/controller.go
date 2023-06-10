@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
+	"github.com/go-redis/redis/v8"
 	"uwo-tt-api/model/domain"
 	"uwo-tt-api/trie"
 )
@@ -20,6 +21,7 @@ import (
 // Controller struct which acts as base for all endpoint methods
 type Controller struct {
 	DB *mongo.Database
+	Redis *redis.Client
 	Trie *trie.Trie
 }
 
@@ -202,7 +204,7 @@ func ExtractCourseFilter(r *http.Request) (bson.M, error) {
 		opValue := f[1]
 
 		if val, ok := FilterToDBOp[op]; ok {
-			filters = append(filters, bson.M{"sectionData.instructor": bson.M{val: opValue}})
+			filters = append(filters, bson.M{"sectionData.instructors": bson.M{val: opValue}})
 		} else {
 			return bson.M{}, fmt.Errorf("Invalid section instructor command %s", op)
 		}

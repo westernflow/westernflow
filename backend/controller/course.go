@@ -4,9 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"time"
 	client "uwo-tt-api/model/client"
 	domain "uwo-tt-api/model/domain"
 
+	"github.com/go-redis/redis/v8"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -170,6 +172,17 @@ func (c *Controller) ListIndexedSearchData(w http.ResponseWriter, r *http.Reques
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
+	// try getting the cached value from Redis
+	cachedValue, err := c.Redis.Get(context.Background(), "IndexedSearchData").Result()
+	if err == nil { // cache hit
+		w.Write([]byte(cachedValue)) // write the cached value to the response and return
+		return
+	} else if err != redis.Nil { // if the error is something other than cache miss
+		// handle the error
+		w = NewError(w, http.StatusBadRequest, err, "Failed to get data from cache")
+		return
+	}
+
 	// Connect to courses collection
 	collection := c.DB.Collection("courses")
 	profCollection := c.DB.Collection("professors")
@@ -245,8 +258,20 @@ func (c *Controller) ListIndexedSearchData(w http.ResponseWriter, r *http.Reques
 
 	//Close the cursor once finished
 	cur.Close(context.TODO())
+	
+	indexedSearchDataJSON, err := json.Marshal(indexedSearchData)
+	if err != nil {
+		w = NewError(w, http.StatusBadRequest, err, "Failed to marshal data to JSON")
+		return
+	}
 
-	// include cors header for local development
+	// Set the data in Redis cache with an expiry
+	err = c.Redis.Set(context.Background(), "IndexedSearchData", string(indexedSearchDataJSON), 60*time.Hour).Err() // TODO: investigate whether this should inc/dec
+	if err != nil {
+		w = NewError(w, http.StatusBadRequest, err, "Failed to set data in cache")
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(indexedSearchData)
+	w.Write(indexedSearchDataJSON)
 }
