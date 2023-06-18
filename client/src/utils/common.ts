@@ -1,5 +1,5 @@
 export const isLetter = (char: string) => {
-  if (char.toUpperCase() != char.toLowerCase()) return true;
+  if (char.toUpperCase() !== char.toLowerCase()) return true;
   return false;
 };
 
