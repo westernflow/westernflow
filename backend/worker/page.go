@@ -275,7 +275,15 @@ func extractSectionInfo(section *goquery.Selection) model.SectionComponent {
 		case LocationCol:
 			s.Location = Trim(elem.Text())
 		case InstructorCol:
-			s.Instructor = Trim(elem.Text())
+			elemText := Trim(elem.Text())
+			// instructors are separated by <br> tags which are converted to newlines
+			s.Instructors = strings.Split(elemText, "\n")
+			// filter all professors whose names are "."
+			for i, instructor := range s.Instructors {
+				if instructor == "." {
+					s.Instructors = append(s.Instructors[:i], s.Instructors[i+1:]...)
+				}
+			}
 		case RequisitesCol:
 			s.Reqs = Trim(elem.Text())
 		case StatusCol:
@@ -290,7 +298,7 @@ func extractSectionInfo(section *goquery.Selection) model.SectionComponent {
 	// Collect days and times
 	for _, day := range days {
 		if day != "" {
-			s.Times = append(s.Times, model.TimeComponent{Day: day, StartTime: start, EndTime: end})
+			s.Times = append(s.Times, model.TimeComponent{Days: day, StartTime: start, EndTime: end})
 		}
 	}
 
