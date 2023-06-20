@@ -38,7 +38,7 @@ export const CoursePresenter = () => {
   }, [location.search, courseCode]);
 
   return (
-    <div style={{ position: "relative", minHeight: "100vh" }}>
+    <div className="text-gray-700" style={{ position: "relative", minHeight: "100vh" }}>
       <div style={{ position: "sticky", top: 0 }}>
         <Navbar />
       </div>
