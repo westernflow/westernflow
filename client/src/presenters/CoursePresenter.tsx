@@ -17,6 +17,7 @@ export const CoursePresenter = () => {
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
+		setLoading(true);
 		if (courseCode != null) {
 			// we should expect the url to be in the format /[CourseName][CourseNumber], where the two are split via the first numeric character's appearance
 			var courseFaculty = "";
