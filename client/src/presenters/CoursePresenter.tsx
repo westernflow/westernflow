@@ -33,14 +33,22 @@ export const CoursePresenter = () => {
 			fetch(queryString)
 				.then((res) => res.json())
 				.then((res) => {
-					setLoading(false);
 					//console.log("Done Loading");
 					if (res && res.length > 0) setCourse(res[0] as Course);
+					setLoading(false);
 				});
 		}
 	}, [location.search, courseCode]);
 
-	if (loading) return <div> Hi </div>;
+	if (loading)
+		return (
+			<div>
+				<Navbar />
+				<div className="flex h-screen items-center justify-center">
+					<span className="loading loading-spinner loading-lg"></span>
+				</div>
+			</div>
+		);
 
 	return (
 		<div
