@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	//"github.com/go-co-op/gocron"
+	"github.com/go-co-op/gocron"
 	"github.com/go-redis/redis/v8"
 	"github.com/gin-gonic/gin"
 
@@ -22,7 +22,7 @@ import (
 
 	"uwo-tt-api/controller"
 	"net/url"
-	//"uwo-tt-api/worker"
+	"uwo-tt-api/worker"
 )
 
 func wrapHandlerMoesif(f http.HandlerFunc, s map[string]interface{}) gin.HandlerFunc {
@@ -181,9 +181,9 @@ func main() {
 	db := client.Database("uwo-tt-api")
 	redisClient := getRedisClient()
 	// Start a scheduler with worker task
-	// s1 := gocron.NewScheduler(time.UTC)
-	// s1.Every(1).Day().StartImmediately().Do(worker.ScrapeTimeTable, db)
-	// s1.StartAsync()
+	s1 := gocron.NewScheduler(time.UTC)
+	s1.Every(1).Day().StartImmediately().Do(worker.ScrapeTimeTable, db)
+	s1.StartAsync()
 
 	// Endpoint router
 	router := gin.Default()
