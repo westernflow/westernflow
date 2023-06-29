@@ -275,15 +275,15 @@ func extractSectionInfo(section *goquery.Selection) model.SectionComponent {
 		case LocationCol:
 			s.Location = Trim(elem.Text())
 		case InstructorCol:
-			elemText := Trim(elem.Text())
-			// instructors are separated by <br> tags which are converted to newlines
-			s.Instructors = strings.Split(elemText, "\n")
-			// filter all professors whose names are "."
-			for i, instructor := range s.Instructors {
-				if instructor == "." {
-					s.Instructors = append(s.Instructors[:i], s.Instructors[i+1:]...)
+			var instructors []string
+			elem.Contents().Not("br").Each(func(i int, instructor *goquery.Selection) {
+				instructorName := strings.TrimSpace(instructor.Text())
+				if instructorName != "" && instructorName != "." {
+					instructors = append(instructors, instructorName)
 				}
-			}
+			})
+			s.Instructors = instructors
+			fmt.Println(s.Instructors, len(s.Instructors))
 		case RequisitesCol:
 			s.Reqs = Trim(elem.Text())
 		case StatusCol:
