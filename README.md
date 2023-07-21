@@ -2,8 +2,7 @@
 Check out: https://www.westernrank.com/
 
 # To run: 
-- Follow steps listed in backend readme.md
-- npm i -> npm start on the frontend : )
+Follow the detailed steps in the client and backend folders...
 
 # Example Screenshots of Client
 ![image](https://github.com/westernflow/westernflow/assets/86453692/45ab8808-2a20-4594-9e8c-425d6a61415c)
