@@ -7,6 +7,5 @@ module.exports = {
 				sans: ["Roboto", "ui-sans-serif", "system-ui"],
 			},
 		},
-	},
-	plugins: [require("daisyui")],
+	}
 };
