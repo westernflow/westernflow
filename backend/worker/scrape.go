@@ -37,8 +37,6 @@ func ScrapeTimeTable(db *mongo.Database) {
 		"course_types": "#inputCourseType",
 		"components":   "#inputComponent",
 		"campuses":     "#inputCampus",
-		"start_times":  "[name=time]",
-		"end_times":    "[name=end_time]",
 	}
 
 	// Capture start time for metrics
