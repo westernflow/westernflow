@@ -1,8 +1,10 @@
 # westernflow (likely abandoned due to release of westernrank)
 Check out: https://www.westernrank.com/
 
-# To run: 
-Follow the detailed steps in the client and backend folders...
+# To run:
+1. Have Docker installed (and docker-compose)
+2. Create a `backend/.env` file as per `backend/.envexample`
+3. Run `docker compose up --build` in the root dir
 
 # Example Screenshots of Client
 ![image](https://github.com/westernflow/westernflow/assets/86453692/45ab8808-2a20-4594-9e8c-425d6a61415c)
