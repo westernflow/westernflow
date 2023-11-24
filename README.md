@@ -3,7 +3,7 @@ Check out: https://www.westernrank.com/
 
 # To run:
 1. Have Docker installed (and docker-compose)
-2. Create a `backend/.env` file as per `backend/.envexample`
+2. Create a `backend/.env` file as per `backend/.env.example`
 3. Run `docker compose up --build` in the root dir
 
 # Example Screenshots of Client
