@@ -5,10 +5,17 @@ services:
             - backend/.env
         ports:
             - "8080:8080"
+        networks:
+            - backend_services
 
     frontend:
         build: client/.
         ports:
             - "3000:3000"
+        networks:
+            - backend_services
         depends_on:
             - backend
+networks:
+    backend_services:
+        driver: bridge

@@ -7,21 +7,22 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/moesif/moesifmiddleware-go"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
+	"github.com/gin-gonic/gin"
 	"github.com/go-co-op/gocron"
 	"github.com/go-redis/redis/v8"
-	"github.com/gin-gonic/gin"
 
 	limiter "github.com/ulule/limiter/v3"
 	mgin "github.com/ulule/limiter/v3/drivers/middleware/gin"
 	memory "github.com/ulule/limiter/v3/drivers/store/memory"
 
-	"uwo-tt-api/controller"
 	"net/url"
+	"uwo-tt-api/controller"
 	"uwo-tt-api/worker"
 )
 
@@ -159,8 +160,6 @@ func getMongoClient() *mongo.Client {
 	return client
 }
 
-
-
 // @title Unofficial UWO Timetable API
 // @version 1.0
 // @description This is an API based on UWO's most update time table for undergraduate courses. Search options and course data is scraped from https://studentservices.uwo.ca/secure/timetables/mastertt/ttindex.cfm and stored in a database to avoid overloading the website with scrape requests. Data is scraped daily to ensure data is up-to-date.
@@ -183,7 +182,7 @@ func main() {
 	// Start a scheduler with worker task
 	s1 := gocron.NewScheduler(time.UTC)
 	s1.Every(1).Day().StartImmediately().Do(worker.ScrapeTimeTable, db)
-	s1.StartAsync()
+	// s1.StartAsync()
 
 	// Endpoint router
 	router := gin.Default()
@@ -238,6 +237,8 @@ func main() {
 		api.GET("/professors/:profName", wrapHandlerMoesif(c.ListProfessors, moesifOptions))
 		api.GET("/search/:query", wrapHandlerMoesif(c.Search, moesifOptions))
 	}
+
+	router.Use(cors.Default())
 
 	// port := getPort()
 	router.Run(":8080")
