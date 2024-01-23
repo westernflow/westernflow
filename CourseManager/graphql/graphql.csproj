@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(ImplicitUsings)' == 'enable'">
-    <Using Include="graphql_api" />
+    <Using Include="graphql" />
   </ItemGroup>
 
   <ItemGroup>

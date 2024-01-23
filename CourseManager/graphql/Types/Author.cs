@@ -1,3 +1,3 @@
-namespace graphql_api.Types;
+namespace graphql.Types;
 
 public record Author(string Name);

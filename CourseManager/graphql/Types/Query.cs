@@ -1,4 +1,4 @@
-﻿namespace graphql_api.Types;
+﻿namespace graphql.Types;
 
 [QueryType]
 public static class Query
