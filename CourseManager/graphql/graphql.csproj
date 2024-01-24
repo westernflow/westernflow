@@ -8,10 +8,6 @@
     <RootNamespace>graphql</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(ImplicitUsings)' == 'enable'">
-    <Using Include="graphql" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="HotChocolate.AspNetCore" Version="14.0.0-p.28" />
     <PackageReference Include="HotChocolate.AspNetCore.CommandLine" Version="14.0.0-p.28" />
@@ -19,6 +15,16 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.26">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Business\Business.csproj" />
+    <ProjectReference Include="..\Data\Data.csproj" />
+    <ProjectReference Include="..\Repositories\Repositories.csproj" />
   </ItemGroup>
 
 </Project>

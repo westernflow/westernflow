@@ -5,6 +5,11 @@ namespace Data.Entities;
 
 public class ProfessorReview : IEntity
 {
+    // see https://stackoverflow.com/questions/54400115/no-suitable-constructor-found-for-entity-type-string
+    private ProfessorReview()
+    {
+    }
+
     [Key]
     public int Id { get; set; }
     public int Quality { get; set; }
