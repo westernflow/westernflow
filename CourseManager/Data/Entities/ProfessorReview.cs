@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Data.Interfaces;
 
 namespace Data.Entities;
@@ -15,6 +16,7 @@ public class ProfessorReview : IEntity
     public int Quality { get; set; }
     public int Difficulty { get; set; }
     public DateTime Date { get; set; } 
+    [StringLength(500)]
     public string? ReviewText { get; set; }
     public int Helpful { get; set; }
     public int Clarity { get; set; }
