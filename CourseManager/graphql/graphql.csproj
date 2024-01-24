@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="HotChocolate.AspNetCore" Version="14.0.0-p.28" />
     <PackageReference Include="HotChocolate.AspNetCore.CommandLine" Version="14.0.0-p.28" />
+    <PackageReference Include="HotChocolate.Data" Version="13.8.1" />
     <PackageReference Include="HotChocolate.Types.Analyzers" Version="14.0.0-p.28">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -24,7 +25,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Business\Business.csproj" />
     <ProjectReference Include="..\Data\Data.csproj" />
-    <ProjectReference Include="..\Repositories\Repositories.csproj" />
+    <ProjectReference Include="..\Repository\Repository.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Types\" />
   </ItemGroup>
 
 </Project>

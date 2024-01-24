@@ -16,7 +16,8 @@ public class Startup
     {
         services.AddCourseManagerDbContext(Configuration);
         services.AddGraphQLServer()
-            .AddTypes();
+            .AddQueryType<Query>()
+            .AddFiltering();
     }
 
     public void Configure(IApplicationBuilder app)
