@@ -9,9 +9,9 @@ public class Professor : IEntity
     [Key] public int Id { get; set; }
     
     [StringLength(100)]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     [StringLength(100)]
-    public string RmpId { get; set; }
+    public string RmpId { get; set; } = string.Empty;
 
     [InverseProperty("Professor")]
     public virtual ICollection<ProfessorReview>? Reviews { get; set; }

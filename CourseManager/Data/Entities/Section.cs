@@ -27,9 +27,10 @@ public class Section :IEntity
     public string? Delivery { get; set; }
     
     public int CourseId { get; set; }
+
     [ForeignKey(nameof(CourseId))]
     [InverseProperty("Sections")]
-    public virtual Course Course { get; set; }
+    public virtual Course Course { get; set; } = null!;
    
     [InverseProperty("Sections")]
     public virtual ICollection<Professor>? Professors { get; set; }
