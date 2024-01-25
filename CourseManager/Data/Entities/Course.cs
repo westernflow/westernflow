@@ -17,9 +17,9 @@ public class Course : IEntity
     
     public int Number { get; set; }
     [StringLength(10)]
-    public string Suffix { get; set; }
+    public string Suffix { get; set; } = string.Empty;
     [StringLength(100)]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     [StringLength(1000)]
     public string? PrerequisiteString { get; set; }
     [StringLength(1000)]
@@ -31,11 +31,11 @@ public class Course : IEntity
     
     public int SourceInfoId { get; set; }
     [ForeignKey(nameof(SourceInfoId))]
-    public SourceInfo Source { get; set; }
+    public SourceInfo Source { get; set; } = null!;
     
     public int FacultyId { get; set; }
     [ForeignKey(nameof(FacultyId))]
-    public Faculty Faculty { get; set; }
+    public Faculty Faculty { get; set; } = null!;
     
     
     [InverseProperty(nameof(Section.Course))]

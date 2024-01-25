@@ -8,7 +8,7 @@ public class Faculty : IEntity
    [Key]
    public int Id { get; set; }
    [StringLength(100)]
-   public string FacultyName { get; set; }
+   public string FacultyName { get; set; } = string.Empty;
 
    private Faculty()
    {
