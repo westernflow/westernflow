@@ -5,7 +5,8 @@ namespace graphql;
 
 public class Query
 {
+    [UsePaging]
     [UseFiltering]
-    public async Task<Course?> GetCoursesAsync([Service] ICourseRepository courseRepository)
-        => await courseRepository.GetSingleOrDefaultAsync(c => c.Id == 1);
+    public async Task<IEnumerable<Course>> GetCoursesAsync([Service] ICourseRepository courseRepository)
+        => await courseRepository.GetAllAsync();
 }
