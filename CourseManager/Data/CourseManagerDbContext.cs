@@ -14,6 +14,5 @@ public class CourseManagerDbContext : DbContext
     public DbSet<Professor> Professors { get; set; } = null!;
     public DbSet<ProfessorReview> ProfessorReviews { get; set; } = null!;
     public DbSet<Section> Sections { get; set; } = null!;
-    public DbSet<SectionComponent> SectionComponents { get; set; } = null!;
     public DbSet<SourceInfo> SourceInfo { get; set; } = null!;
 }

@@ -9,7 +9,6 @@ public class Faculty : IEntity
    public int Id { get; set; }
    [StringLength(100)]
    public string FacultyName { get; set; }
-
    public Faculty(string facultyName)
    {
       FacultyName = facultyName;

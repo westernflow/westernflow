@@ -13,6 +13,7 @@ public class ProfessorReview : IEntity
 
     [Key]
     public int Id { get; set; }
+    
     public int Quality { get; set; }
     public int Difficulty { get; set; }
     public DateTime Date { get; set; } 
@@ -21,6 +22,9 @@ public class ProfessorReview : IEntity
     public int Helpful { get; set; }
     public int Clarity { get; set; }
 
+    public int ProfessorId { get; set; }
+    [ForeignKey(nameof(ProfessorId))]
+    [InverseProperty("Reviews")]
     public Professor Professor { get; set; }
 
     public ProfessorReview(Professor professor)

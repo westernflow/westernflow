@@ -3,6 +3,7 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(CourseManagerDbContext))]
-    partial class CourseManagerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240125024855_RemoveSectionDataAndFixManyToMany")]
+    partial class RemoveSectionDataAndFixManyToMany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +23,21 @@ namespace Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("CourseProfessor", b =>
+                {
+                    b.Property<int>("CurrentCoursesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProfessorsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CurrentCoursesId", "ProfessorsId");
+
+                    b.HasIndex("ProfessorsId");
+
+                    b.ToTable("CourseProfessor");
+                });
 
             modelBuilder.Entity("Data.Entities.Course", b =>
                 {
@@ -180,6 +197,9 @@ namespace Data.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("ProfessorId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Status")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
@@ -191,6 +211,8 @@ namespace Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
+
+                    b.HasIndex("ProfessorId");
 
                     b.ToTable("Sections");
                 });
@@ -223,19 +245,34 @@ namespace Data.Migrations
                     b.ToTable("SourceInfo");
                 });
 
-            modelBuilder.Entity("ProfessorSection", b =>
+            modelBuilder.Entity("FacultyProfessor", b =>
                 {
+                    b.Property<int>("FacultiesId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("ProfessorsId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SectionsId")
-                        .HasColumnType("integer");
+                    b.HasKey("FacultiesId", "ProfessorsId");
 
-                    b.HasKey("ProfessorsId", "SectionsId");
+                    b.HasIndex("ProfessorsId");
 
-                    b.HasIndex("SectionsId");
+                    b.ToTable("FacultyProfessor");
+                });
 
-                    b.ToTable("ProfessorSection");
+            modelBuilder.Entity("CourseProfessor", b =>
+                {
+                    b.HasOne("Data.Entities.Course", null)
+                        .WithMany()
+                        .HasForeignKey("CurrentCoursesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.Entities.Professor", null)
+                        .WithMany()
+                        .HasForeignKey("ProfessorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Data.Entities.Course", b =>
@@ -276,20 +313,24 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Data.Entities.Professor", null)
+                        .WithMany("SectionsTaught")
+                        .HasForeignKey("ProfessorId");
+
                     b.Navigation("Course");
                 });
 
-            modelBuilder.Entity("ProfessorSection", b =>
+            modelBuilder.Entity("FacultyProfessor", b =>
                 {
-                    b.HasOne("Data.Entities.Professor", null)
+                    b.HasOne("Data.Entities.Faculty", null)
                         .WithMany()
-                        .HasForeignKey("ProfessorsId")
+                        .HasForeignKey("FacultiesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Data.Entities.Section", null)
+                    b.HasOne("Data.Entities.Professor", null)
                         .WithMany()
-                        .HasForeignKey("SectionsId")
+                        .HasForeignKey("ProfessorsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -302,6 +343,8 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Entities.Professor", b =>
                 {
                     b.Navigation("Reviews");
+
+                    b.Navigation("SectionsTaught");
                 });
 #pragma warning restore 612, 618
         }

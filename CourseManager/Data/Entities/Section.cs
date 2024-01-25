@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Data.Interfaces;
 
 namespace Data.Entities;
@@ -12,14 +13,24 @@ public class Section :IEntity
 
     [Key]
     public int Id { get; set; }
-    public SourceInfo Source { get; set; }
-    public SectionComponent SectionData { get; set; }
-    public Course Course { get; set; }
-
-    public Section(Course course, SectionComponent sectionComponent, SourceInfo sourceInfo)
-    {
-        Source = sourceInfo;
-        SectionData = sectionComponent;
-        Course = course;
-    }
+    
+    public int Number { get; set; }
+    public int ComponentNumber { get; set; }
+    public int ClassNumber { get; set; }
+    [StringLength(1000)]
+    public string? TimetableRequisiteString { get; set; }
+    [StringLength(100)]
+    public string? Status { get; set; }
+    [StringLength(100)]
+    public string? Campus { get; set; }
+    [StringLength(100)]
+    public string? Delivery { get; set; }
+    
+    public int CourseId { get; set; }
+    [ForeignKey(nameof(CourseId))]
+    [InverseProperty("Sections")]
+    public virtual Course Course { get; set; }
+   
+    [InverseProperty("Sections")]
+    public virtual ICollection<Professor>? Professors { get; set; }
 }
