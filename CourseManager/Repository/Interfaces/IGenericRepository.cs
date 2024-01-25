@@ -9,5 +9,8 @@ namespace Repositories.Interfaces
           Task UpdateAsync(TEntity entity);
           Task DeleteAsync(int id);
           Task<TEntity?> GetSingleOrDefaultAsync(Expression<Func<TEntity, bool>> expression);
+          Task<TEntity> GetByIdAsync(int id);
+          Task<IReadOnlyCollection<TEntity>> GetByConditionAsync(Expression<Func<TEntity, bool>> expression);
+          Task<IReadOnlyCollection<TEntity>> GetAllAsync();
      }
 }

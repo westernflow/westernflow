@@ -1,5 +1,6 @@
 using Data;
 using Data.Extensions;
+using graphql.Types;
 using Repositories.Extensions;
 
 namespace graphql;
@@ -19,7 +20,9 @@ public class Startup
         services.AddRepositories();
         services.AddGraphQLServer()
             .AddQueryType<Query>()
+            .AddType<CourseType>()
             .AddFiltering()
+            .AddProjections()
             .ModifyRequestOptions(o => o.IncludeExceptionDetails = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development");
     }
 

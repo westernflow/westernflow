@@ -9,6 +9,11 @@ public class Faculty : IEntity
    public int Id { get; set; }
    [StringLength(100)]
    public string FacultyName { get; set; }
+
+   private Faculty()
+   {
+   }
+
    public Faculty(string facultyName)
    {
       FacultyName = facultyName;

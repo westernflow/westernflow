@@ -14,6 +14,8 @@ public class SourceInfo : IEntity
     [StringLength(2000)]
     public string Url { get; set; }
 
+    private SourceInfo() { }
+
     public SourceInfo(string title, string year, string url)
     {
         Title = title;

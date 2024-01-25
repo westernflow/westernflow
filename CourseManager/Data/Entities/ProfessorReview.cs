@@ -26,9 +26,4 @@ public class ProfessorReview : IEntity
     [ForeignKey(nameof(ProfessorId))]
     [InverseProperty("Reviews")]
     public Professor Professor { get; set; }
-
-    public ProfessorReview(Professor professor)
-    {
-        Professor = professor;
-    }
 }

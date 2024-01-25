@@ -18,6 +18,11 @@ public class Professor : IEntity
     
     [InverseProperty("Professors")]
     public virtual ICollection<Section>? Sections { get; set; }
+
+    private Professor()
+    {
+    }
+
     public Professor(string name, string rmpId="")
     {
         Name = name;

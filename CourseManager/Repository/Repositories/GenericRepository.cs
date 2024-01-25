@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using Data;
 using Data.Interfaces;
@@ -52,6 +53,38 @@ public abstract class GenericRepository<TEntity> : IGenericRepository<TEntity> w
         {
             var entity = await dbContext.Set<TEntity>().FirstOrDefaultAsync(expression);
             return entity;
+        }
+    }
+
+    public async Task<TEntity> GetByIdAsync(int id)
+    {
+        using (var dbContext = await _dbContextFactory.CreateDbContextAsync())
+        {
+            var entity = await dbContext.Set<TEntity>().FirstOrDefaultAsync(e => e.Id == id);
+            
+            if (entity == null)
+            {
+                throw new Exception($"Entity with id {id} not found");
+            }
+            return entity;
+        }
+    }
+
+    public async Task<IReadOnlyCollection<TEntity>> GetByConditionAsync(Expression<Func<TEntity, bool>> expression)
+    {
+        using (var dbContext = await _dbContextFactory.CreateDbContextAsync())
+        {
+            var entities = await dbContext.Set<TEntity>().Where(expression).ToListAsync();
+            return new ReadOnlyCollection<TEntity>(entities);
+        }
+    }
+
+    public async Task<IReadOnlyCollection<TEntity>> GetAllAsync()
+    {
+        using (var dbContext = await _dbContextFactory.CreateDbContextAsync())
+        {
+            var entities = await dbContext.Set<TEntity>().ToListAsync();
+            return new ReadOnlyCollection<TEntity>(entities);
         }
     }
 }

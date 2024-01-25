@@ -40,7 +40,7 @@ public class Course : IEntity
     
     [InverseProperty(nameof(Section.Course))]
     public virtual ICollection<Section>? Sections { get; set; }
-    
+
     public Course(Faculty faculty, SourceInfo source, string suffix, string name)
     {
         Faculty = faculty;
