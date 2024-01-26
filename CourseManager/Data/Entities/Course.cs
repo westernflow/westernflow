@@ -1,6 +1,7 @@
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Data.Enums;
 using Data.Interfaces;
 
 namespace Data.Entities;
@@ -16,8 +17,7 @@ public class Course : IEntity
     public int Id { get; set; }
     
     public int Number { get; set; }
-    [StringLength(10)]
-    public string Suffix { get; set; } = string.Empty;
+    public CourseSuffix CourseSuffix { get; set; }
     [StringLength(100)]
     public string Name { get; set; } = string.Empty;
     [StringLength(1000)]
@@ -28,24 +28,28 @@ public class Course : IEntity
     public string? AntirequisiteString { get; set; }
     [StringLength(2000)]
     public string? Description { get; set; }
+    [StringLength(1000)]
+    public string? ExtraInformation { get; set; }
+    public int? CourseWeight { get; set; } 
+    public BreadthCategory BreadthCategory { get; set; }
     
     public int SourceInfoId { get; set; }
     [ForeignKey(nameof(SourceInfoId))]
-    public SourceInfo Source { get; set; } = null!;
+    public virtual SourceInfo Source { get; set; } = null!;
     
     public int FacultyId { get; set; }
     [ForeignKey(nameof(FacultyId))]
     public Faculty Faculty { get; set; } = null!;
-    
-    
-    [InverseProperty(nameof(Section.Course))]
-    public virtual ICollection<Section>? Sections { get; set; }
 
-    public Course(Faculty faculty, SourceInfo source, string suffix, string name)
+    [InverseProperty(nameof(Section.Course))]
+    public virtual ICollection<Section> Sections { get; set; } = null!;
+
+    [InverseProperty(nameof(ProfessorReview.Course))]
+    public virtual ICollection<ProfessorReview> RelatedProfessorReviews { get; set; } = null!;
+    
+    public Course(Faculty faculty, string name)
     {
         Faculty = faculty;
-        Source = source;
-        Suffix = suffix;
         Name = name;
     }
 }

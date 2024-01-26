@@ -18,12 +18,25 @@ public class ProfessorReview : IEntity
     public int Difficulty { get; set; }
     public DateTime Date { get; set; } 
     [StringLength(500)]
-    public string? ReviewText { get; set; }
+    public string ReviewText { get; set; } = String.Empty;
     public int Helpful { get; set; }
     public int Clarity { get; set; }
 
+    public int ReviewerId { get; set; }
+    [ForeignKey(nameof(ReviewerId))]
+    [InverseProperty("ProfessorReviewsWritten")]
+    public virtual Reviewer Reviewer { get; set; } = null!;
+    
+    public int CourseId { get; set; }
+    [ForeignKey(nameof(CourseId))]
+    [InverseProperty("RelatedProfessorReviews")]
+    public Course Course { get; set; } = null!;
+    
     public int ProfessorId { get; set; }
     [ForeignKey(nameof(ProfessorId))]
     [InverseProperty("Reviews")]
     public Professor Professor { get; set; } = null!;
+
+    [InverseProperty("ProfessorReviewsLiked")]
+    public virtual ICollection<Reviewer> LikedBy { get; set; } = null!;
 }
