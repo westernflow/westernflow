@@ -9,9 +9,9 @@ public class Faculty : IEntity
    [Key]
    public int Id { get; set; }
    [StringLength(100)]
-   public string FacultyName { get; set; } = string.Empty;
+   public string Name { get; set; } = string.Empty;
    [StringLength(20)]
-   public string? FacultyAbbreviation { get; set; }
+   public string? Abbreviation { get; set; }
 
    private Faculty()
    {
@@ -19,6 +19,6 @@ public class Faculty : IEntity
 
    public Faculty(string facultyName)
    {
-      FacultyName = facultyName;
+      Name = facultyName;
    }
 }

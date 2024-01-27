@@ -1,6 +1,8 @@
 using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Data.Entities.JoinTables;
+using Data.Enums;
 using Data.Interfaces;
 
 namespace Data.Entities;
@@ -20,20 +22,14 @@ public class Section :IEntity
     public int Id { get; set; }
     
     public int Number { get; set; }
-    public int ComponentNumber { get; set; }
+    public ComponentType ComponentType { get; set; }
     public int ClassNumber { get; set; }
-    // this is likely redundant since we already have requisite information from other data source...
-    [StringLength(1000)]
-    public string? SectionRequisiteString { get; set; }
     [StringLength(1000)]
     public string? TimetableRequisiteString { get; set; }
-    [StringLength(100)]
-    public string? Status { get; set; }
-    public int Waitlist { get; set; }
-    [StringLength(100)]
-    public string? Campus { get; set; }
-    [StringLength(100)]
-    public string? Delivery { get; set; }
+    public int WaitListSize { get; set; }
+    public StatusType Status { get; set; }
+    public Campus Campus { get; set; }
+    public DeliveryType Delivery { get; set; }
     public List<string> ProfessorNames { get; set; } 
     
     [InverseProperty(nameof(SectionLocationAndTime.Section))] 
@@ -46,6 +42,5 @@ public class Section :IEntity
     public virtual Course Course { get; set; } = null!;
     
     // An attempt will be made to resolve this field via the listed instructors on RMP
-    [InverseProperty("Sections")]
-    public virtual ICollection<Professor> Professors { get; set; } = null!;
+    public virtual IEnumerable<JoinedSectionProfessor>? Professors { get; set; } = null!;
 }

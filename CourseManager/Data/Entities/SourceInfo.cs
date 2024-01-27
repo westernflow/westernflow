@@ -9,7 +9,7 @@ public class SourceInfo : IEntity
     public int Id { get; set; }
     [StringLength(2000)]
     public string Title { get; set; } = string.Empty;
-    [StringLength(10)]
+    [StringLength(100)]
     public string Year { get; set; } = string.Empty;
 
     [StringLength(2000)] 
