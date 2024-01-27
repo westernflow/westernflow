@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Data.Entities.JoinTables;
 using Data.Interfaces;
 
 namespace Data.Entities;
@@ -17,11 +18,15 @@ public class CourseReview : IEntity
     public bool IsLiked { get; set; }
     public int EasyRating { get; set; }
     public int UsefulRating { get; set; }
+    public DateTime DateWritten { get; set; }
 
     [StringLength(500)]
     public string ReviewText { get; set; } = String.Empty;
+    
+    public int? ProfessorId { get; set; }
+    [ForeignKey(nameof(ProfessorId))]
+    public virtual Professor? Professor { get; set; }
 
-    [InverseProperty("CourseReviewsLiked")]
-    public virtual ICollection<Reviewer> LikedBy { get; set; } = null!;
+    public virtual IEnumerable<JoinedReviewerCourseReview>? LikedBy { get; set; } = null!;
 
 }

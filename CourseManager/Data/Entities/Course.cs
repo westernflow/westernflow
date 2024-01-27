@@ -17,7 +17,7 @@ public class Course : IEntity
     public int Id { get; set; }
     
     public int Number { get; set; }
-    public CourseSuffix CourseSuffix { get; set; }
+    public CourseSuffix Suffix { get; set; }
     [StringLength(100)]
     public string Name { get; set; } = string.Empty;
     [StringLength(1000)]
@@ -30,7 +30,9 @@ public class Course : IEntity
     public string? Description { get; set; }
     [StringLength(1000)]
     public string? ExtraInformation { get; set; }
-    public int? CourseWeight { get; set; } 
+    
+    [Column(TypeName = "decimal(2,2)")]
+    public decimal? Weight { get; set; } 
     public BreadthCategory BreadthCategory { get; set; }
     
     public int SourceInfoId { get; set; }

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Data.Entities.JoinTables;
 using Data.Interfaces;
 
 namespace Data.Entities;
@@ -22,9 +23,7 @@ public class Reviewer : IEntity
     [InverseProperty("Reviewer")]
     public virtual ICollection<ProfessorReview> ProfessorReviewsWritten { get; set; } = null!;
 
-    [InverseProperty("LikedBy")]
-    public virtual ICollection<CourseReview> CourseReviewsLiked { get; set; } = null!;
+    public virtual IEnumerable<JoinedReviewerCourseReview>? CourseReviewsLiked { get; set; } = null!;
     
-    [InverseProperty("LikedBy")]
-    public virtual ICollection<ProfessorReview> ProfessorReviewsLiked { get; set; } = null!;
+    public virtual IEnumerable<JoinedReviewerProfessorReview>? ProfessorReviewsLiked { get; set; } = null!;
 }
