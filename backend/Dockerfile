@@ -14,7 +14,7 @@ COPY model ./model
 COPY trie ./trie
 COPY worker ./worker
 COPY main.go ./
-COPY .env ./
+# COPY .env ./
 
 RUN CGO_ENABLED=0 GOOS=linux go build -mod=readonly -v -o server
 
@@ -29,7 +29,7 @@ EXPOSE 8080
 
 # Copy the binary to the production image from the builder stage.
 COPY --from=builder /app/server /server
-COPY --from=builder /app/.env .env
+# COPY --from=builder /app/.env .env
 
 # Run the web service on container startup.
 CMD ["./server"]
