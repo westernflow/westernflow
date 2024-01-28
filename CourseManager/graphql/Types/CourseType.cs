@@ -20,9 +20,11 @@ public class CourseType : ObjectType<Course>
             return await facultyRepository.GetByIdAsync(course.FacultyId);
         }
         
-        public async Task<SourceInfo> GetSource([Parent] Course course, [Service] ISourceInfoRepository sourceRepository)
+        public async Task<SourceInfo?> GetSource([Parent] Course course, [Service] ISourceInfoRepository sourceRepository)
         {
-            return await sourceRepository.GetByIdAsync(course.SourceInfoId);
+            if (course.SourceInfoId == null) return null;
+            
+            return await sourceRepository.GetByIdAsync(course.SourceInfoId.Value);
         }
     }
 }
