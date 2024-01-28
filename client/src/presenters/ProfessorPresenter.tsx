@@ -28,8 +28,8 @@ export const ProfessorPresenter = () => {
 
     const getProfessor = async () => {
       const response = await fetch(
-        `http://localhost:8080/api/v1/professors/${professorName}`
-      );
+			`https://westernflow-backend.fly.dev/api/v1/professors/${professorName}`
+		);
 
       if (!response.ok) {
         console.error("The request was not successful", response);
