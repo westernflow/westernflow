@@ -1,4 +1,4 @@
-name: Deploy backend to Fly.io
+name: CD backend to Fly.io
 on:
     push:
         branches:
