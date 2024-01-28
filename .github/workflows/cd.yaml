@@ -1,5 +1,9 @@
-name: Deploy bot to Fly.io
-on: [push]
+name: Deploy backend to Fly.io
+on:
+    push:
+        branches:
+            - master
+    workflow_dispatch:
 
 jobs:
     deploy:
