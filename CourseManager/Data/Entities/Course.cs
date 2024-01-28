@@ -35,9 +35,9 @@ public class Course : IEntity
     public decimal? Weight { get; set; } 
     public BreadthCategory BreadthCategory { get; set; }
     
-    public int SourceInfoId { get; set; }
+    public int? SourceInfoId { get; set; }
     [ForeignKey(nameof(SourceInfoId))]
-    public virtual SourceInfo Source { get; set; } = null!;
+    public virtual SourceInfo? Source { get; set; } = null!;
     
     public int FacultyId { get; set; }
     [ForeignKey(nameof(FacultyId))]
