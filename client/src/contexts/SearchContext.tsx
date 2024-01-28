@@ -16,7 +16,11 @@ export const SearchContext = ({ children }:{ children: ReactNode }) => {
   // use effect which fetches the data from our local endpoint
   useEffect(()=>
   {
-    fetch("http://localhost:8080/api/v1/indexed_search_data").then(result => result.json()).then(resultJson => {setData(resultJson as IndexedSearchData);});
+    fetch("https://westernflow-backend.fly.dev/api/v1/indexed_search_data")
+		.then((result) => result.json())
+		.then((resultJson) => {
+			setData(resultJson as IndexedSearchData);
+		});
   }, [])
 
   useEffect(()=>{

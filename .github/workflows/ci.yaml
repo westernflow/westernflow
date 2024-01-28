@@ -1,0 +1,23 @@
+# name: CI
+
+# on:
+#     push:
+#         branches:
+#             - main
+
+# jobs:
+#     build:
+#         runs-on: ubuntu-latest
+
+#         steps:
+#             - name: Checkout code
+#                 uses: actions/checkout@v2
+
+#             # Add your build and test steps here
+#             - name: Build
+#                 run: |
+#                     # Add your build commands here
+
+#             - name: Test
+#                 run: |
+#                     # Add your test commands here
