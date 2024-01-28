@@ -22,6 +22,18 @@ public class CourseManagerDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Professor>()
+            .HasIndex(p => p.Name)
+            .IsUnique();
+        
+        modelBuilder.Entity<Course>()
+            .HasIndex(c => new {c.Number, c.FacultyId})
+            .IsUnique();
+        
+        modelBuilder.Entity<Reviewer>()
+            .HasIndex(r => r.Email)
+            .IsUnique();
+        
         modelBuilder.Entity<Faculty>()
             .HasIndex(f => f.Name)
             .IsUnique();
