@@ -1,3 +1,4 @@
+using AngleSharp.Dom;
 using PuppeteerSharp;
 
 namespace Scrapers.ScrapingUtilities;
@@ -11,6 +12,8 @@ public static class CookieManager
 {
     public  static async Task<Cookie> GetCookie(IConfiguration configuration)
     {
+        // GetCookie will always succeed even if already logged in and previous cookies are valid since it will
+        // still prompt for user and password on the login screen and give you a new cookie
         var options = new LaunchOptions
         {
             Headless = true,
@@ -21,9 +24,9 @@ public static class CookieManager
          var browser = await Puppeteer.LaunchAsync(options);
          var page = await browser.NewPageAsync();
          
-         // Open login page 
+         // Open builder page 
          await page.GoToAsync(configuration["Scraper:LoginUrl"]);
-
+         
          // Fill the form
          await page.TypeAsync("input[name='txtUsername']", configuration["Scraper:Username"]); 
          await page.TypeAsync("input[name='txtPassword']", configuration["Scraper:Password"]);

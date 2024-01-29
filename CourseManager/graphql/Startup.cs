@@ -17,7 +17,7 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddCourseManagerDbContext(Configuration);
-        services.AddRepositories();
+        services.AddScopedRepositories();
         services.AddGraphQLServer()
             .AddQueryType<Query>()
             .AddType<CourseType>()

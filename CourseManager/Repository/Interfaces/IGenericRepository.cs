@@ -6,6 +6,7 @@ namespace Repositories.Interfaces
      public interface IGenericRepository<TEntity> where TEntity : IEntity
      {
           Task InsertAsync(TEntity entity);
+          Task InsertRangeAsync(IReadOnlyCollection<TEntity> entities);
           Task UpdateAsync(TEntity entity);
           Task DeleteAsync(int id);
           Task<TEntity?> GetSingleOrDefaultAsync(Expression<Func<TEntity, bool>> expression);
