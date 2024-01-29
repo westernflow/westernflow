@@ -42,6 +42,10 @@ public class CourseManagerDbContext : DbContext
             .HasIndex(f => f.DayOfWeek)
             .IsUnique();
         
+        modelBuilder.Entity<CourseOffering>()
+            .HasIndex(c => new {c.Year, c.Suffix, c.CourseId})
+            .IsUnique();
+        
         // Name the CourseReview table CourseReviews
         modelBuilder.Entity<CourseReview>()
             .ToTable("CourseReviews");
