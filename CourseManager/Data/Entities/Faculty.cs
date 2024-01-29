@@ -10,15 +10,16 @@ public class Faculty : IEntity
    public int Id { get; set; }
    [StringLength(100)]
    public string Name { get; set; } = string.Empty;
-   [StringLength(20)]
-   public string? Abbreviation { get; set; }
+
+   [StringLength(20)] public string Abbreviation { get; set; } = string.Empty;
 
    private Faculty()
    {
    }
 
-   public Faculty(string facultyName)
+   public Faculty(string facultyName, string abbreviation)
    {
       Name = facultyName;
+      Abbreviation = abbreviation;
    }
 }
