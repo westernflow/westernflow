@@ -1,6 +1,6 @@
 namespace Data.Enums;
 
-public enum CourseSuffix
+public enum Suffix
 {
    NoSuffix,
    A,

@@ -14,7 +14,7 @@ public class Section :IEntity
     // see https://stackoverflow.com/questions/54400115/no-suitable-constructor-found-for-entity-type-string
     private Section()
     {
-        SectionLocationAndTimes = new HashSet<SectionLocationAndTime>();
+        SectionLocationAndTimes = new List<SectionLocationAndTime>();
         ProfessorNames = new List<string>();
     }
 
@@ -33,13 +33,11 @@ public class Section :IEntity
     public List<string> ProfessorNames { get; set; } 
     
     [InverseProperty(nameof(SectionLocationAndTime.Section))] 
-    public HashSet<SectionLocationAndTime> SectionLocationAndTimes { get; set; } 
+    public List<SectionLocationAndTime> SectionLocationAndTimes { get; set; } 
     
-    public int CourseId { get; set; }
-
-    [ForeignKey(nameof(CourseId))]
-    [InverseProperty("Sections")]
-    public virtual Course Course { get; set; } = null!;
+    public int CourseOfferingId { get; set; }
+    [ForeignKey(nameof(CourseOfferingId))]
+    public virtual CourseOffering CourseOffering { get; set; } = null!;
     
     // An attempt will be made to resolve this field via the listed instructors on RMP
     public virtual IEnumerable<JoinedSectionProfessor>? Professors { get; set; } = null!;
