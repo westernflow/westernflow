@@ -1,82 +1,60 @@
-using System.Diagnostics;
+using AngleSharp;
 using AngleSharp.Dom;
-using Data;
 using Data.Entities;
-using Data.Entities.EnumTables;
-using Microsoft.EntityFrameworkCore;
+using Data.Migrations;
 using Repositories.Interfaces;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace Scrapers.ScrapingUtilities;
-using AngleSharp;
-using AngleSharp.Io;
 
 public static class CourseScraper
 {
-    public static List<Course> GetCoursesFromSubjectPage(IDocument document)
+    public async static Task GetFaculties(IConfiguration configuration, IFacultyRepository facultyRepository)
     {
-        var courses = new List<Course>();
-       
-        // get all divs with class="panel-default" and splice away the first 2 elements
-        var courseDivs = document.QuerySelectorAll("div.panel-default");
-        foreach (var courseDiv in courseDivs)
+        // Get a new cookie
+        var cookie = await CookieManager.GetCookie(configuration);
+        
+        // create new http client for the request to pass in headers
+        var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("Cookie", cookie.Value);
+        
+        var response = await client.GetAsync(configuration["Scraper:BuilderUrl"]);
+        var html = await response.Content.ReadAsStringAsync();
+        
+        if (string.IsNullOrWhiteSpace(html))
         {
-                    
+            throw new Exception("No html was returned from the request");
         }
         
-        return courses;
-    }
-    
-    public async static Task<List<Course>> GetCoursesFromDocument(IDocument document)
-    {
-        var courses = new List<Course>();
+        // parse the HTML string to DOM nodes for AngleSharp
+        var config = Configuration.Default;
+        var context = BrowsingContext.New(config);
+        var document = await context.OpenAsync(req => req.Content(html));
 
-        // Get the one and only tbody present on the page, representing the table of subjects
-        var tableBodies = document.QuerySelectorAll("tbody");
-        // assert only one tbody is in the document
-        if (tableBodies.Count() != 1) throw new Exception("There should only be one tbody in the document");
-        
-        var tableBody = tableBodies.Single();
-        
-        foreach (var row in tableBody.QuerySelectorAll("tr").Take(2))
+        if (document == null)
         {
-            var columns = row.QuerySelectorAll("td");
-            // assert that there are 3 columns in the row
-            if (columns.Count() != 3) throw new Exception("There should be 3 columns in the row");
-            var linkElement = columns[0].QuerySelector("a");
-            if (linkElement == null)
+            throw new Exception("No document was returned from the request");
+        }
+
+        var faculties = new List<Faculty>();
+        var options = document.QuerySelectorAll("select#Subject > option");
+
+        foreach (var option in options)
+        {
+            var abbreviation = option.GetAttribute("value");
+            var name = option.TextContent.Trim();
+
+            // Skip the first option as it is just a placeholder
+            if (!string.IsNullOrWhiteSpace(abbreviation))
             {
-                throw new InvalidOperationException("The link element was not found in the first column.");
+                faculties.Add(new Faculty(name, abbreviation));
             }
-            var subjectPageRelativeUrl = linkElement.GetAttribute("href");
-            if (subjectPageRelativeUrl == null) throw new Exception("Subject page url is null");
-            var subjectPageUrl = "https://www.westerncalendar.uwo.ca/" + subjectPageRelativeUrl;
-            var subjectPageContext = BrowsingContext.New(Configuration.Default.WithDefaultLoader());
-            if (subjectPageContext == null) throw new Exception("Subject page context is null");
-            var subjectPage = await subjectPageContext.OpenAsync(subjectPageUrl);
-            
-            courses.AddRange(GetCoursesFromSubjectPage(subjectPage));
         }
-        
-        
-        return courses;
+
+        await facultyRepository.InsertRangeAsync(faculties);
     }
     
-    public async static Task Scrape()
+    public static void Scrape()
     {
-      const string url = "https://www.westerncalendar.uwo.ca/Courses.cfm?SelectedCalendar=Live&ArchiveID=";
-      
-      var config = Configuration.Default.WithDefaultLoader();
-      if (config == null) throw new Exception("Configuration is null");
-
-      // Create a browsing context
-      var context = BrowsingContext.New(config);
-      if (context == null) throw new Exception("Context is null");
-
-      // Load the webpage
-      var document = await context.OpenAsync(url);
-      if (document == null) throw new Exception("Document is null");
-
-      // Parse the HTML to get back Course entities
-      var courses = await GetCoursesFromDocument(document);
     } 
 }
