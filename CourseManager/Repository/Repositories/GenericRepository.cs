@@ -24,6 +24,25 @@ public abstract class GenericRepository<TEntity> : IGenericRepository<TEntity> w
            await dbContext.SaveChangesAsync();
         }
     }
+    
+    public async Task InsertRangeAsync(IReadOnlyCollection<TEntity> entities)
+    {
+        using (var dbContext = await _dbContextFactory.CreateDbContextAsync())
+        {
+            foreach (var entity in entities)
+            {
+                if (await GetSingleOrDefaultAsync(e => e.Id == entity.Id) != null)
+                {
+                    await UpdateAsync(entity);
+                }
+                else
+                {
+                    await dbContext.AddAsync(entity);
+                }
+            }
+            await dbContext.SaveChangesAsync();
+        }
+    }
 
     public async Task UpdateAsync(TEntity entity)
     {
