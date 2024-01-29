@@ -17,16 +17,16 @@ public static class CookieManager
             ExecutablePath = configuration["Scraper:ChromeExecutablePath"]
         };
             
-         // setup 
+         // Initialize the browser 
          var browser = await Puppeteer.LaunchAsync(options);
          var page = await browser.NewPageAsync();
          
-         // Navigate to Scraper:LoginUrl
+         // Open login page 
          await page.GoToAsync(configuration["Scraper:LoginUrl"]);
 
          // Fill the form
-         await page.TypeAsync("input[name='txtUsername']", "YourUsername"); // Replace with actual username
-         await page.TypeAsync("input[name='txtPassword']", "YourPassword"); // Replace with actual password
+         await page.TypeAsync("input[name='txtUsername']", configuration["Scraper:Username"]); 
+         await page.TypeAsync("input[name='txtPassword']", configuration["Scraper:Password"]);
 
          // Submit the form
          await page.ClickAsync("button[type='submit']");
