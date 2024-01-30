@@ -7,7 +7,7 @@ using Data.Interfaces;
 
 namespace Data.Entities;
 
-public record CourseConstructorParams()
+public record CourseConstructorParams
 {
     public int Number { get; init; }
     public string Name { get; init; } = string.Empty;

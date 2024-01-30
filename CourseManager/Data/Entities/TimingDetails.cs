@@ -5,12 +5,14 @@ using Data.Interfaces;
 
 namespace Data.Entities;
 
-public class SectionLocationAndTime : IEntity
+public class TimingDetails : IEntity
 {
     [Key]
     public int Id { get; set; }
 
-    public IEnumerable<JoinedDowSlt>? DaysOfWeek { get; set; } = null!;
+    // s[i] = 1 => that day of the week is included so s[0]=1 => Sunday is included.. e.g. 0110000 => Monday and Tuesday
+    [StringLength(7)]
+    public string DaysOfWeekBitmap { get; set; } = null!;
     
     [StringLength(30)]
     public string Location { get; set; } = string.Empty;
