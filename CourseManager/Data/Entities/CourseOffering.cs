@@ -7,6 +7,19 @@ namespace Data.Entities;
 
 public class CourseOffering : IEntity
 {
+    private CourseOffering()
+    {
+    }
+    
+    public CourseOffering(int year, Suffix suffix, int courseId)
+    {
+        Year = year;
+        Suffix = suffix;
+        CourseId = courseId;
+        
+        Sections = new List<Section>();
+    }
+    
     [Key]
     public int Id { get; set; }  
     
@@ -16,8 +29,8 @@ public class CourseOffering : IEntity
     
     public int CourseId { get; set; }
     [ForeignKey(nameof(CourseId))]
-    public virtual Course Course { get; set; } = null!;
+    public Course Course { get; set; } = null!;
     
     [InverseProperty(nameof(Section.CourseOffering))]
-    public virtual IEnumerable<Section> Sections { get; set; } = null!;
+    public IEnumerable<Section> Sections { get; set; } = null!;
 }
