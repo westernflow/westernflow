@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,9 @@ public class Faculty : IEntity
    public string Name { get; set; } = string.Empty;
 
    [StringLength(20)] public string Abbreviation { get; set; } = string.Empty;
+   
+   [InverseProperty(nameof(Course.Faculty))]
+   public virtual IEnumerable<Course>? Courses { get; set; }
 
    private Faculty()
    {
