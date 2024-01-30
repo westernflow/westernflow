@@ -14,7 +14,8 @@ public static class ServiceCollectionExtensions
       serviceCollection.AddScoped<IFacultyRepository, FacultyRepository>();
       serviceCollection.AddScoped<IProfessorRepository, ProfessorRepository>();
       serviceCollection.AddScoped<ISectionRepository, SectionRepository>();
-      serviceCollection.AddScoped<ISourceInfoRepository, SourceInfoRepository>();
+      serviceCollection.AddScoped<ITimingDetailsRepository, TimingDetailsRepository>();
+      serviceCollection.AddScoped<ICourseOfferingRepository, CourseOfferingRepository>();
       return serviceCollection;
    }
    
@@ -24,7 +25,8 @@ public static class ServiceCollectionExtensions
       serviceCollection.AddSingleton<IFacultyRepository, FacultyRepository>();
       serviceCollection.AddSingleton<IProfessorRepository, ProfessorRepository>();
       serviceCollection.AddSingleton<ISectionRepository, SectionRepository>();
-      serviceCollection.AddSingleton<ISourceInfoRepository, SourceInfoRepository>();
+      serviceCollection.AddSingleton<ITimingDetailsRepository, TimingDetailsRepository>();
+      serviceCollection.AddSingleton<ICourseOfferingRepository, CourseOfferingRepository>();
       return serviceCollection;
    }
 }
