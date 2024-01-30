@@ -29,17 +29,7 @@ public abstract class GenericRepository<TEntity> : IGenericRepository<TEntity> w
     {
         using (var dbContext = await _dbContextFactory.CreateDbContextAsync())
         {
-            foreach (var entity in entities)
-            {
-                if (await GetSingleOrDefaultAsync(e => e.Id == entity.Id) != null)
-                {
-                    await UpdateAsync(entity);
-                }
-                else
-                {
-                    await dbContext.AddAsync(entity);
-                }
-            }
+            await dbContext.AddRangeAsync(entities);
             await dbContext.SaveChangesAsync();
         }
     }
