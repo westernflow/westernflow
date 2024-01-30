@@ -19,7 +19,8 @@ public record SectionConstructorParams
     public Campus Campus { get; init; }
     public DeliveryType Delivery { get; init; }
     public List<string> ProfessorNames { get; init; } = new();
-    public List<TimingDetails> SectionLocationAndTimes { get; init; } = new();
+    public List<TimingDetails> TimingDetails { get; init; } = new();
+    public int CourseOfferingId { get; init; }
 }
 
 public class Section :IEntity
@@ -27,7 +28,7 @@ public class Section :IEntity
     // see https://stackoverflow.com/questions/54400115/no-suitable-constructor-found-for-entity-type-string
     private Section()
     {
-        SectionLocationAndTimes = new List<TimingDetails>();
+        TimingDetails = new List<TimingDetails>();
         ProfessorNames = new List<string>();
     }
     
@@ -42,7 +43,10 @@ public class Section :IEntity
         Campus = sectionConstructorParams.Campus;
         Delivery = sectionConstructorParams.Delivery;
         ProfessorNames = sectionConstructorParams.ProfessorNames;
-        SectionLocationAndTimes = sectionConstructorParams.SectionLocationAndTimes;
+        TimingDetails = sectionConstructorParams.TimingDetails;
+        CourseOfferingId = sectionConstructorParams.CourseOfferingId;
+        
+        TimingDetails = new List<TimingDetails>();
     }
 
     [Key]
@@ -51,7 +55,7 @@ public class Section :IEntity
     public int Number { get; set; }
     public ComponentType ComponentType { get; set; }
     public int ClassNumber { get; set; }
-    [StringLength(1000)]
+    [StringLength(5000)]
     public string? TimetableRequisiteString { get; set; }
     public int WaitListSize { get; set; }
     public StatusType Status { get; set; }
@@ -59,12 +63,12 @@ public class Section :IEntity
     public DeliveryType Delivery { get; set; }
     public List<string> ProfessorNames { get; set; } 
     
-    [InverseProperty(nameof(TimingDetails.Section))] 
-    public List<TimingDetails> SectionLocationAndTimes { get; set; } 
+    [InverseProperty(nameof(Entities.TimingDetails.Section))] 
+    public List<TimingDetails> TimingDetails { get; set; } 
     
     public int CourseOfferingId { get; set; }
     [ForeignKey(nameof(CourseOfferingId))]
-    public virtual CourseOffering CourseOffering { get; set; } = null!;
+    public CourseOffering CourseOffering { get; set; } = null!;
     
     // An attempt will be made to resolve this field via the listed instructors on RMP
     public virtual IEnumerable<JoinedSectionProfessor>? Professors { get; set; } = null!;

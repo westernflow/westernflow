@@ -44,6 +44,9 @@ public class Course : IEntity
         InternalCourseId = courseConstructorParams.InternalCourseId;
         SourceInfoId = courseConstructorParams.SourceInfoId;
         FacultyId = courseConstructorParams.FacultyId;
+        
+        CourseOfferings = new List<CourseOffering>();
+        RelatedProfessorReviews = new List<ProfessorReview>();
     }
 
     [Key]
@@ -52,13 +55,13 @@ public class Course : IEntity
     public int Number { get; set; }
     [StringLength(100)]
     public string Name { get; set; } = string.Empty;
-    [StringLength(1000)]
+    [StringLength(3000)]
     public string? PrerequisiteString { get; set; }
-    [StringLength(1000)]
+    [StringLength(3000)]
     public string? CorequisiteString { get; set; }
-    [StringLength(1000)]
+    [StringLength(3000)]
     public string? AntirequisiteString { get; set; }
-    [StringLength(2000)]
+    [StringLength(3000)]
     public string? Description { get; set; }
     [StringLength(1000)]
     public string? ExtraInformation { get; set; }
@@ -75,11 +78,12 @@ public class Course : IEntity
     
     public int FacultyId { get; set; }
     [ForeignKey(nameof(FacultyId))]
+    [InverseProperty("Courses")]
     public Faculty Faculty { get; set; } = null!;
 
     [InverseProperty(nameof(CourseOffering.Course))]
-    public virtual ICollection<CourseOffering> CourseOfferings { get; set; } = null!;
+    public ICollection<CourseOffering> CourseOfferings { get; set; } = null!;
     
     [InverseProperty(nameof(ProfessorReview.Course))]
-    public virtual ICollection<ProfessorReview> RelatedProfessorReviews { get; set; } = null!;
+    public  ICollection<ProfessorReview> RelatedProfessorReviews { get; set; } = null!;
 }
