@@ -1,6 +1,5 @@
 using System.Collections.Immutable;
 using Data.Entities;
-using Data.Entities.EnumTables;
 using Data.Entities.JoinTables;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -38,10 +37,6 @@ public class CourseManagerDbContext : DbContext
             .HasIndex(f => f.Name)
             .IsUnique();
 
-        modelBuilder.Entity<DayOfWeekEnumEntity>()
-            .HasIndex(f => f.DayOfWeek)
-            .IsUnique();
-        
         modelBuilder.Entity<CourseOffering>()
             .HasIndex(c => new {c.Year, c.Suffix, c.CourseId})
             .IsUnique();
@@ -53,10 +48,6 @@ public class CourseManagerDbContext : DbContext
         // name the Reviewer table Reviewers
         modelBuilder.Entity<Reviewer>()
             .ToTable("Reviewers");
-        
-        // Rename the DayOfWeekEnumEntity table DaysOfWeek
-        modelBuilder.Entity<DayOfWeekEnumEntity>()
-            .ToTable("DaysOfWeek");
         
         // Create CourseReview - Reviewer join table
         modelBuilder.Entity<JoinedReviewerCourseReview>()
@@ -72,21 +63,6 @@ public class CourseManagerDbContext : DbContext
             .HasOne(r => r.CourseReview)
             .WithMany(r => r.LikedBy)
             .HasForeignKey(r => r.CourseReviewId);
-        
-        // Create Dow - Slt join table
-        modelBuilder.Entity<JoinedDowSlt>()
-            .HasKey(r => new {r.DowId, r.SltId});
-        
-        // Configure many-to-many from DayOfWeekEnumEntity to SectionLocationAndTime
-        modelBuilder.Entity<JoinedDowSlt>()
-            .HasOne(r => r.Dow)
-            .WithMany(r => r.SectionLocationAndTimes)
-            .HasForeignKey(r => r.DowId);
-
-        modelBuilder.Entity<JoinedDowSlt>()
-            .HasOne(r => r.Slt)
-            .WithMany(r => r.DaysOfWeek)
-            .HasForeignKey(r => r.SltId);
         
         // Create ProfessorReview - Reviewer join table
         modelBuilder.Entity<JoinedReviewerProfessorReview>()
