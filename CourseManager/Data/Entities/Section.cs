@@ -45,8 +45,6 @@ public class Section :IEntity
         ProfessorNames = sectionConstructorParams.ProfessorNames;
         TimingDetails = sectionConstructorParams.TimingDetails;
         CourseOfferingId = sectionConstructorParams.CourseOfferingId;
-        
-        TimingDetails = new List<TimingDetails>();
     }
 
     [Key]
@@ -71,5 +69,5 @@ public class Section :IEntity
     public CourseOffering CourseOffering { get; set; } = null!;
     
     // An attempt will be made to resolve this field via the listed instructors on RMP
-    public virtual IEnumerable<JoinedSectionProfessor>? Professors { get; set; } = null!;
+    public IEnumerable<JoinedSectionProfessor> Professors { get; set; } = null!;
 }
