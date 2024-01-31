@@ -10,7 +10,7 @@ public class CourseType : ObjectType<Course>
     protected override void Configure(IObjectTypeDescriptor<Course> descriptor)
     {
         descriptor.Field(f => f.Faculty).ResolveWith<Resolvers>(r => r.GetFaculty(default!, default!));
-        descriptor.Field(f => f.Source).ResolveWith<Resolvers>(r => r.GetSource(default!, default!));
+        descriptor.Field(f => f.CourseOfferings).ResolveWith<Resolvers>(r => r.GetCourseOfferings(default!, default!));
     }
     
     private class Resolvers
@@ -20,11 +20,9 @@ public class CourseType : ObjectType<Course>
             return await facultyRepository.GetByIdAsync(course.FacultyId);
         }
         
-        public async Task<SourceInfo?> GetSource([Parent] Course course, [Service] ISourceInfoRepository sourceRepository)
+        public async Task<IEnumerable<CourseOffering>> GetCourseOfferings([Parent] Course course, [Service] ICourseOfferingRepository courseOfferingRepository)
         {
-            if (course.SourceInfoId == null) return null;
-            
-            return await sourceRepository.GetByIdAsync(course.SourceInfoId.Value);
+            return await courseOfferingRepository.GetByConditionAsync(co => co.CourseId == course.Id);
         }
     }
 }

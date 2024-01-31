@@ -19,7 +19,6 @@ public record CourseConstructorParams
     public decimal? Weight { get; init; }
     public BreadthCategory BreadthCategory { get; init; }
     public string InternalCourseId { get; init; } = string.Empty;
-    public int? SourceInfoId { get; init; }
     public int FacultyId { get; init; }
 }
 
@@ -28,6 +27,7 @@ public class Course : IEntity
     // see https://stackoverflow.com/questions/54400115/no-suitable-constructor-found-for-entity-type-string
     private Course()
     {
+        CourseOfferings = new List<CourseOffering>();
     }
     
     public Course([NotNull] CourseConstructorParams courseConstructorParams)
@@ -42,7 +42,6 @@ public class Course : IEntity
         Weight = courseConstructorParams.Weight;
         BreadthCategory = courseConstructorParams.BreadthCategory;
         InternalCourseId = courseConstructorParams.InternalCourseId;
-        SourceInfoId = courseConstructorParams.SourceInfoId;
         FacultyId = courseConstructorParams.FacultyId;
         
         CourseOfferings = new List<CourseOffering>();
@@ -71,10 +70,6 @@ public class Course : IEntity
     public BreadthCategory BreadthCategory { get; set; }
     [StringLength(20)]
     public string InternalCourseId { get; set; } = string.Empty;
-    
-    public int? SourceInfoId { get; set; }
-    [ForeignKey(nameof(SourceInfoId))]
-    public virtual SourceInfo? Source { get; set; } = null!;
     
     public int FacultyId { get; set; }
     [ForeignKey(nameof(FacultyId))]
