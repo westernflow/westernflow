@@ -17,7 +17,13 @@ public class CourseManagerDbContext : DbContext
     public DbSet<Professor> Professors { get; set; } = null!;
     public DbSet<ProfessorReview> ProfessorReviews { get; set; } = null!;
     public DbSet<Section> Sections { get; set; } = null!;
-    public DbSet<SourceInfo> SourceInfo { get; set; } = null!;
+    public DbSet<TimingDetails> TimingDetails { get; set; } = null!;
+    public DbSet<CourseOffering> CourseOfferings { get; set; } = null!;
+    public DbSet<CourseReview> CourseReviews { get; set; } = null!;
+    public DbSet<Reviewer> Reviewers { get; set; } = null!;
+    public DbSet<JoinedReviewerCourseReview> JoinedReviewerCourseReviews { get; set; } = null!;
+    public DbSet<JoinedReviewerProfessorReview> JoinedReviewerProfessorReviews { get; set; } = null!;
+    public DbSet<JoinedSectionProfessor> JoinedSectionProfessors { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

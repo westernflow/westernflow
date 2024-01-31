@@ -21,6 +21,8 @@ public class Startup
         services.AddGraphQLServer()
             .AddQueryType<Query>()
             .AddType<CourseType>()
+            .AddType<CourseOfferingType>()
+            .AddType<SectionType>()
             .AddFiltering()
             .AddProjections()
             .ModifyRequestOptions(o => o.IncludeExceptionDetails = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development");
