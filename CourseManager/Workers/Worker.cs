@@ -39,7 +39,7 @@ public class Worker : BackgroundService
     {
         _logger.LogInformation("Worker started running at: {time}", DateTimeOffset.Now);
 
-        await DbInitializer.PopulateCourses(_configuration, _facultyRepository, _courseRepository, _courseOfferingRepository, _sectionRepository, _timingDetailRepository);
+        await DbInitializer.InitializeDatabase(_configuration, _facultyRepository, _courseRepository, _courseOfferingRepository, _sectionRepository, _timingDetailRepository);
         
         // ExecuteAsync runs for the entire lifetime of the Application. We want to run the 
         // ExecuteAsync code then kill the application since there is no more work left to do.
