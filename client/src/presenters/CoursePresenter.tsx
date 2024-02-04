@@ -1,13 +1,13 @@
-import { useLocation, useParams } from "react-router-dom";
-import { Course } from "../models/common";
 import { useEffect, useState } from "react";
-import SectionPresenter from "./SectionPresenter";
+import { useLocation, useParams } from "react-router-dom";
 import {
 	ContentContainer,
 	YellowPurpleGradiant,
 	sectionHeaderStyle,
 } from "../constants/styleNames";
+import { Course } from "../models/common";
 import { Navbar } from "../shared/Navbar";
+import SectionPresenter from "./SectionPresenter";
 
 export const CoursePresenter = () => {
 	const location = useLocation();
@@ -30,7 +30,7 @@ export const CoursePresenter = () => {
 				}
 				courseFaculty += courseCode[i];
 			}
-			const queryString = `http://localhost:8080/api/v1/courses?course-faculty=exact:${courseFaculty.toUpperCase()}&course-number=gte:${courseNumber}&course-number=lte:${courseNumber}`;
+			const queryString = `https://westernflow-backend.fly.dev/api/v1/courses?course-faculty=exact:${courseFaculty.toUpperCase()}&course-number=gte:${courseNumber}&course-number=lte:${courseNumber}`;
 			fetch(queryString)
 				.then((res) => res.json())
 				.then((res) => {
