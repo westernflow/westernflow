@@ -38,5 +38,5 @@ public class ProfessorReview : IEntity
     [InverseProperty("ProfessorReviews")]
     public Professor Professor { get; set; } = null!;
 
-    public virtual IEnumerable<JoinedReviewerProfessorReview>? LikedBy { get; set; } = null!;
+    public virtual IEnumerable<JoinedReviewerProfessorReview>? LikedBy { get; set; } = new List<JoinedReviewerProfessorReview>();
 }
