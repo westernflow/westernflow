@@ -6,6 +6,18 @@ namespace Scrapers.Utilities;
 
 public static class DbInitializer
 {
+    public static async Task InitializeDatabase(
+        IConfiguration configuration, 
+        IFacultyRepository facultyRepository, 
+        ICourseRepository courseRepository,
+        ICourseOfferingRepository courseOfferingRepository,
+        ISectionRepository sectionRepository,
+        ITimingDetailsRepository timingDetailRepository)
+    {
+        await PopulateFaculties(configuration, facultyRepository);
+        await PopulateCourses(configuration, facultyRepository, courseRepository, courseOfferingRepository, sectionRepository, timingDetailRepository);
+    }
+    
     public static async Task PopulateFaculties(IConfiguration configuration, IFacultyRepository facultyRepository)
     {
         var faculties = await CourseScraper.ScrapeFaculties(configuration);
@@ -25,11 +37,10 @@ public static class DbInitializer
         // log progress as percentage of faculties completed
         double progress = 0;
         double increment = 100.0 / faculties.Count;
-        var allCourses = new List<Course>();
         foreach (var faculty in faculties)
         {
             Console.WriteLine("Processing faculty: " + faculty.Name);
-            await CourseScraper.ScrapeCoursesByFaculty(configuration, courseRepository, courseOfferingRepository,
+            await CourseScraper.PopulateCoursesByFaculty(configuration, courseRepository, courseOfferingRepository,
                 sectionRepository, timingDetailRepository, faculty, 2024);
             progress += increment;
             Console.WriteLine($"Progress: {progress}% finished scraping courses for {faculty.Name}");
