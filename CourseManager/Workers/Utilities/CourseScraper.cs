@@ -331,6 +331,7 @@ public static class CourseScraper
             "King's" => Campus.King,
             "Huron" => Campus.Huron,
             "Brescia" => Campus.Brescia,
+            "" => Campus.Unknown,
             _ => throw new Exception($"Could not parse campus: {campusString}")
         };
         
