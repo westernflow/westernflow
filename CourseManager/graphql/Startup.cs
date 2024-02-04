@@ -1,5 +1,7 @@
 using Data;
+using Data.Entities;
 using Data.Extensions;
+using graphql.DataLoaders;
 using graphql.Types;
 using Repositories.Extensions;
 
@@ -23,6 +25,11 @@ public class Startup
             .AddType<CourseType>()
             .AddType<CourseOfferingType>()
             .AddType<SectionType>()
+            .AddDataLoader<CourseBatchDataLoader>()
+            .AddDataLoader<FacultyBatchDataLoader>()
+            .AddDataLoader<CourseOfferingGroupedDataLoader>()
+            .AddDataLoader<SectionGroupedDataLoader>()
+            .AddDataLoader<TimingDetailsGroupedDataLoader>()
             .AddFiltering()
             .AddProjections()
             .ModifyRequestOptions(o => o.IncludeExceptionDetails = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development");

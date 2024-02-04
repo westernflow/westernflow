@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using Data.Entities;
+using graphql.DataLoaders;
 using Repositories.Interfaces;
 
 namespace graphql.Types;
@@ -8,14 +9,11 @@ public class SectionType : ObjectType<Section>
 {
     protected override void Configure(IObjectTypeDescriptor<Section> descriptor)
     {
-        descriptor.Field(f => f.TimingDetails).ResolveWith<Resolvers>(r => r.GetTimingDetails(default!, default!));
-    }
-    
-    private class Resolvers
-    {
-        public async Task<IReadOnlyCollection<TimingDetails>> GetTimingDetails([Parent] Section section, [Service] ITimingDetailsRepository timingDetailRepository)
-        {
-            return await timingDetailRepository.GetByConditionAsync(td => td.SectionId == section.Id);
-        }
+        descriptor.Field(s => s.TimingDetails)
+            .Resolve(context =>
+            {
+                var timingDetailsGroupedDataLoader = context.Service<TimingDetailsGroupedDataLoader>();
+                return timingDetailsGroupedDataLoader.LoadAsync(context.Parent<Section>().Id, context.RequestAborted);
+            });
     }
 }
