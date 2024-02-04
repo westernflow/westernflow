@@ -15,7 +15,7 @@ public class Faculty : IEntity
    [StringLength(20)] public string Abbreviation { get; set; } = string.Empty;
    
    [InverseProperty(nameof(Course.Faculty))]
-   public virtual IEnumerable<Course>? Courses { get; set; }
+   public virtual IEnumerable<Course> Courses { get; set; } = new List<Course>();
 
    private Faculty()
    {

@@ -15,12 +15,12 @@ public class Professor : IEntity
     public string? RmpId { get; set; }
 
     [InverseProperty("Professor")]
-    public virtual ICollection<ProfessorReview> ProfessorReviews { get; set; } = null!;
-    
+    public virtual ICollection<ProfessorReview> ProfessorReviews { get; set; } = new List<ProfessorReview>();
+
     [InverseProperty("Professor")]
-    public virtual ICollection<CourseReview> CourseReviews { get; set; } = null!;
+    public virtual ICollection<CourseReview> CourseReviews { get; set; } = new List<CourseReview>();
     
-    public virtual IEnumerable<JoinedSectionProfessor>? Sections { get; set; }
+    public virtual IEnumerable<JoinedSectionProfessor>? Sections { get; set; } = new List<JoinedSectionProfessor>();
 
     private Professor()
     {

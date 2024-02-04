@@ -18,12 +18,13 @@ public class Reviewer : IEntity
     public string LastName { get; set; } = string.Empty;
 
     [InverseProperty("Reviewer")]
-    public virtual ICollection<CourseReview> CourseReviewsWritten { get; set; } = null!;
-    
-    [InverseProperty("Reviewer")]
-    public virtual ICollection<ProfessorReview> ProfessorReviewsWritten { get; set; } = null!;
+    public virtual ICollection<CourseReview> CourseReviewsWritten { get; set; } = new List<CourseReview>();
 
-    public virtual IEnumerable<JoinedReviewerCourseReview>? CourseReviewsLiked { get; set; } = null!;
+    [InverseProperty("Reviewer")]
+    public virtual ICollection<ProfessorReview> ProfessorReviewsWritten { get; set; } = new List<ProfessorReview>();
+
+    public virtual IEnumerable<JoinedReviewerCourseReview>? CourseReviewsLiked { get; set; } =
+        new List<JoinedReviewerCourseReview>();
     
-    public virtual IEnumerable<JoinedReviewerProfessorReview>? ProfessorReviewsLiked { get; set; } = null!;
+    public virtual IEnumerable<JoinedReviewerProfessorReview>? ProfessorReviewsLiked { get; set; } = new List<JoinedReviewerProfessorReview>();
 }

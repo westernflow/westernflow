@@ -27,6 +27,6 @@ public class CourseReview : IEntity
     [ForeignKey(nameof(ProfessorId))]
     public virtual Professor? Professor { get; set; }
 
-    public virtual IEnumerable<JoinedReviewerCourseReview>? LikedBy { get; set; } = null!;
+    public virtual IEnumerable<JoinedReviewerCourseReview>? LikedBy { get; set; } = new List<JoinedReviewerCourseReview>();
 
 }

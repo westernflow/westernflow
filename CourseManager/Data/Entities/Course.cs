@@ -27,7 +27,6 @@ public class Course : IEntity
     // see https://stackoverflow.com/questions/54400115/no-suitable-constructor-found-for-entity-type-string
     private Course()
     {
-        CourseOfferings = new List<CourseOffering>();
     }
     
     public Course([NotNull] CourseConstructorParams courseConstructorParams)
@@ -77,8 +76,8 @@ public class Course : IEntity
     public Faculty Faculty { get; set; } = null!;
 
     [InverseProperty(nameof(CourseOffering.Course))]
-    public ICollection<CourseOffering> CourseOfferings { get; set; } = null!;
+    public ICollection<CourseOffering> CourseOfferings { get; set; } = new List<CourseOffering>();
     
     [InverseProperty(nameof(ProfessorReview.Course))]
-    public  ICollection<ProfessorReview> RelatedProfessorReviews { get; set; } = null!;
+    public  ICollection<ProfessorReview> RelatedProfessorReviews { get; set; } = new List<ProfessorReview>();
 }
