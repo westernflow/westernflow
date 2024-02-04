@@ -11,7 +11,7 @@ DB_NAME="postgres"
 SQL_COMMAND="
 DELETE FROM \"TimingDetails\";
 DELETE FROM \"Sections\";
-DELETE FROM \"CourseOffering\";
+DELETE FROM \"CourseOfferings\";
 DELETE FROM \"Courses\";"
 
 # Execute SQL command

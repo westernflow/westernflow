@@ -14,7 +14,7 @@ public static class DbInitializer
         ISectionRepository sectionRepository,
         ITimingDetailsRepository timingDetailRepository)
     {
-        await PopulateFaculties(configuration, facultyRepository);
+        // await PopulateFaculties(configuration, facultyRepository);
         await PopulateCourses(configuration, facultyRepository, courseRepository, courseOfferingRepository, sectionRepository, timingDetailRepository);
     }
     
