@@ -28,8 +28,6 @@ public class Section :IEntity
     // see https://stackoverflow.com/questions/54400115/no-suitable-constructor-found-for-entity-type-string
     private Section()
     {
-        TimingDetails = new List<TimingDetails>();
-        ProfessorNames = new List<string>();
     }
     
     public Section([NotNull] SectionConstructorParams sectionConstructorParams)
@@ -59,15 +57,15 @@ public class Section :IEntity
     public StatusType Status { get; set; }
     public Campus Campus { get; set; }
     public DeliveryType Delivery { get; set; }
-    public List<string> ProfessorNames { get; set; } 
-    
-    [InverseProperty(nameof(Entities.TimingDetails.Section))] 
-    public List<TimingDetails> TimingDetails { get; set; } 
+    public List<string> ProfessorNames { get; set; } = new List<string>();
+
+    [InverseProperty(nameof(Entities.TimingDetails.Section))]
+    public List<TimingDetails> TimingDetails { get; set; } = new List<TimingDetails>();
     
     public int CourseOfferingId { get; set; }
     [ForeignKey(nameof(CourseOfferingId))]
     public CourseOffering CourseOffering { get; set; } = null!;
     
     // An attempt will be made to resolve this field via the listed instructors on RMP
-    public IEnumerable<JoinedSectionProfessor> Professors { get; set; } = null!;
+    public IEnumerable<JoinedSectionProfessor> Professors { get; set; } = new List<JoinedSectionProfessor>();
 }

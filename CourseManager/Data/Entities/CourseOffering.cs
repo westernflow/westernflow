@@ -16,8 +16,6 @@ public class CourseOffering : IEntity
         Year = year;
         Suffix = suffix;
         CourseId = courseId;
-        
-        Sections = new List<Section>();
     }
     
     [Key]
@@ -32,5 +30,5 @@ public class CourseOffering : IEntity
     public Course Course { get; set; } = null!;
     
     [InverseProperty(nameof(Section.CourseOffering))]
-    public IEnumerable<Section> Sections { get; set; } = null!;
+    public IEnumerable<Section> Sections { get; set; } = new List<Section>();
 }
