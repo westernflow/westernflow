@@ -99,6 +99,12 @@ public static class CourseScraper
         var config = Configuration.Default;
         var context = BrowsingContext.New(config);
         var document = await context.OpenAsync(req => req.Content(html));
+        
+        // check if the search succeeded
+        if (!DidSearchSucceed(document))
+        {
+            // create a two requests: 
+        }
 
         if (document == null)
         {
@@ -369,7 +375,7 @@ public static class CourseScraper
         return section;
     }
 
-    public static async Task<List<Section>> ScrapeOfferingSections(IElement courseHeader, int courseOfferingId, ISectionRepository sectionRepository, ITimingDetailsRepository timingDetailsRepository)
+    public static async Task<List<Section>> ScrapeAndPopulateOfferingSections(IElement courseHeader, int courseOfferingId, ISectionRepository sectionRepository, ITimingDetailsRepository timingDetailsRepository)
     {
         var sections = new List<Section>();
         
@@ -392,8 +398,25 @@ public static class CourseScraper
 
         return sections;
     }
+
+    public static bool DidSearchSucceed(IDocument page)
+    {
+        // <div class="alert alert-warning" role="alert"> Unable to display your search results as it exceeds 300 courses. Please refine your search. </div>
+        var alertElement = page.QuerySelector("div.alert.alert-warning");
+        if (alertElement == null)
+        {
+            return true;
+        }
+        
+        if (alertElement.InnerHtml.Contains("Unable to display your search results as it exceeds 300 courses. Please refine your search."))
+        {
+            return false;
+        }
+
+        return true;
+    }
     
-    public static async Task<List<Course>> ScrapeCoursesByFaculty
+    public static async Task<List<Course>> PopulateCoursesByFaculty
     (
         IConfiguration configuration, 
         ICourseRepository courseRepository,
@@ -436,7 +459,7 @@ public static class CourseScraper
             await courseOfferingRepository.InsertAsync(courseOffering);
 
             // populate the course offering with the sessions 
-            var sections = await ScrapeOfferingSections(courseHeader, courseOfferingId: courseOffering.Id, sectionRepository, timingDetailsRepository);
+            var sections = await ScrapeAndPopulateOfferingSections(courseHeader, courseOfferingId: courseOffering.Id, sectionRepository, timingDetailsRepository);
             courseOffering.Sections = sections;
         }
         
