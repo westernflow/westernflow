@@ -1,5 +1,6 @@
 using Data;
 using Data.Entities;
+using graphql.DataLoaders;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Interfaces;
 
@@ -9,20 +10,18 @@ public class CourseType : ObjectType<Course>
 {
     protected override void Configure(IObjectTypeDescriptor<Course> descriptor)
     {
-        descriptor.Field(f => f.Faculty).ResolveWith<Resolvers>(r => r.GetFaculty(default!, default!));
-        descriptor.Field(f => f.CourseOfferings).ResolveWith<Resolvers>(r => r.GetCourseOfferings(default!, default!));
-    }
-    
-    private class Resolvers
-    {
-        public async Task<Faculty> GetFaculty([Parent] Course course, [Service] IFacultyRepository facultyRepository)
-        {
-            return await facultyRepository.GetByIdAsync(course.FacultyId);
-        }
-        
-        public async Task<IEnumerable<CourseOffering>> GetCourseOfferings([Parent] Course course, [Service] ICourseOfferingRepository courseOfferingRepository)
-        {
-            return await courseOfferingRepository.GetByConditionAsync(co => co.CourseId == course.Id);
-        }
+        descriptor.Field(f => f.Faculty)
+            .Resolve(context =>
+            {
+                var facultyDataLoader = context.Service<FacultyBatchDataLoader>();
+                return facultyDataLoader.LoadAsync(context.Parent<Course>().FacultyId, context.RequestAborted);
+            });
+
+        descriptor.Field(f => f.CourseOfferings)
+            .Resolve(context =>
+            {
+                var courseOfferingGroupedDataLoader = context.Service<CourseOfferingGroupedDataLoader>();
+                return courseOfferingGroupedDataLoader.LoadAsync(context.Parent<Course>().Id, context.RequestAborted);
+            });
     }
 }
