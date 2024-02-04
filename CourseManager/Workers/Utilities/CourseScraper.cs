@@ -364,14 +364,6 @@ public static class CourseScraper
         
         // insert to the database
         await sectionRepository.InsertAsync(section);
-        
-        // insert timing details to the database
-        foreach (var timingDetail in timingDetails)
-        {
-            timingDetail.SectionId = section.Id;
-            await timingDetailsRepository.InsertAsync(timingDetail);
-        }
-        
         return section;
     }
 
