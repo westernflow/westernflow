@@ -7,7 +7,6 @@ services:
             - 8080:80
 
     db:
-        # For more information on relevant environment variables: https://hub.docker.com/_/postgres
         image: postgres
         restart: always
         environment:

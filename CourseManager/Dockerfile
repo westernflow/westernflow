@@ -4,8 +4,6 @@ COPY . /source
 
 WORKDIR /source/Workers
 
-# RUN sed -i 's|/usr/bin/google-chrome|google-chrome|g' appsettings.json
-
 ARG TARGETARCH
 
 RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
