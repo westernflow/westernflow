@@ -410,11 +410,9 @@ public static class CourseScraper
         return true;
     }
     
-    public static async Task<List<Course>> PopulateCoursesByFaculty(Faculty faculty)
+    // Adds all courses and subentities in the document to the database
+    public static async Task<List<Course>> PopulateCoursesInDocument(IDocument document, Faculty faculty)
     {
-        var configuration = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<IConfiguration>();
-        var document = await OpenFacultyDocument(faculty);
-        
         var courses = new List<Course>();
         
         var courseHeaders = document.QuerySelectorAll("div.container-fluid.col-md-12 > h4");
@@ -431,7 +429,7 @@ public static class CourseScraper
                 scrapedCourse.FacultyId = faculty.Id;
                 
                 // insert the course into the database
-                var courseRepository = ServiceProvider.GetRequiredService<ICourseRepository>();
+                var courseRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<ICourseRepository>();
                 await courseRepository.InsertAsync(scrapedCourse);
                 
                 courses.Add(scrapedCourse);
@@ -439,7 +437,7 @@ public static class CourseScraper
             var course = existingCourse ?? scrapedCourse;
             
             // create a new course offering
-            var courseOfferingRepository = ServiceProvider.GetRequiredService<ICourseOfferingRepository>();
+            var courseOfferingRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<ICourseOfferingRepository>();
             var courseOffering = new CourseOffering(2024, GetSuffix(courseHeader), course.Id);
             course.CourseOfferings.Add(courseOffering);
             
@@ -451,6 +449,13 @@ public static class CourseScraper
             courseOffering.Sections = sections;
         }
         
-        return courses;
+        return courses; 
+    }
+    
+    public static async Task<List<Course>> PopulateCoursesByFaculty(Faculty faculty)
+    {
+        var document = await OpenFacultyDocument(faculty);
+        
+        return await PopulateCoursesInDocument(document, faculty);
     } 
 }
