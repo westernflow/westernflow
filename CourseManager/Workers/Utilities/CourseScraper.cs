@@ -3,16 +3,19 @@ using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using Data.Entities;
 using Data.Enums;
-using Data.Migrations;
 using Repositories.Interfaces;
+using Scrapers.ScrapingUtilities;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
-namespace Scrapers.ScrapingUtilities;
+namespace Scrapers.Utilities;
 
 public static class CourseScraper
 {
-    public static async Task<List<Faculty>> ScrapeFaculties(IConfiguration configuration)
+    public static IServiceProvider? ServiceProvider { get; set; } = null;
+
+    public static async Task<List<Faculty>> ScrapeFaculties()
     {
+        var configuration = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<IConfiguration>();
         // Get a new cookie
         var cookie = await CookieManager.GetCookie(configuration);
         
@@ -56,8 +59,10 @@ public static class CourseScraper
         return faculties;
     }
 
-    public static async Task<IDocument> OpenFacultyDocument(IConfiguration configuration, Faculty faculty)
+    public static async Task<IDocument> OpenFacultyDocument(Faculty faculty)
     {
+        var configuration = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<IConfiguration>();
+        
         // get cookies
         var cookie = await CookieManager.GetCookie(configuration);
 
@@ -100,12 +105,6 @@ public static class CourseScraper
         var context = BrowsingContext.New(config);
         var document = await context.OpenAsync(req => req.Content(html));
         
-        // check if the search succeeded
-        if (!DidSearchSucceed(document))
-        {
-            // create a two requests: 
-        }
-
         if (document == null)
         {
             throw new Exception("No document was returned from the request");
@@ -256,8 +255,10 @@ public static class CourseScraper
         };
     }
     
-    public static async Task<Section> ScrapeSection(IHtmlTableRowElement row, ISectionRepository sectionRepository, ITimingDetailsRepository timingDetailsRepository, int courseOfferingId)
+    public static async Task<Section> ScrapeSection(IHtmlTableRowElement row, int courseOfferingId)
     {
+        var sectionRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<ISectionRepository>();
+        
         var cells = row.Cells;
         
         // 1. get component type string
@@ -368,7 +369,7 @@ public static class CourseScraper
         return section;
     }
 
-    public static async Task<List<Section>> ScrapeAndPopulateOfferingSections(IElement courseHeader, int courseOfferingId, ISectionRepository sectionRepository, ITimingDetailsRepository timingDetailsRepository)
+    public static async Task<List<Section>> ScrapeAndPopulateOfferingSections(IElement courseHeader, int courseOfferingId)
     {
         var sections = new List<Section>();
         
@@ -385,7 +386,7 @@ public static class CourseScraper
 
         foreach (var row in tableElement.Rows.Skip(1))
         {
-            var section = await ScrapeSection(row, sectionRepository, timingDetailsRepository, courseOfferingId);
+            var section = await ScrapeSection(row, courseOfferingId);
             sections.Add(section);
         }
 
@@ -409,18 +410,10 @@ public static class CourseScraper
         return true;
     }
     
-    public static async Task<List<Course>> PopulateCoursesByFaculty
-    (
-        IConfiguration configuration, 
-        ICourseRepository courseRepository,
-        ICourseOfferingRepository courseOfferingRepository,
-        ISectionRepository sectionRepository,
-        ITimingDetailsRepository timingDetailsRepository,
-        Faculty faculty, 
-        int year
-        )
+    public static async Task<List<Course>> PopulateCoursesByFaculty(Faculty faculty)
     {
-        var document = await OpenFacultyDocument(configuration, faculty);
+        var configuration = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<IConfiguration>();
+        var document = await OpenFacultyDocument(faculty);
         
         var courses = new List<Course>();
         
@@ -438,6 +431,7 @@ public static class CourseScraper
                 scrapedCourse.FacultyId = faculty.Id;
                 
                 // insert the course into the database
+                var courseRepository = ServiceProvider.GetRequiredService<ICourseRepository>();
                 await courseRepository.InsertAsync(scrapedCourse);
                 
                 courses.Add(scrapedCourse);
@@ -445,14 +439,15 @@ public static class CourseScraper
             var course = existingCourse ?? scrapedCourse;
             
             // create a new course offering
-            var courseOffering = new CourseOffering(year, GetSuffix(courseHeader), course.Id);
+            var courseOfferingRepository = ServiceProvider.GetRequiredService<ICourseOfferingRepository>();
+            var courseOffering = new CourseOffering(2024, GetSuffix(courseHeader), course.Id);
             course.CourseOfferings.Add(courseOffering);
             
             // insert the course offering into the database
             await courseOfferingRepository.InsertAsync(courseOffering);
 
             // populate the course offering with the sessions 
-            var sections = await ScrapeAndPopulateOfferingSections(courseHeader, courseOfferingId: courseOffering.Id, sectionRepository, timingDetailsRepository);
+            var sections = await ScrapeAndPopulateOfferingSections(courseHeader, courseOffering.Id);
             courseOffering.Sections = sections;
         }
         
