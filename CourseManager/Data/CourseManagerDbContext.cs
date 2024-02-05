@@ -44,7 +44,7 @@ public class CourseManagerDbContext : DbContext
             .IsUnique();
 
         modelBuilder.Entity<CourseOffering>()
-            .HasIndex(c => new {c.Year, c.Suffix, c.CourseId})
+            .HasIndex(c => new {c.Year, c.Suffix, c.CourseId, c.CalendarSource})
             .IsUnique();
         
         // Name the CourseReview table CourseReviews

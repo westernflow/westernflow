@@ -415,6 +415,38 @@ public static class CourseScraper
     {
         var courses = new List<Course>();
         
+        // get the year and calendar source from the document
+        
+        // find the select elemenet
+        var selectElement = document.QuerySelector("select_term");
+        if (selectElement == null)
+        {
+            throw new Exception("Could not find select element");
+        }
+        
+        // get selected option
+        var selectedOption = selectElement.QuerySelector("option[selected]");
+        if (selectedOption == null)
+        {
+            throw new Exception("Could not find selected option");
+        }
+        
+        // get the internal term id from the value attribute
+        var termId = selectedOption.GetAttribute("value");
+        
+        // get the year and calendar source from the selected option inner text in the format "Fall Winter YEAR" or "Summer YEAR"
+        var termString = selectedOption.TextContent.Trim();
+        var year = int.Parse(termString.Split(" ").Last());
+        var calendarSource = termString.Split(" ")[..^1].Aggregate((x, y) => x + " " + y);
+        
+        // parse calendar source to enum
+        var calendarSourceEnum = calendarSource switch
+        {
+            "Fall Winter" => CalendarSource.FallWinter,
+            "Summer" => CalendarSource.Summer,
+            _ => throw new Exception($"Could not parse calendar source: {calendarSource}")
+        };
+        
         var courseHeaders = document.QuerySelectorAll("div.container-fluid.col-md-12 > h4");
 
         // each course header presents a course offering of a possibly existing course
@@ -438,7 +470,7 @@ public static class CourseScraper
             
             // create a new course offering
             var courseOfferingRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<ICourseOfferingRepository>();
-            var courseOffering = new CourseOffering(2024, GetSuffix(courseHeader), course.Id);
+            var courseOffering = new CourseOffering(year, GetSuffix(courseHeader), calendarSourceEnum, course.Id);
             course.CourseOfferings.Add(courseOffering);
             
             // insert the course offering into the database

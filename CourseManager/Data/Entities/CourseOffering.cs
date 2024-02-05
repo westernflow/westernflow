@@ -11,7 +11,7 @@ public class CourseOffering : IEntity
     {
     }
     
-    public CourseOffering(int year, Suffix suffix, int courseId)
+    public CourseOffering(int year, Suffix suffix, CalendarSource source, int courseId)
     {
         Year = year;
         Suffix = suffix;
@@ -20,6 +20,9 @@ public class CourseOffering : IEntity
     
     [Key]
     public int Id { get; set; }  
+    
+    // uwo's internal termId e.g. 1239 for 2023 fall/winter and 1245 for 2024 summer
+    public int TermId { get; set; }
     
     public int Year { get; set; }
     
