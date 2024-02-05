@@ -17,18 +17,19 @@ public static class CookieManager
         var options = new LaunchOptions
         {
             Headless = true,
-            ExecutablePath = configuration["Scraper:ChromeExecutablePath"]
+            ExecutablePath = configuration["Scraper:ChromeExecutablePath"],
+            Args = new string[]{"--disable-gpu","--no-sandbox"}
         };
-            
-         // Initialize the browser 
+
+         // Initialize the browser
          var browser = await Puppeteer.LaunchAsync(options);
          var page = await browser.NewPageAsync();
-         
-         // Open builder page 
+
+         // Open builder page
          await page.GoToAsync(configuration["Scraper:LoginUrl"]);
-         
+
          // Fill the form
-         await page.TypeAsync("input[name='txtUsername']", configuration["Scraper:Username"]); 
+         await page.TypeAsync("input[name='txtUsername']", configuration["Scraper:Username"]);
          await page.TypeAsync("input[name='txtPassword']", configuration["Scraper:Password"]);
 
          // Submit the form
@@ -39,7 +40,7 @@ public static class CookieManager
 
          // Get cookies
          var cookies = await page.GetCookiesAsync();
-         
+
          await browser.CloseAsync();
 
          return new Cookie()

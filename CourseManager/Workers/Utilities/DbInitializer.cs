@@ -7,33 +7,33 @@ namespace Scrapers.Utilities;
 public static class DbInitializer
 {
     public static async Task InitializeDatabase(
-        IConfiguration configuration, 
-        IFacultyRepository facultyRepository, 
+        IConfiguration configuration,
+        IFacultyRepository facultyRepository,
         ICourseRepository courseRepository,
         ICourseOfferingRepository courseOfferingRepository,
         ISectionRepository sectionRepository,
         ITimingDetailsRepository timingDetailRepository)
     {
-        // await PopulateFaculties(configuration, facultyRepository);
+        await PopulateFaculties(configuration, facultyRepository);
         await PopulateCourses(configuration, facultyRepository, courseRepository, courseOfferingRepository, sectionRepository, timingDetailRepository);
     }
-    
+
     public static async Task PopulateFaculties(IConfiguration configuration, IFacultyRepository facultyRepository)
     {
         var faculties = await CourseScraper.ScrapeFaculties(configuration);
         await facultyRepository.InsertRangeAsync(faculties);
     }
-    
+
     public static async Task PopulateCourses(
-        IConfiguration configuration, 
-        IFacultyRepository facultyRepository, 
+        IConfiguration configuration,
+        IFacultyRepository facultyRepository,
         ICourseRepository courseRepository,
         ICourseOfferingRepository courseOfferingRepository,
         ISectionRepository sectionRepository,
         ITimingDetailsRepository timingDetailRepository)
     {
         var faculties = await facultyRepository.GetAllAsync();
-        
+
         // log progress as percentage of faculties completed
         double progress = 0;
         double increment = 100.0 / faculties.Count;

@@ -1,16 +1,22 @@
-version: "3.9"
 services:
-  db:
-    # For more information on relevant environment variables: https://hub.docker.com/_/postgres
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: example
-    ports:
-    - 5432:5432
+    scraper:
+        build:
+            context: .
+            target: final
+        ports:
+            - 8080:80
 
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8079:8080
+    db:
+        # For more information on relevant environment variables: https://hub.docker.com/_/postgres
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: example
+        ports:
+            - 5432:5432
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8079:8080
