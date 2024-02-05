@@ -23,6 +23,8 @@ public class CourseOffering : IEntity
     
     public int Year { get; set; }
     
+    public CalendarSource CalendarSource { get; set; }
+    
     public Suffix Suffix { get; set; }
     
     public int CourseId { get; set; }
