@@ -11,11 +11,13 @@ public class CourseOffering : IEntity
     {
     }
     
-    public CourseOffering(int year, Suffix suffix, CalendarSource source, int courseId)
+    public CourseOffering(int year, Suffix suffix, CalendarSource source, int courseId, int termId)
     {
         Year = year;
         Suffix = suffix;
         CourseId = courseId;
+        CalendarSource = source;
+        TermId = termId;
     }
     
     [Key]
