@@ -1,0 +1,26 @@
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["graphql/graphql.csproj", "graphql/"]
+COPY ["Business/Business.csproj", "Business/"]
+COPY ["Data/Data.csproj", "Data/"]
+COPY ["Repository/Repository.csproj", "Repository/"]
+RUN dotnet restore "graphql/graphql.csproj"
+COPY . .
+WORKDIR "/src/graphql"
+RUN dotnet build "graphql.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "graphql.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "graphql.dll"]

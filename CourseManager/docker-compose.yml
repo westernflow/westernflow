@@ -1,8 +1,19 @@
 services:
-    scraper:
+    # scraper:
+    #     build:
+    #         context: .
+    #         dockerfile: Dockerfile.scraper
+    #         target: final
+    #         args:
+    #             BUILDPLATFORM: "linux/amd64"
+
+    api:
         build:
             context: .
+            dockerfile: Dockerfile.api
             target: final
+            args:
+                BUILDPLATFORM: "linux/amd64"
         ports:
             - 8080:80
 
