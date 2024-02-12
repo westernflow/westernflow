@@ -1,5 +1,4 @@
-# westernflow (likely abandoned due to release of westernrank)
-Check out: https://www.westernrank.com/
+# westernflow
 
 # To run:
 1. Have Docker installed (and docker-compose)

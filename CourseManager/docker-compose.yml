@@ -1,16 +1,32 @@
-version: "3.9"
 services:
-  db:
-    # For more information on relevant environment variables: https://hub.docker.com/_/postgres
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: example
-    ports:
-    - 5432:5432
+    # scraper:
+    #     build:
+    #         context: .
+    #         dockerfile: Dockerfile.scraper
+    #         target: final
+    #         args:
+    #             BUILDPLATFORM: "linux/amd64"
 
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8079:8080
+    api:
+        build:
+            context: .
+            dockerfile: Dockerfile.api
+            target: final
+            args:
+                BUILDPLATFORM: "linux/amd64"
+        ports:
+            - 8080:80
+
+    db:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: example
+        ports:
+            - 5432:5432
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8079:8080

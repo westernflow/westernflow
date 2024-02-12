@@ -26,7 +26,7 @@ public static class DbInitializer
     {
         var facultyRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<IFacultyRepository>();
         var faculties = await facultyRepository.GetAllAsync();
-        
+
         // log progress as percentage of faculties completed
         double progress = 0;
         double increment = 100.0 / faculties.Count;
