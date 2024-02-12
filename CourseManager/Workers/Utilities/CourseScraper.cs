@@ -1,3 +1,4 @@
+using System.Net;
 using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
@@ -59,7 +60,7 @@ public static class CourseScraper
         return faculties;
     }
 
-    public static async Task<IDocument> OpenFacultyDocument(Faculty faculty)
+    public static async Task<IDocument> OpenFacultyDocument(Faculty faculty, List<KeyValuePair<string, string>> sectionTypes)
     {
         var configuration = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<IConfiguration>();
         
@@ -85,13 +86,9 @@ public static class CourseScraper
             new KeyValuePair<string, string>("Designation", "Any"),
             new KeyValuePair<string, string>("start_time", ""),
             new KeyValuePair<string, string>("end_time", ""),
-            new KeyValuePair<string, string>("Campus", "Any"),
-            new KeyValuePair<string, string>("course_component", "LEC"),
-            new KeyValuePair<string, string>("course_component", "TUT"),
-            new KeyValuePair<string, string>("course_component", "LAB"),
             new KeyValuePair<string, string>("command_search", "search")
-        });
-
+        }.Concat(sectionTypes));
+        
         var response = await client.PostAsync(configuration["Scraper:BuilderUrl"], requestData);
         var html = await response.Content.ReadAsStringAsync();
 
@@ -103,8 +100,8 @@ public static class CourseScraper
         // parse the HTML string to DOM nodes for AngleSharp
         var config = Configuration.Default;
         var context = BrowsingContext.New(config);
-        var document = await context.OpenAsync(req => req.Content(html));
         
+        var document = await context.OpenAsync(req => req.Content(html));
         if (document == null)
         {
             throw new Exception("No document was returned from the request");
@@ -413,12 +410,15 @@ public static class CourseScraper
     // Adds all courses and subentities in the document to the database
     public static async Task<List<Course>> PopulateCoursesInDocument(IDocument document, Faculty faculty)
     {
+        var courseRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<ICourseRepository>();
+        var courseOfferingRepository = ServiceProvider.GetRequiredService<ICourseOfferingRepository>();
+        
         var courses = new List<Course>();
         
         // get the year and calendar source from the document
         
         // find the select elemenet
-        var selectElement = document.QuerySelector("select_term");
+        var selectElement = document.QuerySelector("#select_term");
         if (selectElement == null)
         {
             throw new Exception("Could not find select element");
@@ -433,6 +433,10 @@ public static class CourseScraper
         
         // get the internal term id from the value attribute
         var termId = selectedOption.GetAttribute("value");
+        if (!int.TryParse(termId, out var parsedTermId))
+        {
+            throw new Exception("Could not parse term id");
+        }
         
         // get the year and calendar source from the selected option inner text in the format "Fall Winter YEAR" or "Summer YEAR"
         var termString = selectedOption.TextContent.Trim();
@@ -453,41 +457,114 @@ public static class CourseScraper
         foreach (var courseHeader in courseHeaders)
         {
             var scrapedCourse = ScrapeCourse(courseHeader);
-            // prior to scraping the course, check if it already exists in the list
-            var existingCourse = courses.FirstOrDefault(x => x.Number == scrapedCourse.Number && x.FacultyId == faculty.Id);
+            // check db for existing course
+            var existingCourse = await courseRepository.GetSingleOrDefaultAsync(x => x.Number == scrapedCourse.Number && x.FacultyId == faculty.Id);
             
             if (existingCourse == null)
             {
                 scrapedCourse.FacultyId = faculty.Id;
                 
                 // insert the course into the database
-                var courseRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<ICourseRepository>();
                 await courseRepository.InsertAsync(scrapedCourse);
                 
                 courses.Add(scrapedCourse);
             }
             var course = existingCourse ?? scrapedCourse;
             
-            // create a new course offering
-            var courseOfferingRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<ICourseOfferingRepository>();
-            var courseOffering = new CourseOffering(year, GetSuffix(courseHeader), calendarSourceEnum, course.Id);
-            course.CourseOfferings.Add(courseOffering);
-            
-            // insert the course offering into the database
-            await courseOfferingRepository.InsertAsync(courseOffering);
+            // see if offering already exists in the database
+            var existingOffering = await courseOfferingRepository.GetSingleOrDefaultAsync(x =>
+                x.Year == year && x.Suffix == GetSuffix(courseHeader) && x.CalendarSource == calendarSourceEnum &&
+                x.CourseId == course.Id && x.TermId == parsedTermId);
 
-            // populate the course offering with the sessions 
-            var sections = await ScrapeAndPopulateOfferingSections(courseHeader, courseOffering.Id);
-            courseOffering.Sections = sections;
+            if (existingOffering != null)
+            {
+                // case where the offering already exists but we are scraping additional sections
+                var sections = await ScrapeAndPopulateOfferingSections(courseHeader, existingOffering.Id);
+                // add the sections to the existing offerings sections add range
+                var existingSections = existingOffering.Sections.ToList();
+                existingSections.AddRange(sections);
+                existingOffering.Sections = existingSections;   
+            }
+            else
+            {
+                var courseOffering = new CourseOffering(year, GetSuffix(courseHeader), calendarSourceEnum, course.Id, parsedTermId);
+                course.CourseOfferings.Add(courseOffering);
+                
+                // insert the course offering into the database
+                await courseOfferingRepository.InsertAsync(courseOffering);
+                
+                // populate the course offering with the sessions
+                var sections = await ScrapeAndPopulateOfferingSections(courseHeader, courseOffering.Id);
+                courseOffering.Sections = sections;
+            }
         }
         
         return courses; 
     }
+
+    public static async Task<List<Course>> ProcessFacultyDocuments(List<IDocument> facultyDocuments, Faculty faculty)
+    {
+        var courses = new List<Course>();
+        foreach (var document in facultyDocuments)
+        {
+            if (DidSearchSucceed(document))
+            {
+                var facultyCourses = await PopulateCoursesInDocument(document, faculty);
+                courses.AddRange(facultyCourses);
+            }
+            else
+            {
+                throw new Exception("Search did not succeed");
+            }
+        }
+
+        return courses;
+    }
     
     public static async Task<List<Course>> PopulateCoursesByFaculty(Faculty faculty)
     {
-        var document = await OpenFacultyDocument(faculty);
+        Dictionary<Campus, KeyValuePair<string,string>> campusTypes = new Dictionary<Campus, KeyValuePair<string, string>>
+        {
+            {Campus.All, new KeyValuePair<string, string>("Campus", "Any")},
+            {Campus.King, new KeyValuePair<string, string>("Campus", "KINGS")},
+            {Campus.Huron, new KeyValuePair<string, string>("Campus", "HURON")},
+            {Campus.Main, new KeyValuePair<string, string>("Campus", "MAIN")}
+        };
         
-        return await PopulateCoursesInDocument(document, faculty);
+        Dictionary<ComponentType, KeyValuePair<string, string>> sectionTypes = new Dictionary<ComponentType, KeyValuePair<string, string>>
+        {
+            {ComponentType.Lecture, new KeyValuePair<string, string>("course_component", "LEC")},
+            {ComponentType.Tutorial, new KeyValuePair<string, string>("course_component", "TUT")},
+            {ComponentType.Lab, new KeyValuePair<string, string>("course_component", "LAB")}
+        };
+
+        // Try opening the document with all campuses and every single section type 
+        var document = await OpenFacultyDocument(faculty, sectionTypes.Values.ToList().Append(campusTypes[Campus.All]).ToList());
+
+        try
+        {
+            return await ProcessFacultyDocuments(new List<IDocument> { document }, faculty);
+        }
+        catch
+        {
+            // ignored
+        }
+
+        // Try the fine-grained approach and make a query for each campus and section type all 9 combinations (king, huron, main) x (lec, tut, lab)
+        var facultyDocuments = new List<IDocument>();
+        foreach (var campusType in campusTypes)
+        {
+            foreach (var sectionType in sectionTypes)
+            {
+                if (campusType.Key == Campus.All)
+                {
+                    continue;
+                }
+                var documentForCampusAndSectionType = await OpenFacultyDocument(faculty, new List<KeyValuePair<string, string>> { sectionType.Value, campusType.Value });
+                facultyDocuments.Add(documentForCampusAndSectionType);
+            }
+        }
+        
+        return await ProcessFacultyDocuments(facultyDocuments, faculty);
     } 
 }
