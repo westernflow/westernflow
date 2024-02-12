@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(CourseManagerDbContext))]
-    partial class CourseManagerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240205040152_CalendarSource")]
+    partial class CalendarSource
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,9 +102,6 @@ namespace Data.Migrations
                     b.Property<int>("Suffix")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TermId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("Year")
                         .HasColumnType("integer");
 
@@ -110,7 +109,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.HasIndex("Year", "Suffix", "CourseId", "CalendarSource")
+                    b.HasIndex("Year", "Suffix", "CourseId")
                         .IsUnique();
 
                     b.ToTable("CourseOfferings");
@@ -384,9 +383,6 @@ namespace Data.Migrations
 
                     b.HasIndex("CourseOfferingId");
 
-                    b.HasIndex("Number", "CourseOfferingId")
-                        .IsUnique();
-
                     b.ToTable("Sections");
                 });
 
@@ -419,9 +415,6 @@ namespace Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("SectionId");
-
-                    b.HasIndex("DaysOfWeekBitmap", "Time", "SectionId")
-                        .IsUnique();
 
                     b.ToTable("TimingDetails");
                 });
