@@ -14,8 +14,8 @@ public class Program
                 var startup = new Startup(hostContext.Configuration);
                 startup.ConfigureServices(services);
             })
+            .ConfigureLogging(logger => logger.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning))
             .Build();
-
         host.Run();
     }
 }

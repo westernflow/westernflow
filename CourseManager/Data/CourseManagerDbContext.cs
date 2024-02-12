@@ -44,7 +44,15 @@ public class CourseManagerDbContext : DbContext
             .IsUnique();
 
         modelBuilder.Entity<CourseOffering>()
-            .HasIndex(c => new {c.Year, c.Suffix, c.CourseId})
+            .HasIndex(c => new {c.Year, c.Suffix, c.CourseId, c.CalendarSource})
+            .IsUnique();
+
+        modelBuilder.Entity<Section>()
+            .HasIndex(c => new { c.Number, c.CourseOfferingId })
+            .IsUnique();
+
+        modelBuilder.Entity<TimingDetails>()
+            .HasIndex(c => new {c.DaysOfWeekBitmap, c.Time, c.SectionId})
             .IsUnique();
         
         // Name the CourseReview table CourseReviews

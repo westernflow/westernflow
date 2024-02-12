@@ -6,32 +6,25 @@ namespace Scrapers.Utilities;
 
 public static class DbInitializer
 {
-    public static async Task InitializeDatabase(
-        IConfiguration configuration,
-        IFacultyRepository facultyRepository,
-        ICourseRepository courseRepository,
-        ICourseOfferingRepository courseOfferingRepository,
-        ISectionRepository sectionRepository,
-        ITimingDetailsRepository timingDetailRepository)
+    public static IServiceProvider? ServiceProvider { get; set; }
+    
+    public static async Task InitializeDatabase()
     {
-        await PopulateFaculties(configuration, facultyRepository);
-        await PopulateCourses(configuration, facultyRepository, courseRepository, courseOfferingRepository, sectionRepository, timingDetailRepository);
+        await PopulateFaculties();
+        await PopulateCourses();
     }
 
-    public static async Task PopulateFaculties(IConfiguration configuration, IFacultyRepository facultyRepository)
+    private static async Task PopulateFaculties()
     {
-        var faculties = await CourseScraper.ScrapeFaculties(configuration);
+        var facultyRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<IFacultyRepository>();
+        
+        var faculties = await CourseScraper.ScrapeFaculties();
         await facultyRepository.InsertRangeAsync(faculties);
     }
 
-    public static async Task PopulateCourses(
-        IConfiguration configuration,
-        IFacultyRepository facultyRepository,
-        ICourseRepository courseRepository,
-        ICourseOfferingRepository courseOfferingRepository,
-        ISectionRepository sectionRepository,
-        ITimingDetailsRepository timingDetailRepository)
+    private static async Task PopulateCourses()
     {
+        var facultyRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<IFacultyRepository>();
         var faculties = await facultyRepository.GetAllAsync();
 
         // log progress as percentage of faculties completed
@@ -40,8 +33,7 @@ public static class DbInitializer
         foreach (var faculty in faculties)
         {
             Console.WriteLine("Processing faculty: " + faculty.Name);
-            await CourseScraper.PopulateCoursesByFaculty(configuration, courseRepository, courseOfferingRepository,
-                sectionRepository, timingDetailRepository, faculty, 2024);
+            await CourseScraper.PopulateCoursesByFaculty(faculty);
             progress += increment;
             Console.WriteLine($"Progress: {progress}% finished scraping courses for {faculty.Name}");
         }
