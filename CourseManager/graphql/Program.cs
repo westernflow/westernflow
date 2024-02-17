@@ -14,6 +14,7 @@ class Program
         var app = builder.Build();
         startup.Configure(app);
 
+        app.UseCors();
         app.MapGraphQL();
         app.Run();
     }

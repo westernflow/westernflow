@@ -1,0 +1,631 @@
+type Course {
+  faculty: Faculty
+  courseOfferings: [CourseOffering]
+  id: Int!
+  number: Int!
+  name: String!
+  prerequisiteString: String
+  corequisiteString: String
+  antirequisiteString: String
+  description: String
+  extraInformation: String
+  weight: Decimal
+  breadthCategory: BreadthCategory!
+  internalCourseId: String!
+  facultyId: Int!
+  relatedProfessorReviews: [ProfessorReview!]!
+}
+
+type CourseOffering {
+  sections: [Section]
+  id: Int!
+  year: Int!
+  suffix: Suffix!
+  courseId: Int!
+  course: Course!
+}
+
+type Section {
+  timingDetails: [TimingDetails]
+  id: Int!
+  number: Int!
+  componentType: ComponentType!
+  classNumber: Int!
+  timetableRequisiteString: String
+  waitListSize: Int!
+  status: StatusType!
+  campus: Campus!
+  delivery: DeliveryType!
+  professorNames: [String!]!
+  courseOfferingId: Int!
+  courseOffering: CourseOffering!
+  professors: [JoinedSectionProfessor!]!
+}
+
+type Query {
+  courses(
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    where: CourseFilterInput
+  ): CoursesConnection
+  courseById(id: Int!): Course!
+  facultyById(id: Int!): Faculty!
+  courseOfferingsByCourseId(courseId: Int!): [CourseOffering!]!
+  sectionsByCourseOfferingId(courseOfferingId: Int!): [Section!]!
+  timingDetailsBySectionId(sectionId: Int!): [TimingDetails!]!
+}
+
+type Faculty {
+  id: Int!
+  name: String!
+  abbreviation: String!
+  courses: [Course!]!
+}
+
+"""
+The built-in `Decimal` scalar type.
+"""
+scalar Decimal
+
+enum BreadthCategory {
+  UNDEFINED
+  A
+  B
+  C
+}
+
+type ProfessorReview {
+  id: Int!
+  quality: Int!
+  difficulty: Int!
+  helpful: Int!
+  clarity: Int!
+  reviewText: String!
+  dateWritten: DateTime!
+  reviewerId: Int!
+  reviewer: Reviewer!
+  courseId: Int
+  course: Course
+  professorId: Int!
+  professor: Professor!
+  likedBy: [JoinedReviewerProfessorReview!]
+}
+
+enum Suffix {
+  NO_SUFFIX
+  A
+  B
+  E
+  F
+  G
+  H
+  J
+  K
+  L
+  Q
+  R
+  S
+  T
+  U
+  W
+  X
+  Y
+  Z
+}
+
+type TimingDetails {
+  id: Int!
+  daysOfWeekBitmap: String!
+  location: String!
+  time: String!
+  sectionId: Int!
+  section: Section!
+}
+
+enum ComponentType {
+  UNDEFINED
+  LECTURE
+  LAB
+  TUTORIAL
+  ALL
+}
+
+enum StatusType {
+  UNDEFINED
+  FULL
+  NOT_FULL
+}
+
+enum Campus {
+  UNKNOWN
+  MAIN
+  BRESCIA
+  HURON
+  KING
+  IVEY
+  ALL
+}
+
+enum DeliveryType {
+  UNDEFINED
+  ONLINE
+  IN_PERSON
+  HYBRID
+  OTHER
+}
+
+type JoinedSectionProfessor {
+  id: Int!
+  sectionId: Int!
+  section: Section!
+  professorId: Int!
+  professor: Professor!
+}
+
+input CourseFilterInput {
+  and: [CourseFilterInput!]
+  or: [CourseFilterInput!]
+  id: IntOperationFilterInput
+  number: IntOperationFilterInput
+  name: StringOperationFilterInput
+  prerequisiteString: StringOperationFilterInput
+  corequisiteString: StringOperationFilterInput
+  antirequisiteString: StringOperationFilterInput
+  description: StringOperationFilterInput
+  extraInformation: StringOperationFilterInput
+  weight: DecimalOperationFilterInput
+  breadthCategory: BreadthCategoryOperationFilterInput
+  internalCourseId: StringOperationFilterInput
+  facultyId: IntOperationFilterInput
+  faculty: FacultyFilterInput
+  courseOfferings: ListFilterInputTypeOfCourseOfferingFilterInput
+  relatedProfessorReviews: ListFilterInputTypeOfProfessorReviewFilterInput
+}
+
+"""
+A connection to a list of items.
+"""
+type CoursesConnection {
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  """
+  A list of edges.
+  """
+  edges: [CoursesEdge!]
+
+  """
+  A flattened list of the nodes.
+  """
+  nodes: [Course!]
+}
+
+input IntOperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int]
+  nin: [Int]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+input DecimalOperationFilterInput {
+  eq: Decimal
+  neq: Decimal
+  in: [Decimal]
+  nin: [Decimal]
+  gt: Decimal
+  ngt: Decimal
+  gte: Decimal
+  ngte: Decimal
+  lt: Decimal
+  nlt: Decimal
+  lte: Decimal
+  nlte: Decimal
+}
+
+input BreadthCategoryOperationFilterInput {
+  eq: BreadthCategory
+  neq: BreadthCategory
+  in: [BreadthCategory!]
+  nin: [BreadthCategory!]
+}
+
+input FacultyFilterInput {
+  and: [FacultyFilterInput!]
+  or: [FacultyFilterInput!]
+  id: IntOperationFilterInput
+  name: StringOperationFilterInput
+  abbreviation: StringOperationFilterInput
+  courses: ListFilterInputTypeOfCourseFilterInput
+}
+
+input ListFilterInputTypeOfCourseOfferingFilterInput {
+  all: CourseOfferingFilterInput
+  none: CourseOfferingFilterInput
+  some: CourseOfferingFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfProfessorReviewFilterInput {
+  all: ProfessorReviewFilterInput
+  none: ProfessorReviewFilterInput
+  some: ProfessorReviewFilterInput
+  any: Boolean
+}
+
+"""
+Information about pagination in a connection.
+"""
+type PageInfo {
+  """
+  Indicates whether more edges exist following the set defined by the clients arguments.
+  """
+  hasNextPage: Boolean!
+
+  """
+  Indicates whether more edges exist prior the set defined by the clients arguments.
+  """
+  hasPreviousPage: Boolean!
+
+  """
+  When paginating backwards, the cursor to continue.
+  """
+  startCursor: String
+
+  """
+  When paginating forwards, the cursor to continue.
+  """
+  endCursor: String
+}
+
+"""
+An edge in a connection.
+"""
+type CoursesEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Course!
+}
+
+input ListFilterInputTypeOfCourseFilterInput {
+  all: CourseFilterInput
+  none: CourseFilterInput
+  some: CourseFilterInput
+  any: Boolean
+}
+
+input CourseOfferingFilterInput {
+  and: [CourseOfferingFilterInput!]
+  or: [CourseOfferingFilterInput!]
+  id: IntOperationFilterInput
+  year: IntOperationFilterInput
+  suffix: SuffixOperationFilterInput
+  courseId: IntOperationFilterInput
+  course: CourseFilterInput
+  sections: ListFilterInputTypeOfSectionFilterInput
+}
+
+input ProfessorReviewFilterInput {
+  and: [ProfessorReviewFilterInput!]
+  or: [ProfessorReviewFilterInput!]
+  id: IntOperationFilterInput
+  quality: IntOperationFilterInput
+  difficulty: IntOperationFilterInput
+  helpful: IntOperationFilterInput
+  clarity: IntOperationFilterInput
+  reviewText: StringOperationFilterInput
+  dateWritten: DateTimeOperationFilterInput
+  reviewerId: IntOperationFilterInput
+  reviewer: ReviewerFilterInput
+  courseId: IntOperationFilterInput
+  course: CourseFilterInput
+  professorId: IntOperationFilterInput
+  professor: ProfessorFilterInput
+  likedBy: ListFilterInputTypeOfJoinedReviewerProfessorReviewFilterInput
+}
+
+input SuffixOperationFilterInput {
+  eq: Suffix
+  neq: Suffix
+  in: [Suffix!]
+  nin: [Suffix!]
+}
+
+input ListFilterInputTypeOfSectionFilterInput {
+  all: SectionFilterInput
+  none: SectionFilterInput
+  some: SectionFilterInput
+  any: Boolean
+}
+
+input DateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime]
+  nin: [DateTime]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input ReviewerFilterInput {
+  and: [ReviewerFilterInput!]
+  or: [ReviewerFilterInput!]
+  id: IntOperationFilterInput
+  email: StringOperationFilterInput
+  firstName: StringOperationFilterInput
+  lastName: StringOperationFilterInput
+  courseReviewsWritten: ListFilterInputTypeOfCourseReviewFilterInput
+  professorReviewsWritten: ListFilterInputTypeOfProfessorReviewFilterInput
+  courseReviewsLiked: ListFilterInputTypeOfJoinedReviewerCourseReviewFilterInput
+  professorReviewsLiked: ListFilterInputTypeOfJoinedReviewerProfessorReviewFilterInput
+}
+
+input ProfessorFilterInput {
+  and: [ProfessorFilterInput!]
+  or: [ProfessorFilterInput!]
+  id: IntOperationFilterInput
+  name: StringOperationFilterInput
+  rmpId: StringOperationFilterInput
+  professorReviews: ListFilterInputTypeOfProfessorReviewFilterInput
+  courseReviews: ListFilterInputTypeOfCourseReviewFilterInput
+  sections: ListFilterInputTypeOfJoinedSectionProfessorFilterInput
+}
+
+input ListFilterInputTypeOfJoinedReviewerProfessorReviewFilterInput {
+  all: JoinedReviewerProfessorReviewFilterInput
+  none: JoinedReviewerProfessorReviewFilterInput
+  some: JoinedReviewerProfessorReviewFilterInput
+  any: Boolean
+}
+
+input SectionFilterInput {
+  and: [SectionFilterInput!]
+  or: [SectionFilterInput!]
+  id: IntOperationFilterInput
+  number: IntOperationFilterInput
+  componentType: ComponentTypeOperationFilterInput
+  classNumber: IntOperationFilterInput
+  timetableRequisiteString: StringOperationFilterInput
+  waitListSize: IntOperationFilterInput
+  status: StatusTypeOperationFilterInput
+  campus: CampusOperationFilterInput
+  delivery: DeliveryTypeOperationFilterInput
+  professorNames: ListStringOperationFilterInput
+  timingDetails: ListFilterInputTypeOfTimingDetailsFilterInput
+  courseOfferingId: IntOperationFilterInput
+  courseOffering: CourseOfferingFilterInput
+  professors: ListFilterInputTypeOfJoinedSectionProfessorFilterInput
+}
+
+"""
+The `DateTime` scalar represents an ISO-8601 compliant date time type.
+"""
+scalar DateTime @specifiedBy(url: "https://www.graphql-scalars.com/date-time")
+
+input ListFilterInputTypeOfCourseReviewFilterInput {
+  all: CourseReviewFilterInput
+  none: CourseReviewFilterInput
+  some: CourseReviewFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfJoinedReviewerCourseReviewFilterInput {
+  all: JoinedReviewerCourseReviewFilterInput
+  none: JoinedReviewerCourseReviewFilterInput
+  some: JoinedReviewerCourseReviewFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfJoinedSectionProfessorFilterInput {
+  all: JoinedSectionProfessorFilterInput
+  none: JoinedSectionProfessorFilterInput
+  some: JoinedSectionProfessorFilterInput
+  any: Boolean
+}
+
+input JoinedReviewerProfessorReviewFilterInput {
+  and: [JoinedReviewerProfessorReviewFilterInput!]
+  or: [JoinedReviewerProfessorReviewFilterInput!]
+  id: IntOperationFilterInput
+  professorReviewId: IntOperationFilterInput
+  professorReview: ProfessorReviewFilterInput
+  reviewerId: IntOperationFilterInput
+  reviewer: ReviewerFilterInput
+}
+
+input ComponentTypeOperationFilterInput {
+  eq: ComponentType
+  neq: ComponentType
+  in: [ComponentType!]
+  nin: [ComponentType!]
+}
+
+input StatusTypeOperationFilterInput {
+  eq: StatusType
+  neq: StatusType
+  in: [StatusType!]
+  nin: [StatusType!]
+}
+
+input CampusOperationFilterInput {
+  eq: Campus
+  neq: Campus
+  in: [Campus!]
+  nin: [Campus!]
+}
+
+input DeliveryTypeOperationFilterInput {
+  eq: DeliveryType
+  neq: DeliveryType
+  in: [DeliveryType!]
+  nin: [DeliveryType!]
+}
+
+input ListStringOperationFilterInput {
+  all: StringOperationFilterInput
+  none: StringOperationFilterInput
+  some: StringOperationFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfTimingDetailsFilterInput {
+  all: TimingDetailsFilterInput
+  none: TimingDetailsFilterInput
+  some: TimingDetailsFilterInput
+  any: Boolean
+}
+
+input CourseReviewFilterInput {
+  and: [CourseReviewFilterInput!]
+  or: [CourseReviewFilterInput!]
+  id: IntOperationFilterInput
+  reviewerId: IntOperationFilterInput
+  reviewer: ReviewerFilterInput
+  isLiked: BooleanOperationFilterInput
+  easyRating: IntOperationFilterInput
+  usefulRating: IntOperationFilterInput
+  dateWritten: DateTimeOperationFilterInput
+  reviewText: StringOperationFilterInput
+  professorId: IntOperationFilterInput
+  professor: ProfessorFilterInput
+  likedBy: ListFilterInputTypeOfJoinedReviewerCourseReviewFilterInput
+}
+
+input JoinedReviewerCourseReviewFilterInput {
+  and: [JoinedReviewerCourseReviewFilterInput!]
+  or: [JoinedReviewerCourseReviewFilterInput!]
+  id: IntOperationFilterInput
+  courseReviewId: IntOperationFilterInput
+  courseReview: CourseReviewFilterInput
+  reviewerId: IntOperationFilterInput
+  reviewer: ReviewerFilterInput
+}
+
+input JoinedSectionProfessorFilterInput {
+  and: [JoinedSectionProfessorFilterInput!]
+  or: [JoinedSectionProfessorFilterInput!]
+  id: IntOperationFilterInput
+  sectionId: IntOperationFilterInput
+  section: SectionFilterInput
+  professorId: IntOperationFilterInput
+  professor: ProfessorFilterInput
+}
+
+input TimingDetailsFilterInput {
+  and: [TimingDetailsFilterInput!]
+  or: [TimingDetailsFilterInput!]
+  id: IntOperationFilterInput
+  daysOfWeekBitmap: StringOperationFilterInput
+  location: StringOperationFilterInput
+  time: StringOperationFilterInput
+  sectionId: IntOperationFilterInput
+  section: SectionFilterInput
+}
+
+input BooleanOperationFilterInput {
+  eq: Boolean
+  neq: Boolean
+}
+
+type JoinedReviewerProfessorReview {
+  id: Int!
+  professorReviewId: Int!
+  professorReview: ProfessorReview!
+  reviewerId: Int!
+  reviewer: Reviewer!
+}
+
+type Professor {
+  id: Int!
+  name: String!
+  rmpId: String
+  professorReviews: [ProfessorReview!]!
+  courseReviews: [CourseReview!]!
+  sections: [JoinedSectionProfessor!]
+}
+
+type Reviewer {
+  id: Int!
+  email: String!
+  firstName: String!
+  lastName: String!
+  courseReviewsWritten: [CourseReview!]!
+  professorReviewsWritten: [ProfessorReview!]!
+  courseReviewsLiked: [JoinedReviewerCourseReview!]
+  professorReviewsLiked: [JoinedReviewerProfessorReview!]
+}
+
+type JoinedReviewerCourseReview {
+  id: Int!
+  courseReviewId: Int!
+  courseReview: CourseReview!
+  reviewerId: Int!
+  reviewer: Reviewer!
+}
+
+type CourseReview {
+  id: Int!
+  reviewerId: Int!
+  reviewer: Reviewer!
+  isLiked: Boolean!
+  easyRating: Int!
+  usefulRating: Int!
+  dateWritten: DateTime!
+  reviewText: String!
+  professorId: Int
+  professor: Professor
+  likedBy: [JoinedReviewerCourseReview!]
+}
