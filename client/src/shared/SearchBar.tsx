@@ -1,7 +1,25 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { searchContext } from "../contexts/SearchContext";
+
+import graphql from 'babel-plugin-relay/macro'
+import type { SearchBarIndexedCoursesQuery as SearchBarIndexedCoursesQueryType } from "./__generated__/SearchBarIndexedCoursesQuery.graphql";
+import { useLazyLoadQuery } from "react-relay";
+import { Trie } from "../trie/trie";
+
+const SearchBarIndexedCoursesQuery = graphql`
+    query SearchBarIndexedCoursesQuery {
+        courses(first: 5000) {
+            nodes {
+                name
+                facultyId
+                faculty {
+                    abbreviation
+                }
+                number
+            }
+        }
+    }
+`;
 
 type SearchResult = {
   course?: string;
@@ -10,9 +28,27 @@ type SearchResult = {
 };
 
 export const SearchBar = (props: { bgColor: string; textColor: string; rounded: boolean }) => {
+  const [courseTrie, setCourseTrie] = useState<Trie>(new Trie());
+  const [professorTrie, setProfessorTrie] = useState<Trie>(new Trie());
+  const indexedCourses = useLazyLoadQuery<SearchBarIndexedCoursesQueryType>(
+    SearchBarIndexedCoursesQuery,
+    {}
+  );
+
+  useEffect(() => {
+    const professorTrie = new Trie(); // none yet
+    const courseTrie = new Trie();
+    indexedCourses?.courses?.nodes?.forEach(courseNode => 
+    {
+      courseTrie.insert((courseNode?.faculty?.abbreviation + " " + courseNode?.number.toString()).toLowerCase())
+    })
+
+    setCourseTrie(courseTrie)
+    setProfessorTrie(professorTrie)
+  }, [indexedCourses])
+
   const { bgColor, textColor, rounded } = props;
 
-  const { courseTrie, professorTrie } = useContext(searchContext);
   const history = useNavigate();
 
   const searchRef = useRef<HTMLInputElement>(null);
