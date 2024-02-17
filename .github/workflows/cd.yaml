@@ -14,7 +14,7 @@ jobs:
 
             - uses: microsoft/variable-substitution@v1
               with:
-                  files: CourseManager/*/appsettings.json"
+                  files: CourseManager/graphql/appsettings.json"
               env:
                   ConnectionStrings.CourseManagerDbConnection: ${{ secrets.CourseManagerDbConnection }}
 
