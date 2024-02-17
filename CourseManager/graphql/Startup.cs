@@ -20,6 +20,19 @@ public class Startup
     {
         services.AddCourseManagerDbContext(Configuration);
         services.AddScopedRepositories();
+        
+        var origins = Environment.GetEnvironmentVariable("AllowedOrigins")?.Split(",") ?? new string[] { "http://localhost:3000" };
+        
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(
+            builder =>
+            {
+                builder.WithOrigins(origins)
+                       .AllowAnyHeader()
+                       .AllowAnyMethod();
+            });
+        });
         services.AddGraphQLServer()
             .AddQueryType<Query>()
             .AddType<CourseType>()
