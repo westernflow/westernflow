@@ -11,7 +11,14 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
+
+            - uses: microsoft/variable-substitution@v1
+              with:
+                  files: CourseManager/*/appsettings.json"
+              env:
+                  ConnectionStrings.CourseManagerDbConnection: ${{ secrets.CourseManagerDbConnection }}
+
             - uses: superfly/flyctl-actions/setup-flyctl@master
-            - run: "pwd && cd backend && ls && flyctl deploy --remote-only"
+            - run: "cd CourseManager && ls && flyctl deploy --remote-only"
               env:
                   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

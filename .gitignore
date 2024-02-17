@@ -3,3 +3,4 @@
 **/go.mod
 **/go.sum
 CourseManager/Workers/appsettings.Development.json
+.vscode
