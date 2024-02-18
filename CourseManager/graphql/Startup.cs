@@ -20,9 +20,9 @@ public class Startup
     {
         services.AddCourseManagerDbContext(Configuration);
         services.AddScopedRepositories();
-        
+
         var origins = Environment.GetEnvironmentVariable("AllowedOrigins")?.Split(",") ?? new string[] { "http://localhost:3000" };
-        
+
         services.AddCors(options =>
         {
             options.AddDefaultPolicy(
