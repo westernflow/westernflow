@@ -16,7 +16,7 @@ jobs:
               with:
                   files: "CourseManager/graphql/appsettings.json"
               env:
-                  ConnectionStrings.CourseManagerDbConnection: ${{ secrets.CourseManagerDbConnection }}
+                  ConnectionStrings.CourseManagerDbConnection: ${{ secrets.COURSE_MANAGER_DB_CONNECTION }}
 
             - uses: superfly/flyctl-actions/setup-flyctl@master
             - run: "cd CourseManager && ls && flyctl deploy --remote-only"
