@@ -18,21 +18,9 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddCors();
         services.AddCourseManagerDbContext(Configuration);
         services.AddScopedRepositories();
-
-        var origins = Environment.GetEnvironmentVariable("AllowedOrigins")?.Split(",") ?? new string[] { "http://localhost:3000" };
-
-        services.AddCors(options =>
-        {
-            options.AddDefaultPolicy(
-            builder =>
-            {
-                builder.WithOrigins(origins)
-                       .AllowAnyHeader()
-                       .AllowAnyMethod();
-            });
-        });
         services.AddGraphQLServer()
             .AddQueryType<Query>()
             .AddType<CourseType>()
@@ -50,5 +38,10 @@ public class Startup
 
     public void Configure(IApplicationBuilder app)
     {
+        var origins = Environment.GetEnvironmentVariable("AllowedOrigins")?.Split(",") ?? new string[] { "https://westernflow.vercel.app" };
+        app.UseCors(
+            options => options.WithOrigins(origins).WithMethods("GET", "POST", "OPTIONS").AllowAnyHeader()
+        );
     }
 }
+
