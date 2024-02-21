@@ -7,7 +7,7 @@ import { useLazyLoadQuery } from "react-relay";
 import { Trie } from "../trie/trie";
 
 const SearchBarIndexedCoursesQuery = graphql`
-    query SearchBarIndexedCoursesQuery {
+    query OldSearchBarIndexedCoursesQuery {
         courses(first: 5000) {
             nodes {
                 name
@@ -27,7 +27,7 @@ type SearchResult = {
   callback: () => void;
 };
 
-export const SearchBar = (props: { bgColor: string; textColor: string; rounded: boolean }) => {
+export const OldSearchBar = (props: { bgColor: string; textColor: string; rounded: boolean }) => {
   const [courseTrie, setCourseTrie] = useState<Trie>(new Trie());
   const [professorTrie, setProfessorTrie] = useState<Trie>(new Trie());
   const indexedCourses = useLazyLoadQuery<SearchBarIndexedCoursesQueryType>(

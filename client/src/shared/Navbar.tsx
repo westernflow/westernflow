@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { ContentContainer } from "../constants/styleNames";
-import { SearchBar } from "../shared/SearchBar";
+import { OldSearchBar } from "./OldSearchBar";
 
 export const Navbar = () => {
   const history = useNavigate();
@@ -17,7 +17,7 @@ export const Navbar = () => {
             <span className="text-blue-500">Review</span>
           </div>
           <div className="grow">
-            <SearchBar
+            <OldSearchBar
               textColor="text-gray-700"
               bgColor="bg-gray-300"
               rounded={true}

@@ -6,7 +6,7 @@ import {
   FetchFunction,
 } from "relay-runtime";
 
-const HTTP_ENDPOINT = "https://westernflow-api.fly.dev/graphql"
+const HTTP_ENDPOINT = "http://localhost:5095/graphql/"
 
 
 const fetchFn: FetchFunction = async (request, variables) => {

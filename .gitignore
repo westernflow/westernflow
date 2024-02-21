@@ -4,3 +4,4 @@
 **/go.sum
 CourseManager/Workers/appsettings.Development.json
 .vscode
+.idea/
