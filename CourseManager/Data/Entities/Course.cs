@@ -17,7 +17,7 @@ public record CourseConstructorParams
     public string? Description { get; init; }
     public string? ExtraInformation { get; init; }
     public decimal? Weight { get; init; }
-    public BreadthCategory BreadthCategory { get; init; }
+    public string? BreadthCategories { get; init; }
     public string InternalCourseId { get; init; } = string.Empty;
     public int FacultyId { get; init; }
 }
@@ -39,7 +39,7 @@ public class Course : IEntity
         Description = courseConstructorParams.Description;
         ExtraInformation = courseConstructorParams.ExtraInformation;
         Weight = courseConstructorParams.Weight;
-        BreadthCategory = courseConstructorParams.BreadthCategory;
+        BreadthCategories = courseConstructorParams.BreadthCategories;
         InternalCourseId = courseConstructorParams.InternalCourseId;
         FacultyId = courseConstructorParams.FacultyId;
         
@@ -66,7 +66,8 @@ public class Course : IEntity
     
     [Column(TypeName = "decimal(2,2)")]
     public decimal? Weight { get; set; } 
-    public BreadthCategory BreadthCategory { get; set; }
+    [StringLength(20)]
+    public string? BreadthCategories { get; set; }
     [StringLength(20)]
     public string InternalCourseId { get; set; } = string.Empty;
     
