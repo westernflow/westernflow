@@ -165,7 +165,7 @@ public static class CourseScraper
             Number = parsedCourseNumber,
             Name = courseName,
             Description = description,
-            BreadthCategory = BreadthCategory.Undefined,
+            BreadthCategories = String.Empty,
             InternalCourseId = internalCourseId
         };
 
