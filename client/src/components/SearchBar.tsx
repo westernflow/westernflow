@@ -6,6 +6,7 @@ import type {
 	SearchBarIndexedCoursesQuery as SearchBarIndexedCoursesQueryType
 } from "./__generated__/SearchBarIndexedCoursesQuery.graphql";
 import {useLazyLoadQuery} from "react-relay";
+import {Link} from "react-router-dom";
 
 const SearchBarIndexedCoursesQuery = graphql`
     query SearchBarIndexedCoursesQuery {
@@ -107,7 +108,7 @@ export default function SearchBar() {
 								}
 							>
 								{({active, selected}) => (
-									<>
+									<Link to={"/course/"+course.facultyAbbreviation.toLowerCase() + "-" + course.number.toString()}>
                                         <span
 	                                        className={classNames('block truncate')}><span
 	                                        className={classNames('font-semibold')}>{course.facultyAbbreviation + " " + course.number.toString()}</span> {" — " + course.name}</span>
@@ -121,7 +122,7 @@ export default function SearchBar() {
                         <CheckIcon className="h-5 w-5" aria-hidden="true"/>
                       </span>
 										)}
-									</>
+									</Link>
 								)}
 							</Combobox.Option>
 						))}
