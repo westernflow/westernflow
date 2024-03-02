@@ -38,7 +38,11 @@ public class Startup
 
     public void Configure(IApplicationBuilder app)
     {
-        var origins = Environment.GetEnvironmentVariable("AllowedOrigins")?.Split(",") ?? new string[] { "https://westernflow.vercel.app" };
+        var origins = Environment.GetEnvironmentVariable("AllowedOrigins")?.Split(",") ?? new string[] { "http://localhost:3000" };
+        foreach (var origin in origins)
+        {
+            Console.WriteLine($"Allowed origin: {origin}");
+        }
         app.UseCors(
             options => options.WithOrigins(origins).WithMethods("GET", "POST", "OPTIONS").AllowAnyHeader()
         );
