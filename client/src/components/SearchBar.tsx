@@ -1,5 +1,4 @@
 import {useEffect, useRef, useState} from 'react'
-import {CheckIcon, ChevronUpDownIcon} from '@heroicons/react/20/solid'
 import {Combobox} from '@headlessui/react'
 import graphql from 'babel-plugin-relay/macro'
 import type {
@@ -7,6 +6,7 @@ import type {
 } from "./__generated__/SearchBarIndexedCoursesQuery.graphql";
 import {useLazyLoadQuery} from "react-relay";
 import {Link} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 const SearchBarIndexedCoursesQuery = graphql`
     query SearchBarIndexedCoursesQuery {
@@ -44,13 +44,14 @@ function filterCourses(courses: SearchCourse[], query: string) {
 
 export default function SearchBar() {
 	const [query, setQuery] = useState('')
-	const [selectedPerson, setSelectedPerson] = useState(null)
+	const [selectedCourse, setSelectedCourse] = useState<SearchCourse | null>(null)
 	const [courses, setCourses] = useState<SearchCourse[]>([])
 	const inputRef = useRef<HTMLInputElement>(null);
 	const indexedCourses = useLazyLoadQuery<SearchBarIndexedCoursesQueryType>(
 		SearchBarIndexedCoursesQuery,
 		{}
 	);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (indexedCourses?.courses?.nodes == null) {
@@ -75,23 +76,24 @@ export default function SearchBar() {
 		}
 	}, []);
 
+	useEffect(() => {
+		if (selectedCourse != null) {
+			navigate("/course/" + selectedCourse.facultyAbbreviation.toLowerCase() + "-" + selectedCourse.number.toString())
+		}
+	}, [selectedCourse]);
+
 	const filteredCourses = filterCourses(courses, query)
 
 	return (
-		<Combobox as="div" value={selectedPerson} onChange={setSelectedPerson}>
-			<Combobox.Label className="block text-sm font-medium leading-6 text-gray-900">Search for courses,
-				professors, or subjects</Combobox.Label>
+		<Combobox as="div" value={selectedCourse} onChange={setSelectedCourse}>
 			<div className="relative mt-2">
 				<Combobox.Input
 					ref={inputRef}
 					className="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 					onChange={(event) => setQuery(event.target.value)}
 					displayValue={(course: SearchCourse) => course ? course.facultyAbbreviation + " " + course.number.toString() + " — " + course.name : ""}
+					placeholder={"Search for courses, professors, or subjects"}
 				/>
-				<Combobox.Button
-					className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
-					<ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true"/>
-				</Combobox.Button>
 
 				{filteredCourses.length > 0 && (
 					<Combobox.Options
@@ -106,9 +108,11 @@ export default function SearchBar() {
 										active ? 'bg-indigo-600 text-white' : 'text-gray-900'
 									)
 								}
+								onKeyPress={(event) => {console.log(event)}}
 							>
 								{({active, selected}) => (
-									<Link to={"/course/"+course.facultyAbbreviation.toLowerCase() + "-" + course.number.toString()}>
+									<Link
+										to={"/course/" + course.facultyAbbreviation.toLowerCase() + "-" + course.number.toString()}>
                                         <span
 	                                        className={classNames('block truncate')}><span
 	                                        className={classNames('font-semibold')}>{course.facultyAbbreviation + " " + course.number.toString()}</span> {" — " + course.name}</span>
