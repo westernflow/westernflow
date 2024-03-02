@@ -119,8 +119,7 @@ export default function SearchBar() {
 													active ? 'text-white' : 'text-indigo-600'
 												)}
 											>
-                        <CheckIcon className="h-5 w-5" aria-hidden="true"/>
-                      </span>
+                                            </span>
 										)}
 									</Link>
 								)}
