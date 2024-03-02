@@ -13,6 +13,9 @@ public class Query
     public async Task<IEnumerable<Course>> GetCoursesAsync([Service] ICourseRepository courseRepository)
         => await courseRepository.GetAllAsync();
     
+    public async Task<Course> GetCourseByCodeAsync(string facultyName, int code, [Service] ICourseRepository courseRepository)
+        => await courseRepository.GetByCodeAsync(facultyName, code);
+    
     public async Task<Course> GetCourseByIdAsync(int id, CourseBatchDataLoader courseBatchDataLoader, CancellationToken cancellationToken)
         => await courseBatchDataLoader.LoadAsync(id, cancellationToken); 
     
