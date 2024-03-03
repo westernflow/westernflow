@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<283796d45ae31eeff036da5b406b19a9>>
+ * @generated SignedSource<<e1a460a602a2681182a3e59134be35ea>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,10 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Query } from 'relay-runtime';
-export type CoursePresenterCourseQuery$variables = Record<PropertyKey, never>;
+export type CoursePresenterCourseQuery$variables = {
+  code: number;
+  facultyAbbreviation: string;
+};
 export type CoursePresenterCourseQuery$data = {
   readonly courseByCode: {
     readonly courseOfferings: ReadonlyArray<{
@@ -21,11 +24,12 @@ export type CoursePresenterCourseQuery$data = {
         } | null | undefined> | null | undefined;
       } | null | undefined> | null | undefined;
     } | null | undefined> | null | undefined;
+    readonly description: string | null | undefined;
     readonly faculty: {
       readonly abbreviation: string;
+      readonly id: string;
     } | null | undefined;
-    readonly facultyId: number;
-    readonly id: number;
+    readonly id: string;
     readonly name: string;
     readonly number: number;
   };
@@ -38,17 +42,36 @@ export type CoursePresenterCourseQuery = {
 const node: ConcreteRequest = (function(){
 var v0 = [
   {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "code"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "facultyAbbreviation"
+  }
+],
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v2 = [
+  {
     "alias": null,
     "args": [
       {
-        "kind": "Literal",
+        "kind": "Variable",
         "name": "code",
-        "value": 2553
+        "variableName": "code"
       },
       {
-        "kind": "Literal",
-        "name": "facultyName",
-        "value": "ACTURSCI"
+        "kind": "Variable",
+        "name": "facultyAbbreviation",
+        "variableName": "facultyAbbreviation"
       }
     ],
     "concreteType": "Course",
@@ -56,13 +79,7 @@ var v0 = [
     "name": "courseByCode",
     "plural": false,
     "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "id",
-        "storageKey": null
-      },
+      (v1/*: any*/),
       {
         "alias": null,
         "args": null,
@@ -74,7 +91,14 @@ var v0 = [
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "facultyId",
+        "name": "number",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "description",
         "storageKey": null
       },
       {
@@ -85,6 +109,7 @@ var v0 = [
         "name": "faculty",
         "plural": false,
         "selections": [
+          (v1/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -93,13 +118,6 @@ var v0 = [
             "storageKey": null
           }
         ],
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "number",
         "storageKey": null
       },
       {
@@ -157,37 +175,37 @@ var v0 = [
         "storageKey": null
       }
     ],
-    "storageKey": "courseByCode(code:2553,facultyName:\"ACTURSCI\")"
+    "storageKey": null
   }
 ];
 return {
   "fragment": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
     "name": "CoursePresenterCourseQuery",
-    "selections": (v0/*: any*/),
+    "selections": (v2/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "CoursePresenterCourseQuery",
-    "selections": (v0/*: any*/)
+    "selections": (v2/*: any*/)
   },
   "params": {
-    "cacheID": "d980ba37181c536727539ed9c7fef414",
+    "cacheID": "3ab40d835fe53b9a540faa1e678e2b5e",
     "id": null,
     "metadata": {},
     "name": "CoursePresenterCourseQuery",
     "operationKind": "query",
-    "text": "query CoursePresenterCourseQuery {\n  courseByCode(code: 2553, facultyName: \"ACTURSCI\") {\n    id\n    name\n    facultyId\n    faculty {\n      abbreviation\n    }\n    number\n    courseOfferings {\n      sections {\n        timingDetails {\n          daysOfWeekBitmap\n          time\n          location\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query CoursePresenterCourseQuery(\n  $code: Int!\n  $facultyAbbreviation: String!\n) {\n  courseByCode(code: $code, facultyAbbreviation: $facultyAbbreviation) {\n    id\n    name\n    number\n    description\n    faculty {\n      id\n      abbreviation\n    }\n    courseOfferings {\n      sections {\n        timingDetails {\n          daysOfWeekBitmap\n          time\n          location\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "ed55e8a1434aadfc63bbe8e1a90dd9c1";
+(node as any).hash = "99b323e232d947a333a70e37f4a30f90";
 
 export default node;

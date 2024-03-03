@@ -93,7 +93,7 @@ type Query {
     before: String
     where: CourseFilterInput
   ): CoursesConnection
-  courseByCode(facultyName: String!, code: Int!): Course!
+  courseByCode(facultyAbbreviation: String!, code: Int!): Course!
   courseById(id: ID!): Course!
   facultyById(id: ID!): Faculty!
   courseOfferingsByCourseId(courseId: Int!): [CourseOffering!]!
