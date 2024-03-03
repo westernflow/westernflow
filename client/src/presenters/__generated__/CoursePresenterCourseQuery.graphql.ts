@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e1a460a602a2681182a3e59134be35ea>>
+ * @generated SignedSource<<a2ec909b0ee7e20eebbec19864ad66c1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,6 +9,10 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Query } from 'relay-runtime';
+export type Campus = "ALL" | "BRESCIA" | "HURON" | "IVEY" | "KING" | "MAIN" | "UNKNOWN" | "%future added value";
+export type ComponentType = "ALL" | "LAB" | "LECTURE" | "TUTORIAL" | "UNDEFINED" | "%future added value";
+export type DeliveryType = "HYBRID" | "IN_PERSON" | "ONLINE" | "OTHER" | "UNDEFINED" | "%future added value";
+export type StatusType = "FULL" | "NOT_FULL" | "UNDEFINED" | "%future added value";
 export type CoursePresenterCourseQuery$variables = {
   code: number;
   facultyAbbreviation: string;
@@ -17,11 +21,19 @@ export type CoursePresenterCourseQuery$data = {
   readonly courseByCode: {
     readonly courseOfferings: ReadonlyArray<{
       readonly sections: ReadonlyArray<{
+        readonly campus: Campus;
+        readonly classNumber: number;
+        readonly componentType: ComponentType;
+        readonly delivery: DeliveryType;
+        readonly number: number;
+        readonly professorNames: ReadonlyArray<string>;
+        readonly status: StatusType;
         readonly timingDetails: ReadonlyArray<{
           readonly daysOfWeekBitmap: string;
           readonly location: string;
           readonly time: string;
         } | null | undefined> | null | undefined;
+        readonly waitListSize: number;
       } | null | undefined> | null | undefined;
     } | null | undefined> | null | undefined;
     readonly description: string | null | undefined;
@@ -59,7 +71,14 @@ v1 = {
   "name": "id",
   "storageKey": null
 },
-v2 = [
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "number",
+  "storageKey": null
+},
+v3 = [
   {
     "alias": null,
     "args": [
@@ -87,13 +106,7 @@ v2 = [
         "name": "name",
         "storageKey": null
       },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "number",
-        "storageKey": null
-      },
+      (v2/*: any*/),
       {
         "alias": null,
         "args": null,
@@ -136,6 +149,56 @@ v2 = [
             "name": "sections",
             "plural": true,
             "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "componentType",
+                "storageKey": null
+              },
+              (v2/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "classNumber",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "professorNames",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "status",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "waitListSize",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "campus",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "delivery",
+                "storageKey": null
+              },
               {
                 "alias": null,
                 "args": null,
@@ -184,7 +247,7 @@ return {
     "kind": "Fragment",
     "metadata": null,
     "name": "CoursePresenterCourseQuery",
-    "selections": (v2/*: any*/),
+    "selections": (v3/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
@@ -193,19 +256,19 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "CoursePresenterCourseQuery",
-    "selections": (v2/*: any*/)
+    "selections": (v3/*: any*/)
   },
   "params": {
-    "cacheID": "3ab40d835fe53b9a540faa1e678e2b5e",
+    "cacheID": "ad64811220fe8e1bc4a61be979d64298",
     "id": null,
     "metadata": {},
     "name": "CoursePresenterCourseQuery",
     "operationKind": "query",
-    "text": "query CoursePresenterCourseQuery(\n  $code: Int!\n  $facultyAbbreviation: String!\n) {\n  courseByCode(code: $code, facultyAbbreviation: $facultyAbbreviation) {\n    id\n    name\n    number\n    description\n    faculty {\n      id\n      abbreviation\n    }\n    courseOfferings {\n      sections {\n        timingDetails {\n          daysOfWeekBitmap\n          time\n          location\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query CoursePresenterCourseQuery(\n  $code: Int!\n  $facultyAbbreviation: String!\n) {\n  courseByCode(code: $code, facultyAbbreviation: $facultyAbbreviation) {\n    id\n    name\n    number\n    description\n    faculty {\n      id\n      abbreviation\n    }\n    courseOfferings {\n      sections {\n        componentType\n        number\n        classNumber\n        professorNames\n        status\n        waitListSize\n        campus\n        delivery\n        timingDetails {\n          daysOfWeekBitmap\n          time\n          location\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "99b323e232d947a333a70e37f4a30f90";
+(node as any).hash = "937bcb4d5a1c6d7a719a923a6a172a08";
 
 export default node;

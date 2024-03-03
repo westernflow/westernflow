@@ -1,7 +1,7 @@
 import { Route, Routes, BrowserRouter } from "react-router-dom";
-import HomePresenter from "./presenters/HomePresenter";
-import { CoursePresenter } from "./presenters/CoursePresenter";
 import { ProfessorPresenter } from "./presenters/ProfessorPresenter";
+import {CoursePresenterSuspenseHandler} from "./components/Suspense/CoursePresenterSuspenseHandler";
+import {HomePresenterSuspenseHandler} from "./components/Suspense/HomePresenterSuspenseHandler";
 
 function App() {
 
@@ -9,8 +9,8 @@ function App() {
     <div className="roboto">
       <BrowserRouter>
         <Routes>
-          <Route path="/" Component={HomePresenter} />
-          <Route path="/course/:courseCode" Component={CoursePresenter} />
+          <Route path="/" Component={HomePresenterSuspenseHandler} />
+          <Route path="/course/:courseCode" Component={CoursePresenterSuspenseHandler} />
           <Route path="/professor/:professorName" Component={ProfessorPresenter} />
         </Routes>
       </BrowserRouter>  

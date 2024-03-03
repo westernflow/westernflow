@@ -5,9 +5,9 @@ import {useLazyLoadQuery} from "react-relay";
 import type {CoursePresenterCourseQuery} from "./__generated__/CoursePresenterCourseQuery.graphql";
 import {useParams} from "react-router-dom";
 import {ContentCard} from "../components/ContentCard";
-import {Table} from "../components/Table";
+import {SectionsPresenter} from "../components/SectionsPresenter";
 
-const CoursePresenterCourseQuery = graphql`
+const GetCourseByCodeQuery = graphql`
     query CoursePresenterCourseQuery($code: Int!, $facultyAbbreviation: String!) {
         courseByCode(code: $code, facultyAbbreviation: $facultyAbbreviation){
             id
@@ -20,13 +20,21 @@ const CoursePresenterCourseQuery = graphql`
             }
             courseOfferings {
                 sections {
+                    componentType
+                    number
+                    classNumber
+                    professorNames
+                    status
+                    waitListSize
+                    campus
+                    delivery
                     timingDetails {
                         daysOfWeekBitmap
                         time
                         location
                     }
                 }
-            }
+            } 
         }
     }
 `;
@@ -37,40 +45,29 @@ export function CoursePresenter() {
 	const code = parseInt(codeString ? codeString : "");
 
 	const courseData = useLazyLoadQuery<CoursePresenterCourseQuery>(
-		CoursePresenterCourseQuery,
+		GetCourseByCodeQuery,
 		{
 			code: isNaN(code) ? -1 : code,
 			facultyAbbreviation: facultyAbbreviation ? facultyAbbreviation.toUpperCase() : ""
 		},
 	).courseByCode;
 	
-	const isLoading = !courseData;
+	console.log(courseData);
 	
-	if (isLoading) {
-		return (
-			<ContentContainer>
-				<Navbar/>
-				<ContentCard classNames="my-6">
-					<div>Loading...</div>
-				</ContentCard>
-			</ContentContainer>
-		)
-	}
-
 	return (
 		<ContentContainer>
 			<Navbar/>
-			<ContentCard classNames="my-6">
+			<ContentCard classNames="flex-row my-6">
 				<h2 className="text-indigo-600 text-2xl">{courseData.name}</h2>
 				<p className="text-gray-600">{courseData.faculty?.abbreviation + " " + courseData.number}</p>
 				
 				<p className="text-gray-600 mt-3">{courseData.description}</p>
 			</ContentCard>
 			
-			<ContentCard classNames="my-6">
+			<ContentCard classNames="flex-row my-6">
 				<h2 className="text-indigo-600 text-xl">Course Offerings</h2>
 				<div className={'my-6'}>
-					<Table/>
+					<SectionsPresenter/>
 				</div>
 			</ContentCard>
 		</ContentContainer>
