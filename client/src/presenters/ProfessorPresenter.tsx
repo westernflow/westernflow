@@ -6,7 +6,6 @@ import {
   YellowPurpleGradiant,
 } from "../constants/styleNames";
 import { stripSuffix } from "../utils/common";
-import { Navbar } from "../shared/Navbar";
 import { ProfessorRating } from "../components/ProfessorRating";
 import { ProfessorReviewComponent } from "../components/Review";
 
@@ -53,9 +52,6 @@ export const ProfessorPresenter = () => {
 
   return professor ? (
     <div style={{ position: "relative", minHeight: "100vh" }}>
-      <div style={{ position: "sticky", top: 0, zIndex: 10 }}>
-        <Navbar />
-      </div>
       <div className="flex flex-col min-h-screen">
         <div className={`${YellowPurpleGradiant} text-yellow-50 pt-10 pb-4`}>
           <div className={`${ContentContainer}`}>
