@@ -26,6 +26,7 @@ public class Startup
             .AddType<CourseType>()
             .AddType<CourseOfferingType>()
             .AddType<SectionType>()
+            .AddGlobalObjectIdentification()
             .AddDataLoader<CourseBatchDataLoader>()
             .AddDataLoader<FacultyBatchDataLoader>()
             .AddDataLoader<CourseOfferingGroupedDataLoader>()
