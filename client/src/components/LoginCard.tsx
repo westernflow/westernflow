@@ -1,6 +1,29 @@
+import {useGoogleLogin} from "@react-oauth/google";
+
 export default function LoginCard() {
+    const googleLogin = useGoogleLogin({
+        onSuccess: async (codeResponse) => {
+            const response = await fetch("http://localhost:5095/auth/google", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    code: codeResponse.code,
+                }),
+            });
+            const data = await response.json();
+            console.log(data);
+        },
+        onError: (error) => {
+            console.error(error);
+        },
+        flow: "auth-code",
+    })
+    
     return (
         <>
+            <div id="sign-in-div"></div>
             <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-md">
                     <img
@@ -89,8 +112,7 @@ export default function LoginCard() {
                             </div>
 
                             <div className="mt-6 grid grid-cols-2 gap-4">
-                                <a
-                                    href="#"
+                                <button onClick={() => {googleLogin()}}
                                     className="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent"
                                 >
                                     <svg className="h-5 w-5" aria-hidden="true" viewBox="0 0 24 24">
@@ -112,7 +134,7 @@ export default function LoginCard() {
                                         />
                                     </svg>
                                     <span className="text-sm font-semibold leading-6">Google</span>
-                                </a>
+                                </button>
 
                                 <a
                                     href="#"
