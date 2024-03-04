@@ -80,7 +80,7 @@ export default function SearchBar() {
 		if (selectedCourse != null) {
 			navigate("/course/" + selectedCourse.facultyAbbreviation.toLowerCase() + "-" + selectedCourse.number.toString())
 		}
-	}, [selectedCourse]);
+	}, [selectedCourse, navigate]);
 
 	const filteredCourses = filterCourses(courses, query)
 
@@ -89,6 +89,7 @@ export default function SearchBar() {
 			<div className="relative mt-2">
 				<Combobox.Input
 					ref={inputRef}
+					autoComplete={"off"}
 					className="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 					onChange={(event) => setQuery(event.target.value)}
 					displayValue={(course: SearchCourse) => course ? course.facultyAbbreviation + " " + course.number.toString() + " — " + course.name : ""}
@@ -108,11 +109,11 @@ export default function SearchBar() {
 										active ? 'bg-indigo-600 text-white' : 'text-gray-900'
 									)
 								}
-								onKeyPress={(event) => {console.log(event)}}
 							>
 								{({active, selected}) => (
 									<Link
-										to={"/course/" + course.facultyAbbreviation.toLowerCase() + "-" + course.number.toString()}>
+										to={"/course/" + course.facultyAbbreviation.toLowerCase() + "-" + course.number.toString()}
+									>
                                         <span
 	                                        className={classNames('block truncate')}><span
 	                                        className={classNames('font-semibold')}>{course.facultyAbbreviation + " " + course.number.toString()}</span> {" — " + course.name}</span>

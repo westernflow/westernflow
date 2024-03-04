@@ -5,7 +5,7 @@ import {useLazyLoadQuery} from "react-relay";
 import type {CoursePresenterCourseQuery} from "./__generated__/CoursePresenterCourseQuery.graphql";
 import {useParams} from "react-router-dom";
 import {ContentCard} from "../components/ContentCard";
-import {SectionsPresenter} from "../components/SectionsPresenter";
+import {CourseOfferingPresenter} from "../components/CourseOfferingPresenter";
 
 const GetCourseByCodeQuery = graphql`
     query CoursePresenterCourseQuery($code: Int!, $facultyAbbreviation: String!) {
@@ -18,23 +18,7 @@ const GetCourseByCodeQuery = graphql`
                 id
                 abbreviation
             }
-            courseOfferings {
-                sections {
-                    componentType
-                    number
-                    classNumber
-                    professorNames
-                    status
-                    waitListSize
-                    campus
-                    delivery
-                    timingDetails {
-                        daysOfWeekBitmap
-                        time
-                        location
-                    }
-                }
-            } 
+	        ...CourseOfferingPresenter_offeringData
         }
     }
 `;
@@ -52,24 +36,21 @@ export function CoursePresenter() {
 		},
 	).courseByCode;
 	
-	console.log(courseData);
-	
 	return (
-		<ContentContainer>
-			<Navbar/>
-			<ContentCard classNames="flex-row my-6">
-				<h2 className="text-indigo-600 text-2xl">{courseData.name}</h2>
-				<p className="text-gray-600">{courseData.faculty?.abbreviation + " " + courseData.number}</p>
-				
-				<p className="text-gray-600 mt-3">{courseData.description}</p>
-			</ContentCard>
-			
-			<ContentCard classNames="flex-row my-6">
-				<h2 className="text-indigo-600 text-xl">Course Offerings</h2>
+		<div className="bg-gray-50">
+			<ContentContainer additionalClasses="border bg-white">
+				<Navbar/>
+				<ContentCard classNames="flex-row my-6">
+					<h2 className="text-indigo-600 text-2xl">{courseData.name}</h2>
+					<p className="text-gray-600">{courseData.faculty?.abbreviation + " " + courseData.number}</p>
+
+					<p className="text-gray-600 mt-3">{courseData.description}</p>
+				</ContentCard>
+
 				<div className={'my-6'}>
-					<SectionsPresenter/>
+					<CourseOfferingPresenter offeringData={courseData} />
 				</div>
-			</ContentCard>
-		</ContentContainer>
+			</ContentContainer>
+		</div>
 	)
 }
