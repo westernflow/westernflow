@@ -18,18 +18,15 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({children}) => {
 
 	useEffect(() => {
 		const fetchUserData = async () => {
-			const accessToken = localStorage.getItem('accessToken');
-			if (!accessToken) {
-				const newAccessToken = await refreshTokens();
-				if (!newAccessToken) return;
-				const userData = await getGoogleUserInfo(newAccessToken);
-				if (!userData) return;
-				login(userData);
-			} else {
-				const userData = await getGoogleUserInfo(accessToken);
-				if (!userData) return;
-				login(userData);
-			}
+			const refreshToken = localStorage.getItem('refreshToken');
+			if (!refreshToken) return;
+			
+			const newAccessToken = await refreshTokens();
+			if (!newAccessToken) return;
+			
+			const userData = await getGoogleUserInfo(newAccessToken);
+			if (!userData) return;
+			login(userData);
 		}
 
 		fetchUserData();
