@@ -21,7 +21,15 @@ export default function LoginCard() {
             localStorage.setItem('token', data.accessToken);
             localStorage.setItem('refreshToken', data.refreshToken);
             
-            login(data.accessToken);
+            // using the access Token query https://www.googleapis.com/oauth2/v3/userinfo to get the user data
+            const userDataResponse = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+                headers: {
+                    Authorization: `Bearer ${data.accessToken}`,
+                },
+            });
+            
+            const userData = await userDataResponse.json();
+            login(userData);
         },
         onError: (error) => {
             console.error(error);
