@@ -1,19 +1,27 @@
 import {useGoogleLogin} from "@react-oauth/google";
+import {useUser} from "../contexts/UserContext";
 
 export default function LoginCard() {
+    const { login } = useUser();
+    
     const googleLogin = useGoogleLogin({
         onSuccess: async (codeResponse) => {
-            const response = await fetch("http://localhost:5095/auth/google", {
+            console.log(codeResponse)
+            const response = await fetch("http://localhost:5095/api/auth/google", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
                     code: codeResponse.code,
+                    redirectUri: "http://localhost:3000",
                 }),
             });
             const data = await response.json();
-            console.log(data);
+            localStorage.setItem('token', data.accessToken);
+            localStorage.setItem('refreshToken', data.refreshToken);
+            
+            login(data.accessToken);
         },
         onError: (error) => {
             console.error(error);
@@ -23,7 +31,6 @@ export default function LoginCard() {
     
     return (
         <>
-            <div id="sign-in-div"></div>
             <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-md">
                     <img
