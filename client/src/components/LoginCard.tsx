@@ -2,7 +2,7 @@ import {useGoogleLogin} from "@react-oauth/google";
 import {useUser} from "../contexts/UserContext";
 
 export default function LoginCard() {
-    const { login } = useUser();
+    const { login, user } = useUser();
     
     const googleLogin = useGoogleLogin({
         onSuccess: async (codeResponse) => {
@@ -18,7 +18,7 @@ export default function LoginCard() {
                 }),
             });
             const data = await response.json();
-            localStorage.setItem('token', data.accessToken);
+            localStorage.setItem('accessToken', data.accessToken);
             localStorage.setItem('refreshToken', data.refreshToken);
             
             // using the access Token query https://www.googleapis.com/oauth2/v3/userinfo to get the user data
@@ -36,6 +36,11 @@ export default function LoginCard() {
         },
         flow: "auth-code",
     })
+    
+    // if user is already logged in, don't show the login card
+    if (user) {
+        return null;
+    }
     
     return (
         <>

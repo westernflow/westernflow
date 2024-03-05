@@ -4,7 +4,8 @@ import ContentContainer from "../components/ContentContainer";
 
 export default function Home() {
     return (
-        <ContentContainer>
+        <div className="bg-slate-50">
+            <ContentContainer additionalClasses="border bg-white">
             <div className="flex justify-center flex-col lg:flex-row">
                 <div className="flex flex-col">
                     <HeaderSection />
@@ -13,6 +14,7 @@ export default function Home() {
                 <LoginCard />
             </div>
         </ContentContainer>
+        </div>
     );
 }
 

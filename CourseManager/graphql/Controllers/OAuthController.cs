@@ -35,6 +35,27 @@ public class OAuthController : ControllerBase
         }
     }
     
+    [HttpPost("google/refresh")]    
+    public async Task<IActionResult> RefreshToken([FromBody] TokenRequestModel requestModel)
+    {
+        using (var httpClient = new HttpClient())
+        {
+            var response = await httpClient.PostAsync("https://oauth2.googleapis.com/token", new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("refresh_token", requestModel.Code),
+                new KeyValuePair<string, string>("client_id", _configuration["OAuth:Google:ClientId"]),
+                new KeyValuePair<string, string>("client_secret", _configuration["OAuth:Google:ClientSecret"]),
+                new KeyValuePair<string, string>("grant_type", "refresh_token"),
+            }));
+
+            var responseString = await response.Content.ReadAsStringAsync();
+            var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseString);
+            Console.WriteLine($"New access token: {tokenResponse.AccessToken}");
+
+            return Ok(tokenResponse);
+        }
+    }
+    
     
     public class TokenRequestModel
     {
