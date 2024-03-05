@@ -2,22 +2,27 @@ import SearchBar from "../components/SearchBar"
 import LoginCard from "../components/LoginCard"
 import ContentContainer from "../components/ContentContainer";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import {Spacer, VStack} from "@chakra-ui/react";
 
 export default function Home() {
 	return (
 		<div className="bg-slate-50">
 			<ContentContainer additionalClasses="border bg-white">
-                <Navbar />
-				<div className="flex justify-center flex-col xl:flex-row">
-					<div className="flex flex-col">
-						<HeaderSection/>
-                        <SearchBar />
+				<VStack className="min-h-screen">
+					<Navbar/>
+					<div className="flex justify-center flex-col xl:flex-row">
+						<div className="flex flex-col">
+							<HeaderSection/>
+							<SearchBar/>
+						</div>
+						<div className="xl:w-1/2">
+							<LoginCard/>
+						</div>
 					</div>
-                    <div className="xl:w-1/2">
-                        <LoginCard/>
-                    </div>
-				</div>
-                
+					<Spacer />
+					<Footer/>
+				</VStack>
 			</ContentContainer>
 		</div>
 	);

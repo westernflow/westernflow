@@ -6,6 +6,8 @@ import type {CoursePresenterCourseQuery} from "./__generated__/CoursePresenterCo
 import {useParams} from "react-router-dom";
 import {ContentCard} from "../components/ContentCard";
 import {CourseOfferingPresenter} from "../components/CourseOfferingPresenter";
+import Footer from "../components/Footer";
+import {Spacer, VStack} from "@chakra-ui/react";
 
 const GetCourseByCodeQuery = graphql`
     query CoursePresenterCourseQuery($code: Int!, $facultyAbbreviation: String!) {
@@ -13,12 +15,12 @@ const GetCourseByCodeQuery = graphql`
             id
             name
             number
-	        description
+            description
             faculty {
                 id
                 abbreviation
             }
-	        ...CourseOfferingPresenter_offeringData
+            ...CourseOfferingPresenter_offeringData
         }
     }
 `;
@@ -35,21 +37,25 @@ export function CoursePresenter() {
 			facultyAbbreviation: facultyAbbreviation ? facultyAbbreviation.toUpperCase() : ""
 		},
 	).courseByCode;
-	
+
 	return (
 		<div className="bg-gray-50">
 			<ContentContainer additionalClasses="border bg-white">
-				<Navbar/>
-				<ContentCard classNames="flex-row my-6">
-					<h2 className="text-indigo-600 text-2xl">{courseData.name}</h2>
-					<p className="text-gray-600">{courseData.faculty?.abbreviation + " " + courseData.number}</p>
+				<VStack className="min-h-screen">
+					<Navbar/>
+					<ContentCard classNames="flex-row my-6">
+						<h2 className="text-indigo-600 text-2xl">{courseData.name}</h2>
+						<p className="text-gray-600">{courseData.faculty?.abbreviation + " " + courseData.number}</p>
 
-					<p className="text-gray-600 mt-3">{courseData.description}</p>
-				</ContentCard>
+						<p className="text-gray-600 mt-3">{courseData.description}</p>
+					</ContentCard>
 
-				<div className={'my-6'}>
-					<CourseOfferingPresenter offeringData={courseData} />
-				</div>
+					<div className={'my-6 min-w-full'}>
+						<CourseOfferingPresenter offeringData={courseData}/>
+					</div>
+					<Spacer/>
+					<Footer/>
+				</VStack>
 			</ContentContainer>
 		</div>
 	)
