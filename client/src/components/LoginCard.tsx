@@ -1,35 +1,21 @@
 import {useGoogleLogin} from "@react-oauth/google";
 import {useUser} from "../contexts/UserContext";
+import {getAccessAndRefreshToken, getGoogleUserInfo} from "../auth/helpers";
 
 export default function LoginCard() {
     const { login, user } = useUser();
     
     const googleLogin = useGoogleLogin({
         onSuccess: async (codeResponse) => {
-            console.log(codeResponse)
-            const response = await fetch("http://localhost:5095/api/auth/google", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    code: codeResponse.code,
-                    redirectUri: "http://localhost:3000",
-                }),
-            });
-            const data = await response.json();
-            localStorage.setItem('accessToken', data.accessToken);
-            localStorage.setItem('refreshToken', data.refreshToken);
+            const tokens = await getAccessAndRefreshToken(codeResponse.code);
             
-            // using the access Token query https://www.googleapis.com/oauth2/v3/userinfo to get the user data
-            const userDataResponse = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-                headers: {
-                    Authorization: `Bearer ${data.accessToken}`,
-                },
-            });
+            const user = await getGoogleUserInfo(tokens.accessToken)
             
-            const userData = await userDataResponse.json();
-            login(userData);
+            if (user) {
+                login(user);
+            } else {
+                console.error("Failed to get user info from Google");
+            }
         },
         onError: (error) => {
             console.error(error);
