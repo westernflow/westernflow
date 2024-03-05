@@ -12,10 +12,17 @@ class Program
         startup.ConfigureServices(builder.Services);
 
         var app = builder.Build();
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+        }
+        
         startup.Configure(app);
 
+        app.UseRouting();
         app.UseCors();
         app.MapGraphQL();
+        app.MapControllers();
         app.Run();
     }
 }

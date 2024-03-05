@@ -9,18 +9,19 @@ namespace graphql;
 
 public class Startup
 {
-    public IConfiguration Configuration { get; }
+    private IConfiguration _configuration { get; }
 
     public Startup(IConfiguration configuration)
     {
-        Configuration = configuration;
+        _configuration = configuration;
     }
 
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddCors();
-        services.AddCourseManagerDbContext(Configuration);
+        services.AddCourseManagerDbContext(_configuration);
         services.AddScopedRepositories();
+        services.AddControllers();
         services.AddGraphQLServer()
             .AddQueryType<Query>()
             .AddType<CourseType>()
@@ -34,19 +35,21 @@ public class Startup
             .AddDataLoader<TimingDetailsGroupedDataLoader>()
             .AddFiltering()
             .AddProjections()
-            .ModifyRequestOptions(o => o.IncludeExceptionDetails = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development");
+            .ModifyRequestOptions(o =>
+                o.IncludeExceptionDetails =
+                    Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development");
     }
 
     public void Configure(IApplicationBuilder app)
     {
-        var origins = Environment.GetEnvironmentVariable("AllowedOrigins")?.Split(",") ?? new string[] { "http://localhost:3000" };
+        var origins = _configuration["AllowedOrigins"]?.Split(",") ?? new string[] { "http://localhost:3000" };
         foreach (var origin in origins)
         {
             Console.WriteLine($"Allowed origin: {origin}");
         }
+
         app.UseCors(
             options => options.WithOrigins(origins).WithMethods("GET", "POST", "OPTIONS").AllowAnyHeader()
         );
     }
 }
-
