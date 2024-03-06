@@ -4,20 +4,25 @@ import ContentContainer from "../components/ContentContainer";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {Spacer, VStack} from "@chakra-ui/react";
+import {Suspense} from "react";
 
 export default function Home() {
 	return (
 		<div className="bg-slate-50">
 			<ContentContainer additionalClasses="border bg-white">
 				<VStack className="min-h-screen">
-					<Navbar/>
+					<Navbar showSearchBar={false}/>
 					<div className="flex justify-center flex-col xl:flex-row">
 						<div className="flex flex-col">
 							<HeaderSection/>
-							<SearchBar/>
+							<Suspense fallback={<div>loading</div>}>
+								<SearchBar />
+							</Suspense>
 						</div>
 						<div className="xl:w-1/2">
-							<LoginCard/>
+							<Suspense fallback={<div>loading</div>}>
+								<LoginCard/>
+							</Suspense>
 						</div>
 					</div>
 					<Spacer />

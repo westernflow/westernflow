@@ -2,8 +2,13 @@ import SearchBar from "./SearchBar";
 import {useUser} from "../contexts/UserContext"
 import Avatar from "./Avatar";
 
-export default function Navbar() {
+interface NavbarProps {
+	showSearchBar?: boolean;
+}
+
+export default function Navbar(props: NavbarProps) {
 	const {user} = useUser()
+	const showSearchBar = props.showSearchBar ?? true
 
 	return (
 		<header className="bg-white min-w-full">
@@ -15,7 +20,7 @@ export default function Navbar() {
 						     src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt=""/>
 					</a>
 				</div>
-				<div className="w-3/4">
+				<div className={`w-3/4 ${showSearchBar ? "" : "hidden"}`}>
 					<SearchBar/>
 				</div>
 				<div className="flex flex-1 items-center justify-end gap-x-6">

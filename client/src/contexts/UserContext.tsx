@@ -6,6 +6,7 @@ import {User} from "../models/user";
 // Define the context type
 interface UserContextType {
 	user: User | null;
+	isLoading: boolean;
 	login: (userData: User) => void;
 	logout: () => void;
 }
@@ -15,25 +16,35 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 // Create a provider component with typed children
 export const UserProvider: React.FC<{ children: ReactNode }> = ({children}) => {
+	const [user, setUser] = useState<User | null>(null);
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchUserData = async () => {
+			setIsLoading(true); // Set isLoading to true when starting to fetch data
 			const refreshToken = localStorage.getItem('refreshToken');
-			if (!refreshToken) return;
-			
+			if (!refreshToken) {
+				setIsLoading(false); // Set isLoading to false if there's no refreshToken
+				return;
+			}
+
 			const newAccessToken = await refreshTokens();
-			if (!newAccessToken) return;
-			
+			if (!newAccessToken) {
+				setIsLoading(false); // Set isLoading to false if unable to refresh tokens
+				return;
+			}
+
 			const userData = await getGoogleUserInfo(newAccessToken);
-			if (!userData) return;
+			if (!userData) {
+				setIsLoading(false); // Set isLoading to false if there's no user data
+				return;
+			}
 			login(userData);
+			setIsLoading(false); // Set isLoading to false after fetching user data
 		}
-
+		
 		fetchUserData();
-	}, []);
-
-
-	const [user, setUser] = useState<User | null>(null);
+	}, [])
 
 	const login = (userData: User) => {
 		setUser(userData);
@@ -46,7 +57,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({children}) => {
 	};
 
 	return (
-		<UserContext.Provider value={{user, login, logout}}>
+		<UserContext.Provider value={{user, isLoading, login, logout}}>
 			{children}
 		</UserContext.Provider>
 	);

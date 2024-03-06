@@ -1,9 +1,10 @@
 import {useGoogleLogin} from "@react-oauth/google";
 import {useUser} from "../contexts/UserContext";
 import {getAccessAndRefreshToken, getGoogleUserInfo} from "../auth/helpers";
+import {useState} from "react";
 
 export default function LoginCard() {
-    const { login, user } = useUser();
+    const { login, isLoading, user } = useUser();
     
     const googleLogin = useGoogleLogin({
         onSuccess: async (codeResponse) => {
@@ -24,7 +25,7 @@ export default function LoginCard() {
     })
     
     // if user is already logged in, don't show the login card
-    if (user) {
+    if (isLoading || user) {
         return null;
     }
     
