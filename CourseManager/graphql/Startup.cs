@@ -3,6 +3,8 @@ using Data.Entities;
 using Data.Extensions;
 using graphql.DataLoaders;
 using graphql.Types;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Repositories.Extensions;
 
 namespace graphql;
@@ -18,6 +20,15 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.Authority = _configuration["Auth0:Authority"];
+            options.Audience = _configuration["Auth0:Audience"];
+        }); 
         services.AddCors();
         services.AddCourseManagerDbContext(_configuration);
         services.AddScopedRepositories();
@@ -51,5 +62,6 @@ public class Startup
         app.UseCors(
             options => options.WithOrigins(origins).WithMethods("GET", "POST", "OPTIONS").AllowAnyHeader()
         );
+        app.UseAuthentication();
     }
 }
