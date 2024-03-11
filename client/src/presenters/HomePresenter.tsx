@@ -4,9 +4,47 @@ import ContentContainer from "../components/ContentContainer";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {Spacer, VStack} from "@chakra-ui/react";
-import {Suspense} from "react";
+import {Suspense, useEffect} from "react";
+import {useAuth0} from "@auth0/auth0-react";
+
+const LoginButton = () => {
+	const { loginWithRedirect } = useAuth0();
+
+	return <button onClick={() => loginWithRedirect()}>Log In</button>;
+};
+
+const LogoutButton = () => {
+	const { logout } = useAuth0();
+
+	return (
+		<button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
+			Log Out
+		</button>
+	);
+};
 
 export default function Home() {
+	const { isAuthenticated, loginWithRedirect, getAccessTokenSilently } = useAuth0();
+	const getAccessToken = async () => {
+		if (!isAuthenticated) {
+			// This will redirect the user to the login page
+			loginWithRedirect();
+		} else {
+			try {
+				const accessToken = await getAccessTokenSilently();
+				console.log(accessToken);
+			} catch (error) {
+				// If silent acquisition fails, you might need to handle it differently
+				// For example, you could fall back to an interactive method
+				console.error(error);
+			}
+		}
+	};
+	
+	useEffect(() => {
+		getAccessToken();
+	}, [isAuthenticated]);
+	
 	return (
 		<div className="bg-slate-50">
 			<ContentContainer additionalClasses="border bg-white">
@@ -21,7 +59,8 @@ export default function Home() {
 						</div>
 						<div className="xl:w-1/2">
 							<Suspense fallback={<div>loading</div>}>
-								<LoginCard/>
+								<LoginButton/>
+								<LogoutButton/>
 							</Suspense>
 						</div>
 					</div>

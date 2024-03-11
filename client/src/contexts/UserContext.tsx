@@ -21,26 +21,26 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({children}) => {
 
 	useEffect(() => {
 		const fetchUserData = async () => {
-			setIsLoading(true); // Set isLoading to true when starting to fetch data
+			setIsLoading(true); 
 			const refreshToken = localStorage.getItem('refreshToken');
 			if (!refreshToken) {
-				setIsLoading(false); // Set isLoading to false if there's no refreshToken
+				setIsLoading(false); 
 				return;
 			}
 
 			const newAccessToken = await refreshTokens();
 			if (!newAccessToken) {
-				setIsLoading(false); // Set isLoading to false if unable to refresh tokens
+				setIsLoading(false); 
 				return;
 			}
 
 			const userData = await getGoogleUserInfo(newAccessToken);
 			if (!userData) {
-				setIsLoading(false); // Set isLoading to false if there's no user data
+				setIsLoading(false); 
 				return;
 			}
 			login(userData);
-			setIsLoading(false); // Set isLoading to false after fetching user data
+			setIsLoading(false); 
 		}
 		
 		fetchUserData();

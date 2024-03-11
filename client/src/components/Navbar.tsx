@@ -1,5 +1,5 @@
 import SearchBar from "./SearchBar";
-import {useUser} from "../contexts/UserContext"
+import {useAuth0} from "@auth0/auth0-react";
 import Avatar from "./Avatar";
 
 interface NavbarProps {
@@ -7,7 +7,7 @@ interface NavbarProps {
 }
 
 export default function Navbar(props: NavbarProps) {
-	const {user} = useUser()
+	const {user, isAuthenticated, isLoading, logout} = useAuth0();
 	const showSearchBar = props.showSearchBar ?? true
 
 	return (
