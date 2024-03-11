@@ -6,60 +6,29 @@ import {Spacer, VStack} from "@chakra-ui/react";
 import {Suspense, useEffect} from "react";
 import {useAuth0} from "@auth0/auth0-react";
 
-const LoginButton = () => {
-	const { loginWithRedirect } = useAuth0();
-
-	return <button onClick={() => loginWithRedirect()}>Log In</button>;
-};
-
-const LogoutButton = () => {
-	const { logout } = useAuth0();
-
-	return (
-		<button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
-			Log Out
-		</button>
-	);
-};
-
 export default function Home() {
-	const { isAuthenticated, loginWithRedirect, getAccessTokenSilently } = useAuth0();
-	const getAccessToken = async () => {
-		if (!isAuthenticated) {
-			// This will redirect the user to the login page
-		} else {
-			try {
-				const accessToken = await getAccessTokenSilently(
-					{
-						authorizationParams:
-							{
-								scope: 'openid profile email read:current_user update:current_user_metadata'
-							}
-					}
-				);
-				console.log(accessToken);
-				
-				// use this access token to call http://localhost:5095/api/auth/private
-				const response = await fetch('http://localhost:5095/api/auth/private', {
-					headers: {
-						Authorization: `Bearer ${accessToken}`,
-					},
-				});
-				
-				const responseData = await response.json();
-				
-				console.log(responseData);
-				
-			} catch (error) {
-				// If silent acquisition fails, you might need to handle it differently
-				// For example, you could fall back to an interactive method
-				console.error(error);
-			}
-		}
-	};
+	const {isAuthenticated, getAccessTokenSilently} = useAuth0();
 	
+	const testToken = async () => {
+		// get access token silently
+		const token = await getAccessTokenSilently();
+		
+		// use token to call API http://localhost:5059/api/auth/private
+		const response = await fetch("http://localhost:5095/api/auth/private", {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		
+		const responseData = await response.json();
+		
+		console.log(responseData);
+	}
+
 	useEffect(() => {
-		getAccessToken();
+		if (isAuthenticated) {
+			testToken();
+		}
 	}, [isAuthenticated]);
 	
 	return (
@@ -72,12 +41,6 @@ export default function Home() {
 							<HeaderSection/>
 							<Suspense fallback={<div>loading</div>}>
 								<SearchBar />
-							</Suspense>
-						</div>
-						<div className="xl:w-1/2">
-							<Suspense fallback={<div>loading</div>}>
-								<LoginButton/>
-								<LogoutButton/>
 							</Suspense>
 						</div>
 					</div>

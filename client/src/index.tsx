@@ -6,25 +6,19 @@ import App from "./App";
 import "./index.css";
 import {ChakraProvider} from "@chakra-ui/react";
 import {Auth0Provider} from "@auth0/auth0-react";
+import {Auth0ProviderWithVariables} from "./providers/Auth0ProviderWithNavigate";
 
 const root = ReactDOM.createRoot(
 	document.getElementById("root") as HTMLElement
 );
 
-const domain = "dev-p4dlhz8fqi356ze6.us.auth0.com";
 root.render(
 	<RelayEnvironmentProvider environment={RelayEnvironment}>
 		<React.StrictMode>
 			<ChakraProvider>
-				<Auth0Provider domain={domain}
-				               clientId={"V3iA5MlVIx9i7LTJWkxJad0TvOruJV6b"}
-				               authorizationParams={{
-					               redirect_uri: window.location.origin,
-					               audience: `https://westernflow-api.fly.dev/`,
-					               scope: 'openid profile email read:current_user update:current_user_metadata'
-				               }}>
-					<App/>
-				</Auth0Provider>
+				<Auth0ProviderWithVariables>
+					<App />
+				</Auth0ProviderWithVariables>
 			</ChakraProvider>
 		</React.StrictMode>
 	</RelayEnvironmentProvider>

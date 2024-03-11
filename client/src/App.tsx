@@ -1,9 +1,8 @@
 import {Route, Routes, BrowserRouter} from "react-router-dom";
-import {ProfessorPresenter} from "./presenters/ProfessorPresenter";
-import {CoursePresenterSuspenseHandler} from "./components/Suspense/CoursePresenterSuspenseHandler";
 import {RelayEnvironmentProvider} from "react-relay";
 import {RelayEnvironment} from "./RelayEnvironment";
 import Home from "./presenters/HomePresenter";
+import {CoursePresenter} from "./presenters/CoursePresenter";
 
 function App() {
 	return (
@@ -12,8 +11,8 @@ function App() {
 				<BrowserRouter>
 					<Routes>
 						<Route path="/" Component={Home}/>
-						<Route path="/course/:courseCode" Component={CoursePresenterSuspenseHandler}/>
-						<Route path="/professor/:professorName" Component={ProfessorPresenter}/>
+						<Route path="/course/:courseCode"
+						       Component={CoursePresenter}/>
 					</Routes>
 				</BrowserRouter>
 			</div>

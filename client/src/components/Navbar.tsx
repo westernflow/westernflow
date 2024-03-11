@@ -7,7 +7,7 @@ interface NavbarProps {
 }
 
 export default function Navbar(props: NavbarProps) {
-	const {user, isAuthenticated, isLoading, logout} = useAuth0();
+	const {loginWithPopup, isLoading, isAuthenticated} = useAuth0();
 	const showSearchBar = props.showSearchBar ?? true
 
 	return (
@@ -25,15 +25,15 @@ export default function Navbar(props: NavbarProps) {
 				</div>
 				<div className="flex flex-1 items-center justify-end gap-x-6">
 					{
-						!user ?
-							<a
-								href="#"
-								className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-							>
-								Sign in
-							</a>
-							:
-							<Avatar />
+						!isLoading ?
+							(!isAuthenticated ? <button
+									className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+									onClick={() => loginWithPopup()}>
+									Sign in
+								</button>
+								:
+								<Avatar/>)
+							: null
 					}
 				</div>
 			</nav>

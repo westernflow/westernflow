@@ -2,7 +2,7 @@ import graphql from "babel-plugin-relay/macro";
 import {CourseOfferingPresenter_offeringData$key} from "./__generated__/CourseOfferingPresenter_offeringData.graphql";
 import {useFragment} from "react-relay";
 import {useEffect, useState} from "react";
-import {StatusType} from "../models/models";
+import {StatusType} from "../models/enums";
 
 const CourseOfferingPresenterFragment = graphql`
     fragment CourseOfferingPresenter_offeringData on Course {

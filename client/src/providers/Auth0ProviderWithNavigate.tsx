@@ -1,21 +1,17 @@
 import React from "react";
 import {Auth0Provider} from "@auth0/auth0-react";
 
-interface Auth0ProviderWithNavigateProps {
+interface Auth0ProviderProps {
 	children: React.ReactNode;
 }
 
-export const Auth0ProviderWithNavigate = ({children}: Auth0ProviderWithNavigateProps) => {
+export const Auth0ProviderWithVariables = ({children}: Auth0ProviderProps) => {
 	const domain = process.env.REACT_APP_AUTH0_DOMAIN;
 	const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
-	const redirectUri = process.env.REACT_APP_AUTH0_CALLBACK_URL;
 	const audience = process.env.REACT_APP_AUTH0_AUDIENCE;
 	
-	
-	console.log(domain, clientId, redirectUri, audience);
-
-	if (!(domain && clientId && redirectUri && audience)) {
-		return null;
+	if (!(domain && clientId && audience)) {
+		return <div>Missing Auth0 environment variables</div>;
 	}
 
 	return (
@@ -24,7 +20,8 @@ export const Auth0ProviderWithNavigate = ({children}: Auth0ProviderWithNavigateP
 			clientId={clientId}
 			authorizationParams={{
 				audience: audience,
-				redirect_uri: redirectUri,
+				redirect_uri: window.location.origin,
+				scope: 'openid profile email read:current_user update:current_user_metadata'
 			}}
 		>
 			{children}
