@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Data;
 using Data.Entities;
 using Data.Extensions;
@@ -5,6 +6,7 @@ using graphql.DataLoaders;
 using graphql.Types;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Repositories.Extensions;
 
 namespace graphql;
@@ -28,6 +30,30 @@ public class Startup
         {
             options.Authority = _configuration["Auth0:Authority"];
             options.Audience = _configuration["Auth0:Audience"];
+            options.IncludeErrorDetails = true;
+            // Log detailed errors
+            options.Events = new JwtBearerEvents
+            {
+                OnAuthenticationFailed = context =>
+                {
+                    Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+                    return Task.CompletedTask;
+                },
+                OnChallenge = context =>
+                {
+                    Console.WriteLine(context.Request.Body);
+                    if (context.AuthenticateFailure != null)
+                    {
+                        Console.WriteLine($"Authentication challenge failed: {context.AuthenticateFailure.Message}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Authentication challenge failed.");
+                        Console.WriteLine($"error description... {context.ErrorDescription}");
+                    }
+                    return Task.CompletedTask;
+                },
+            };
         }); 
         services.AddCors();
         services.AddCourseManagerDbContext(_configuration);
@@ -47,8 +73,7 @@ public class Startup
             .AddFiltering()
             .AddProjections()
             .ModifyRequestOptions(o =>
-                o.IncludeExceptionDetails =
-                    Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development");
+                o.IncludeExceptionDetails = true);
     }
 
     public void Configure(IApplicationBuilder app)
@@ -62,6 +87,8 @@ public class Startup
         app.UseCors(
             options => options.WithOrigins(origins).WithMethods("GET", "POST", "OPTIONS").AllowAnyHeader()
         );
+        app.UseRouting();
         app.UseAuthentication();
+        app.UseAuthorization();
     }
 }

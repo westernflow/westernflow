@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace graphql.Controllers;
 
-[Route("api/auth/")]
+[Route("api/Oauth/")]
 [ApiController]
 public class OAuthController : ControllerBase
 {

@@ -20,8 +20,8 @@ root.render(
 				               clientId={"V3iA5MlVIx9i7LTJWkxJad0TvOruJV6b"}
 				               authorizationParams={{
 					               redirect_uri: window.location.origin,
-					               audience: `https://${domain}/api/v2/`,
-					               scope: 'openid profile email',
+					               audience: `https://westernflow-api.fly.dev/`,
+					               scope: 'openid profile email read:current_user update:current_user_metadata'
 				               }}>
 					<App/>
 				</Auth0Provider>

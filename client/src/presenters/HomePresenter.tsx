@@ -1,5 +1,4 @@
 import SearchBar from "../components/SearchBar"
-import LoginCard from "../components/LoginCard"
 import ContentContainer from "../components/ContentContainer";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -28,11 +27,29 @@ export default function Home() {
 	const getAccessToken = async () => {
 		if (!isAuthenticated) {
 			// This will redirect the user to the login page
-			loginWithRedirect();
 		} else {
 			try {
-				const accessToken = await getAccessTokenSilently();
+				const accessToken = await getAccessTokenSilently(
+					{
+						authorizationParams:
+							{
+								scope: 'openid profile email read:current_user update:current_user_metadata'
+							}
+					}
+				);
 				console.log(accessToken);
+				
+				// use this access token to call http://localhost:5095/api/auth/private
+				const response = await fetch('http://localhost:5095/api/auth/private', {
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+					},
+				});
+				
+				const responseData = await response.json();
+				
+				console.log(responseData);
+				
 			} catch (error) {
 				// If silent acquisition fails, you might need to handle it differently
 				// For example, you could fall back to an interactive method
