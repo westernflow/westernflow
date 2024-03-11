@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import {Spacer, VStack} from "@chakra-ui/react";
 import {Suspense, useEffect} from "react";
 import {useAuth0} from "@auth0/auth0-react";
+import fetchWrapper from "../api/fetchWrapper";
 
 export default function Home() {
 	const {isAuthenticated, getAccessTokenSilently} = useAuth0();
@@ -13,8 +14,7 @@ export default function Home() {
 		// get access token silently
 		const token = await getAccessTokenSilently();
 		
-		// use token to call API http://localhost:5059/api/auth/private
-		const response = await fetch("http://localhost:5095/api/auth/private", {
+		const response = await fetchWrapper("api/auth/private", {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
