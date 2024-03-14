@@ -3,34 +3,9 @@ import ContentContainer from "../components/ContentContainer";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {Spacer, VStack} from "@chakra-ui/react";
-import {Suspense, useEffect} from "react";
-import {useAuth0} from "@auth0/auth0-react";
-import fetchWrapper from "../api/fetchWrapper";
+import {Suspense} from "react";
 
 export default function Home() {
-	const {isAuthenticated, getAccessTokenSilently} = useAuth0();
-	
-	const testToken = async () => {
-		// get access token silently
-		const token = await getAccessTokenSilently();
-		
-		const response = await fetchWrapper("api/auth/private", {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		});
-		
-		const responseData = await response.json();
-		
-		console.log(responseData);
-	}
-
-	useEffect(() => {
-		if (isAuthenticated) {
-			testToken();
-		}
-	}, [isAuthenticated]);
-	
 	return (
 		<div className="bg-slate-50">
 			<ContentContainer additionalClasses="border bg-white">

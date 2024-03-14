@@ -22,7 +22,6 @@ class Program
         startup.Configure(app);
 
         app.MapGraphQL();
-        app.MapControllers();
         app.Run();
     }
 }

@@ -13,11 +13,11 @@ namespace graphql;
 
 public class Startup
 {
-    private IConfiguration _configuration { get; }
+    private IConfiguration Configuration { get; }
 
     public Startup(IConfiguration configuration)
     {
-        _configuration = configuration;
+        Configuration = configuration;
     }
 
     public void ConfigureServices(IServiceCollection services)
@@ -28,37 +28,14 @@ public class Startup
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer(options =>
         {
-            options.Authority = _configuration["Auth0:Authority"];
-            options.Audience = _configuration["Auth0:Audience"];
+            options.Authority = Configuration["Auth0:Authority"];
+            options.Audience = Configuration["Auth0:Audience"];
             options.IncludeErrorDetails = true;
-            // Log detailed errors
-            options.Events = new JwtBearerEvents
-            {
-                OnAuthenticationFailed = context =>
-                {
-                    Console.WriteLine($"Authentication failed: {context.Exception.Message}");
-                    return Task.CompletedTask;
-                },
-                OnChallenge = context =>
-                {
-                    Console.WriteLine(context.Request.Body);
-                    if (context.AuthenticateFailure != null)
-                    {
-                        Console.WriteLine($"Authentication challenge failed: {context.AuthenticateFailure.Message}");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Authentication challenge failed.");
-                        Console.WriteLine($"error description... {context.ErrorDescription}");
-                    }
-                    return Task.CompletedTask;
-                },
-            };
-        }); 
+        });
+        services.AddAuthorization();
         services.AddCors();
-        services.AddCourseManagerDbContext(_configuration);
+        services.AddCourseManagerDbContext(Configuration);
         services.AddScopedRepositories();
-        services.AddControllers();
         services.AddGraphQLServer()
             .AddQueryType<Query>()
             .AddType<CourseType>()
@@ -78,7 +55,7 @@ public class Startup
 
     public void Configure(IApplicationBuilder app)
     {
-        var origins = _configuration["AllowedOrigins"]?.Split(",") ?? new string[] { "http://localhost:3000" };
+        var origins = Configuration["AllowedOrigins"]?.Split(",") ?? new string[] { "http://localhost:3000" };
         foreach (var origin in origins)
         {
             Console.WriteLine($"Allowed origin: {origin}");
