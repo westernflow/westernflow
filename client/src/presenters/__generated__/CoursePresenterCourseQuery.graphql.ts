@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8de397756b3f64c93ffec217c4ab947f>>
+ * @generated SignedSource<<d611b8f2cc464e4a8eb7e713bcd6f202>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -171,6 +171,7 @@ return {
                 "name": "sections",
                 "plural": true,
                 "selections": [
+                  (v2/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -265,12 +266,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "94803be9495126fe92e028f78a417512",
+    "cacheID": "8484cc764ccfecf1140d4da45d3e2f0c",
     "id": null,
     "metadata": {},
     "name": "CoursePresenterCourseQuery",
     "operationKind": "query",
-    "text": "query CoursePresenterCourseQuery(\n  $code: Int!\n  $facultyAbbreviation: String!\n) {\n  courseByCode(code: $code, facultyAbbreviation: $facultyAbbreviation) {\n    id\n    name\n    number\n    description\n    faculty {\n      id\n      abbreviation\n    }\n    ...CourseOfferingPresenter_offeringData\n  }\n}\n\nfragment CourseOfferingPresenter_offeringData on Course {\n  courseOfferings {\n    sections {\n      componentType\n      number\n      classNumber\n      professorNames\n      status\n      waitListSize\n      campus\n      delivery\n      timingDetails {\n        daysOfWeekBitmap\n        time\n        location\n      }\n    }\n  }\n}\n"
+    "text": "query CoursePresenterCourseQuery(\n  $code: Int!\n  $facultyAbbreviation: String!\n) {\n  courseByCode(code: $code, facultyAbbreviation: $facultyAbbreviation) {\n    id\n    name\n    number\n    description\n    faculty {\n      id\n      abbreviation\n    }\n    ...CourseOfferingPresenter_offeringData\n  }\n}\n\nfragment CourseOfferingPresenter_offeringData on Course {\n  courseOfferings {\n    sections {\n      id\n      componentType\n      number\n      classNumber\n      professorNames\n      status\n      waitListSize\n      campus\n      delivery\n      timingDetails {\n        daysOfWeekBitmap\n        time\n        location\n      }\n    }\n  }\n}\n"
   }
 };
 })();

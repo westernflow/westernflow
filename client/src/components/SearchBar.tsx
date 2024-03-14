@@ -111,9 +111,7 @@ export default function SearchBar() {
 								}
 							>
 								{({active, selected}) => (
-									<Link
-										to={"/course/" + course.facultyAbbreviation.toLowerCase() + "-" + course.number.toString()}
-									>
+									<div>
                                         <span
 	                                        className={classNames('block truncate')}><span
 	                                        className={classNames('font-semibold')}>{course.facultyAbbreviation + " " + course.number.toString()}</span> {" — " + course.name}</span>
@@ -126,7 +124,7 @@ export default function SearchBar() {
 											>
                                             </span>
 										)}
-									</Link>
+									</div>
 								)}
 							</Combobox.Option>
 						))}

@@ -24,6 +24,14 @@ public class Query
     public async Task<Faculty> GetFacultyByIdAsync(int id, [Service] IFacultyRepository facultyRepository)
         => await facultyRepository.GetByIdAsync(id);
     
+    [NodeResolver]
+    public async Task<CourseOffering> GetCourseOfferingByIdAsync(int id, [Service] ICourseOfferingRepository courseOfferingRepository)
+        => await courseOfferingRepository.GetByIdAsync(id);
+    
+    [NodeResolver]
+    public async Task<Section> GetSectionByIdAsync(int id, [Service] ISectionRepository sectionRepository)
+        => await sectionRepository.GetByIdAsync(id);
+    
     public async Task<Course> GetCourseByIdAsync(int id, CourseBatchDataLoader courseBatchDataLoader, CancellationToken cancellationToken)
         => await courseBatchDataLoader.LoadAsync(id, cancellationToken); 
     

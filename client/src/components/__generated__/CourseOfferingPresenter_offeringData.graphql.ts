@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<741b2bf7bb07d2bd98dc1f6b73efb9ef>>
+ * @generated SignedSource<<c89759f319da3289b09c45183aba181b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,6 +21,7 @@ export type CourseOfferingPresenter_offeringData$data = {
       readonly classNumber: number;
       readonly componentType: ComponentType;
       readonly delivery: DeliveryType;
+      readonly id: number;
       readonly number: number;
       readonly professorNames: ReadonlyArray<string>;
       readonly status: StatusType;
@@ -61,6 +62,13 @@ const node: ReaderFragment = {
           "name": "sections",
           "plural": true,
           "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "id",
+              "storageKey": null
+            },
             {
               "alias": null,
               "args": null,
@@ -160,6 +168,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "64cfd29fd13f9f375744bbd71a93add5";
+(node as any).hash = "77ee63ac093099877a28eed418db45ce";
 
 export default node;

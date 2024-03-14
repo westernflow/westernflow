@@ -43,14 +43,17 @@ export function CoursePresenter() {
 			<ContentContainer additionalClasses="border bg-white">
 				<VStack className="min-h-screen">
 					<Navbar/>
-					<ContentCard classNames="flex-row my-6">
+					<ContentCard classNames="w-full">
 						<h2 className="text-indigo-600 text-2xl">{courseData.name}</h2>
 						<p className="text-gray-600">{courseData.faculty?.abbreviation + " " + courseData.number}</p>
-
-						<p className="text-gray-600 mt-3">{courseData.description}</p>
+					</ContentCard>
+					<ContentCard classNames="my-6 w-full">
+						<div>
+							<p className="text-gray-600 mt-3">{courseData.description}</p>
+						</div>
 					</ContentCard>
 
-					<div className={'my-6 min-w-full'}>
+					<div className={'my-6 w-screen md:w-full'}>
 						<CourseOfferingPresenter offeringData={courseData}/>
 					</div>
 					<Spacer/>
