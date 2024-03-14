@@ -3,6 +3,15 @@ import {RelayEnvironmentProvider} from "react-relay";
 import {RelayEnvironment} from "./RelayEnvironment";
 import Home from "./presenters/HomePresenter";
 import {CoursePresenter} from "./presenters/CoursePresenter";
+import {Suspense} from "react";
+
+const SuspendedCoursePresenter = () => {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<CoursePresenter/>
+		</Suspense>
+	)
+}
 
 function App() {
 	return (
@@ -12,7 +21,7 @@ function App() {
 					<Routes>
 						<Route path="/" Component={Home}/>
 						<Route path="/course/:courseCode"
-						       Component={CoursePresenter}/>
+						       Component={SuspendedCoursePresenter}/>
 					</Routes>
 				</BrowserRouter>
 			</div>
