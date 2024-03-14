@@ -9,7 +9,20 @@ namespace Repositories.Repositories;
 
 public class CourseRepository : GenericRepository<Course>, ICourseRepository
 {
-    public CourseRepository(IDbContextFactory<CourseManagerDbContext> dbContextFactory) : base(dbContextFactory)
+    private readonly IDbContextFactory<CourseManagerDbContext> _contextFactory;
+
+    public CourseRepository(IDbContextFactory<CourseManagerDbContext> contextFactory) : base(contextFactory)
     {
+        _contextFactory = contextFactory;
+    }
+
+    public async Task<Course> GetByCodeAsync(string facultyName, int code)
+    {
+        using (var dbContext = await _contextFactory.CreateDbContextAsync())
+        {
+            return await dbContext.Set<Course>()
+                .Include(c => c.Faculty)
+                .FirstOrDefaultAsync(c => c.Faculty.Abbreviation == facultyName && c.Number == code);
+        }
     }
 }
