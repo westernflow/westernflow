@@ -3,9 +3,9 @@ import {useAuth0} from "@auth0/auth0-react";
 
 export default function Avatar() {
 	const {user, isAuthenticated, isLoading, logout} = useAuth0();
-
+	
 	if (isLoading || !isAuthenticated || !user) {
-		return <div>Loading...</div>;
+		return null;
 	}
 
 	return (
@@ -14,6 +14,7 @@ export default function Avatar() {
 				<MenuButton as={Button} rounded={'full'} variant={'link'} cursor={'pointer'} minW={0}>
 					<Image
 						className="h-10 w-10 rounded-full"
+						referrerPolicy={'no-referrer'}
 						src={user.picture}
 					/>
 				</MenuButton>
