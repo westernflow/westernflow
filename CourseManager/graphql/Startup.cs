@@ -1,15 +1,19 @@
+using System.Security.Claims;
 using Data;
 using Data.Entities;
 using Data.Extensions;
 using graphql.DataLoaders;
 using graphql.Types;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Repositories.Extensions;
 
 namespace graphql;
 
 public class Startup
 {
-    public IConfiguration Configuration { get; }
+    private IConfiguration Configuration { get; }
 
     public Startup(IConfiguration configuration)
     {
@@ -18,6 +22,17 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.Authority = Configuration["Auth0:Authority"];
+            options.Audience = Configuration["Auth0:Audience"];
+            options.IncludeErrorDetails = true;
+        });
+        services.AddAuthorization();
         services.AddCors();
         services.AddCourseManagerDbContext(Configuration);
         services.AddScopedRepositories();
@@ -26,6 +41,7 @@ public class Startup
             .AddType<CourseType>()
             .AddType<CourseOfferingType>()
             .AddType<SectionType>()
+            .AddGlobalObjectIdentification()
             .AddDataLoader<CourseBatchDataLoader>()
             .AddDataLoader<FacultyBatchDataLoader>()
             .AddDataLoader<CourseOfferingGroupedDataLoader>()
@@ -33,15 +49,23 @@ public class Startup
             .AddDataLoader<TimingDetailsGroupedDataLoader>()
             .AddFiltering()
             .AddProjections()
-            .ModifyRequestOptions(o => o.IncludeExceptionDetails = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development");
+            .ModifyRequestOptions(o =>
+                o.IncludeExceptionDetails = true);
     }
 
     public void Configure(IApplicationBuilder app)
     {
-        var origins = Environment.GetEnvironmentVariable("AllowedOrigins")?.Split(",") ?? new string[] { "https://westernflow.vercel.app" };
+        var origins = Configuration["AllowedOrigins"]?.Split(",") ?? new string[] { "http://localhost:3000" };
+        foreach (var origin in origins)
+        {
+            Console.WriteLine($"Allowed origin: {origin}");
+        }
+
         app.UseCors(
             options => options.WithOrigins(origins).WithMethods("GET", "POST", "OPTIONS").AllowAnyHeader()
         );
+        app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
     }
 }
-
