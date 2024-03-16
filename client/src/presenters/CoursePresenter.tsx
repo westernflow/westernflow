@@ -53,7 +53,7 @@ export function CoursePresenter() {
 						</div>
 					</ContentCard>
 
-					<div className={'my-6 w-screen md:w-full'}>
+					<div className={'my-3 w-screen md:w-full'}>
 						<CourseOfferingPresenter offeringData={courseData}/>
 					</div>
 					<Spacer/>

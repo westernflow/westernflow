@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Data;
 
-public class CourseManagerDbContext : DbContext
+public class CourseManagerDbContext : ContextBase 
 {
     public CourseManagerDbContext(DbContextOptions<CourseManagerDbContext> options) : base(options)
     {
@@ -35,10 +35,6 @@ public class CourseManagerDbContext : DbContext
             .HasIndex(c => new {c.Number, c.FacultyId})
             .IsUnique();
         
-        modelBuilder.Entity<Reviewer>()
-            .HasIndex(r => r.Email)
-            .IsUnique();
-        
         modelBuilder.Entity<Faculty>()
             .HasIndex(f => f.Name)
             .IsUnique();
@@ -53,6 +49,10 @@ public class CourseManagerDbContext : DbContext
 
         modelBuilder.Entity<TimingDetails>()
             .HasIndex(c => new {c.DaysOfWeekBitmap, c.Time, c.SectionId})
+            .IsUnique();
+
+        modelBuilder.Entity<Reviewer>()
+            .HasIndex(c => new { c.SubjectId })
             .IsUnique();
         
         // Name the CourseReview table CourseReviews

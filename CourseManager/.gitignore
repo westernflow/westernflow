@@ -1,3 +1,7 @@
+# ignore all files with .json extension
+**/appsettings.json
+**/appsettings.Development.json
+
 # dependencies
 /node_modules
 /.pnp
