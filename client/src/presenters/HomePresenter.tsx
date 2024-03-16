@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {Spacer, VStack} from "@chakra-ui/react";
 import {Suspense} from "react";
+import QueryOnRender from "../components/QueryOnRender";
 
 export default function Home() {
 	return (
@@ -30,6 +31,7 @@ export default function Home() {
 export function HeaderSection() {
 	return (
 		<div className="bg-white py-4 sm:py-10">
+			<QueryOnRender/>
 			<div className="mx-auto px-3">
 				<div className="mx-auto">
 					<a className="text-base font-semibold leading-7 text-indigo-600" href="https://uwflow.com">Inspired

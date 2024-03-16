@@ -35,10 +35,6 @@ public class CourseManagerDbContext : DbContext
             .HasIndex(c => new {c.Number, c.FacultyId})
             .IsUnique();
         
-        modelBuilder.Entity<Reviewer>()
-            .HasIndex(r => r.Email)
-            .IsUnique();
-        
         modelBuilder.Entity<Faculty>()
             .HasIndex(f => f.Name)
             .IsUnique();
@@ -53,6 +49,10 @@ public class CourseManagerDbContext : DbContext
 
         modelBuilder.Entity<TimingDetails>()
             .HasIndex(c => new {c.DaysOfWeekBitmap, c.Time, c.SectionId})
+            .IsUnique();
+
+        modelBuilder.Entity<Reviewer>()
+            .HasIndex(c => new { c.SubjectIdentifier })
             .IsUnique();
         
         // Name the CourseReview table CourseReviews

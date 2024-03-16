@@ -16,9 +16,9 @@ type Course implements Node {
   relatedProfessorReviews: [ProfessorReview!]!
 }
 
-type CourseOffering {
+type CourseOffering implements Node {
   sections: [Section]
-  id: Int!
+  id: ID!
   termId: Int!
   year: Int!
   calendarSource: CalendarSource!
@@ -27,9 +27,9 @@ type CourseOffering {
   course: Course!
 }
 
-type Section {
+type Section implements Node {
   timingDetails: [TimingDetails]
-  id: Int!
+  id: ID!
   number: Int!
   componentType: ComponentType!
   classNumber: Int!
@@ -71,6 +71,7 @@ type Query {
     """
     ids: [ID!]!
   ): [Node]!
+  jwt: String!
   courses(
     """
     Returns the first _n_ elements from the list.
@@ -96,6 +97,8 @@ type Query {
   courseByCode(facultyAbbreviation: String!, code: Int!): Course!
   courseById(id: ID!): Course!
   facultyById(id: ID!): Faculty!
+  courseOfferingById(id: ID!): CourseOffering!
+  sectionById(id: ID!): Section!
   courseOfferingsByCourseId(courseId: Int!): [CourseOffering!]!
   sectionsByCourseOfferingId(courseOfferingId: Int!): [Section!]!
   timingDetailsBySectionId(sectionId: Int!): [TimingDetails!]!
