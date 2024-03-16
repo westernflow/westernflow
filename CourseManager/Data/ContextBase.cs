@@ -29,7 +29,7 @@ namespace Data
 
     private void SetCreatedAndModifiedDate()
     {
-      DateTime now = DateTime.Now;
+      DateTime now = DateTime.UtcNow;
       foreach (EntityEntry entityEntry in this.ChangeTracker.Entries().Where<EntityEntry>((Func<EntityEntry, bool>) (e =>
       {
         if (!(e.Entity is ITrackModified) && !(e.Entity is ITrackCreated))

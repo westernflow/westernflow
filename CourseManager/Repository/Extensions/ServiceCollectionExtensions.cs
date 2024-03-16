@@ -17,6 +17,7 @@ public static class ServiceCollectionExtensions
       serviceCollection.AddScoped<ITimingDetailsRepository, TimingDetailsRepository>();
       serviceCollection.AddScoped<ICourseOfferingRepository, CourseOfferingRepository>();
       serviceCollection.AddScoped<IReviewerRepository, ReviewerRepository>();
+      serviceCollection.AddScoped<ICourseReviewRepository, CourseReviewRepository>();
       return serviceCollection;
    }
    
@@ -29,6 +30,7 @@ public static class ServiceCollectionExtensions
       serviceCollection.AddSingleton<ITimingDetailsRepository, TimingDetailsRepository>();
       serviceCollection.AddSingleton<ICourseOfferingRepository, CourseOfferingRepository>();
       serviceCollection.AddSingleton<IReviewerRepository, ReviewerRepository>();
+      serviceCollection.AddSingleton<ICourseReviewRepository, CourseReviewRepository>();
       return serviceCollection;
    }
 }

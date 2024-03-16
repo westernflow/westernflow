@@ -1,3 +1,4 @@
+using Business.Extensions;
 using Business.Interfaces;
 using Business.Providers;
 using Data.Extensions;
@@ -32,7 +33,9 @@ public class Startup
         services.AddCors();
         services.AddCourseManagerDbContext(Configuration);
         services.AddScopedRepositories();
-        services.AddScoped<IReviewerInfoProvider, ReviewerInfoProvider>();
+        services.AddScopedBusinessProviders();
+        services.AddScopedBusinessServices();
+        services.AddScopedBusinessValidators();
         services.AddHttpContextAccessor();
         services.AddGraphQLServer()
             .AddQueryType<Query>()

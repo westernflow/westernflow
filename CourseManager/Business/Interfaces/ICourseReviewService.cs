@@ -3,7 +3,7 @@ using Data.Entities;
 
 namespace Business.Interfaces;
 
-public interface ICourseReviewerService
+public interface ICourseReviewService
 {
     public Task<CourseReview> CreateCourseReviewAsync(
         CreateCourseReviewInput input);

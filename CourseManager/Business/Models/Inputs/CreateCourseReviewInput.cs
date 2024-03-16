@@ -7,4 +7,5 @@ public class CreateCourseReviewInput
     public int UsefulRating { get; set; }
     public string? ReviewText { get; set; }
     public int? ProfessorId { get; set; }
+    public int CourseId { get; set; }
 }

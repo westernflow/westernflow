@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Data;
 
-public class CourseManagerDbContext : DbContext
+public class CourseManagerDbContext : ContextBase 
 {
     public CourseManagerDbContext(DbContextOptions<CourseManagerDbContext> options) : base(options)
     {

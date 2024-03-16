@@ -3,8 +3,9 @@ import ContentContainer from "../components/ContentContainer";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {Spacer, VStack} from "@chakra-ui/react";
-import {Suspense} from "react";
+import {Suspense, useEffect} from "react";
 import QueryOnRender from "../components/QueryOnRender";
+import {useAuth0} from "@auth0/auth0-react";
 
 export default function Home() {
 	return (
@@ -29,6 +30,14 @@ export default function Home() {
 }
 
 export function HeaderSection() {
+	const { getAccessTokenSilently } = useAuth0();
+	
+	useEffect(() => {
+		getAccessTokenSilently().then(token => {
+			console.log("token", token)
+		})
+	}, [getAccessTokenSilently])
+	
 	return (
 		<div className="bg-white py-4 sm:py-10">
 			<div className="mx-auto px-3">

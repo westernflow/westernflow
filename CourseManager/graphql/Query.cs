@@ -36,6 +36,10 @@ public class Query
     public async Task<Section> GetSectionByIdAsync(int id, [Service] ISectionRepository sectionRepository)
         => await sectionRepository.GetByIdAsync(id);
     
+    [NodeResolver]
+    public async Task<Reviewer> GetReviewerByIdAsync(int id, [Service] IReviewerRepository reviewerRepository)
+        => await reviewerRepository.GetByIdAsync(id);
+    
     public async Task<Course> GetCourseByIdAsync(int id, CourseBatchDataLoader courseBatchDataLoader, CancellationToken cancellationToken)
         => await courseBatchDataLoader.LoadAsync(id, cancellationToken); 
     
