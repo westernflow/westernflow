@@ -1,3 +1,4 @@
+using Business.Interfaces;
 using Business.Providers;
 using Data.Extensions;
 using graphql.DataLoaders;
@@ -35,6 +36,8 @@ public class Startup
         services.AddHttpContextAccessor();
         services.AddGraphQLServer()
             .AddQueryType<Query>()
+            .AddMutationType<Mutation>()
+            .AddMutationConventions()
             .AddType<CourseType>()
             .AddType<CourseOfferingType>()
             .AddType<SectionType>()

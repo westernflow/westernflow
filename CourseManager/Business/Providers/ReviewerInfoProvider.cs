@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Business.Interfaces;
 using Data.Entities;
 using Microsoft.Extensions.Logging;
 using Repositories.Interfaces;
@@ -22,29 +23,33 @@ public class ReviewerInfoProvider : IReviewerInfoProvider
         _logger = logger;
     }
     
-    public string GetReviewerEmail()
+    public async Task<Reviewer> GetReviewer()
     {
-        return _accessor.HttpContext.User.Claims.First(i => i.Type == "email").Value;
-    }
+        var subjectId = GetSubjectId();
+        
+        var reviewer = await _reviewerRepository.GetSingleOrDefaultAsync(r => r.SubjectId == subjectId);
+        
+        if (reviewer is null)
+        {
+            reviewer = new Reviewer
+            {
+                SubjectId = subjectId
+            };
 
-    public async Task<Reviewer> GetReviewerByEmailAsync(string email)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Reviewer> GetOrCreateReviewerAsync()
-    {
-        throw new NotImplementedException();
+            await _reviewerRepository.InsertAsync(reviewer);
+        }
+        
+        return reviewer;
     }
     
-    public async Task<string> GetJWTAsync()
+    public string GetSubjectId()
     {
         var authHeader = _accessor.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
         
         if (authHeader is null)
         {
             _logger.LogError("Authorization header is missing");
-            return null;
+            return String.Empty;
         }
         
         var token = authHeader.Split(' ').Last();
@@ -56,6 +61,20 @@ public class ReviewerInfoProvider : IReviewerInfoProvider
         
         _logger.LogInformation("Subject Identifier: {subjectIdentifier}", subjectIdentifier);
         
+        return subjectIdentifier;
+    }
+    
+    public string GetJWTAsync()
+    {
+        var authHeader = _accessor.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+        
+        if (authHeader is null)
+        {
+            _logger.LogError("Authorization header is missing");
+            return String.Empty;
+        }
+        
+        var token = authHeader.Split(' ').Last();
         return token;
     }
 }

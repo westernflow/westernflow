@@ -18,9 +18,9 @@ public class CourseReview : IEntity
     public bool IsLiked { get; set; }
     public int EasyRating { get; set; }
     public int UsefulRating { get; set; }
-    public DateTime DateWritten { get; set; }
+    public DateTime CreatedAt { get; set; }
 
-    [StringLength(500)]
+    [StringLength(1000)]
     public string ReviewText { get; set; } = String.Empty;
     
     public int? ProfessorId { get; set; }
@@ -28,5 +28,4 @@ public class CourseReview : IEntity
     public virtual Professor? Professor { get; set; }
 
     public virtual IEnumerable<JoinedReviewerCourseReview>? LikedBy { get; set; } = new List<JoinedReviewerCourseReview>();
-
 }

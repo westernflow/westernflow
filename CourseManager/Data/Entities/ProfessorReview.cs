@@ -19,7 +19,7 @@ public class ProfessorReview : IEntity
     public int Difficulty { get; set; }
     public int Helpful { get; set; }
     public int Clarity { get; set; }
-    [StringLength(500)]
+    [StringLength(1000)]
     public string ReviewText { get; set; } = String.Empty;
     public DateTime DateWritten { get; set; }
 

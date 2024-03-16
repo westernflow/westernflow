@@ -1,4 +1,5 @@
-﻿using Business.Providers;
+﻿using Business.Interfaces;
+using Business.Providers;
 using Data.Entities;
 using graphql.DataLoaders;
 using Repositories.Interfaces;
@@ -7,8 +8,8 @@ namespace graphql;
 
 public class Query
 {
-    public async Task<string> GetJWTAsync([Service] IReviewerInfoProvider identityService)
-        => await identityService.GetJWTAsync();
+    public string GetJWTAsync([Service] IReviewerInfoProvider identityService)
+        => identityService.GetJWTAsync();
     
     [UsePaging(MaxPageSize = 5000)]
     [UseProjection]

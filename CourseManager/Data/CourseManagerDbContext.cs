@@ -52,7 +52,7 @@ public class CourseManagerDbContext : DbContext
             .IsUnique();
 
         modelBuilder.Entity<Reviewer>()
-            .HasIndex(c => new { c.SubjectIdentifier })
+            .HasIndex(c => new { c.SubjectId })
             .IsUnique();
         
         // Name the CourseReview table CourseReviews
