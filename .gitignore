@@ -2,7 +2,5 @@
 **/node_modules/**
 **/go.mod
 **/go.sum
-CourseManager/Workers/appsettings.Development.json
 .vscode
 .idea/
-CourseManager/graphql/appsettings.Development.json

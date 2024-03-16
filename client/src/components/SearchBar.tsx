@@ -5,7 +5,6 @@ import type {
 	SearchBarIndexedCoursesQuery as SearchBarIndexedCoursesQueryType
 } from "./__generated__/SearchBarIndexedCoursesQuery.graphql";
 import {useLazyLoadQuery} from "react-relay";
-import {Link} from "react-router-dom";
 import {useNavigate} from "react-router-dom";
 
 const SearchBarIndexedCoursesQuery = graphql`

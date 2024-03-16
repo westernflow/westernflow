@@ -3,31 +3,35 @@ import {
   Network,
   RecordSource,
   Store,
-  FetchFunction,
 } from "relay-runtime";
 import fetchWrapper from "./api/fetchWrapper";
 
-const fetchFn: FetchFunction = async (request, variables) => {
-  const resp = await fetchWrapper('graphql', {
-    method: "POST",
-    mode: "cors",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      query: request.text, // <-- The GraphQL document composed by Relay
-      variables,
-    }),
-  });
+interface TokenProvider {
+    getToken: () => Promise<string>;
+}
 
-  return await resp.json();
-};
+const createFetchFn = (tokenProvider: TokenProvider) => {
+    return async (request: any, variables: any) => {
+        const resp = await fetchWrapper('graphql', {
+        method: "POST",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${await tokenProvider.getToken()}`,
+        },
+        body: JSON.stringify({
+            query: request.text, // <-- The GraphQL document composed by Relay
+            variables,
+        }),
+        });
+    
+        return await resp.json();
+    };
+}
 
-function createRelayEnvironment() {
+export function createRelayEnvironment(tokenProvider: TokenProvider) {
   return new Environment({
-    network: Network.create(fetchFn),
+    network: Network.create(createFetchFn(tokenProvider)),
     store: new Store(new RecordSource()),
   });
 }
-
-export const RelayEnvironment = createRelayEnvironment();

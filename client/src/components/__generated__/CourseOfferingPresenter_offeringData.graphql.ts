@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c89759f319da3289b09c45183aba181b>>
+ * @generated SignedSource<<6add05f32e80e00d6ea8421fc03602d5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,7 +21,7 @@ export type CourseOfferingPresenter_offeringData$data = {
       readonly classNumber: number;
       readonly componentType: ComponentType;
       readonly delivery: DeliveryType;
-      readonly id: number;
+      readonly id: string;
       readonly number: number;
       readonly professorNames: ReadonlyArray<string>;
       readonly status: StatusType;

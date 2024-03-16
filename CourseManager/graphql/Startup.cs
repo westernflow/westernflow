@@ -1,12 +1,10 @@
-using System.Security.Claims;
-using Data;
-using Data.Entities;
+using Business.Extensions;
+using Business.Interfaces;
+using Business.Providers;
 using Data.Extensions;
 using graphql.DataLoaders;
 using graphql.Types;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Repositories.Extensions;
 
 namespace graphql;
@@ -32,12 +30,17 @@ public class Startup
             options.Audience = Configuration["Auth0:Audience"];
             options.IncludeErrorDetails = true;
         });
-        services.AddAuthorization();
         services.AddCors();
         services.AddCourseManagerDbContext(Configuration);
         services.AddScopedRepositories();
+        services.AddScopedBusinessProviders();
+        services.AddScopedBusinessServices();
+        services.AddScopedBusinessValidators();
+        services.AddHttpContextAccessor();
         services.AddGraphQLServer()
             .AddQueryType<Query>()
+            .AddMutationType<Mutation>()
+            .AddMutationConventions()
             .AddType<CourseType>()
             .AddType<CourseOfferingType>()
             .AddType<SectionType>()
@@ -66,6 +69,5 @@ public class Startup
         );
         app.UseRouting();
         app.UseAuthentication();
-        app.UseAuthorization();
     }
 }

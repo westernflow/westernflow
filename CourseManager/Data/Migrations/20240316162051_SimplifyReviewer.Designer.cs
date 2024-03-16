@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(CourseManagerDbContext))]
-    partial class CourseManagerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240316162051_SimplifyReviewer")]
+    partial class SimplifyReviewer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -125,10 +127,7 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CourseId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("EasyRating")
@@ -136,9 +135,6 @@ namespace Data.Migrations
 
                     b.Property<bool>("IsLiked")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("ProfessorId")
                         .HasColumnType("integer");
@@ -155,8 +151,6 @@ namespace Data.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
 
                     b.HasIndex("ProfessorId");
 
@@ -284,7 +278,7 @@ namespace Data.Migrations
                     b.Property<int?>("CourseId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("DateWritten")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Difficulty")
@@ -292,9 +286,6 @@ namespace Data.Migrations
 
                     b.Property<int>("Helpful")
                         .HasColumnType("integer");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("ProfessorId")
                         .HasColumnType("integer");
@@ -452,12 +443,6 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.CourseReview", b =>
                 {
-                    b.HasOne("Data.Entities.Course", "Course")
-                        .WithMany()
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Data.Entities.Professor", "Professor")
                         .WithMany("CourseReviews")
                         .HasForeignKey("ProfessorId");
@@ -467,8 +452,6 @@ namespace Data.Migrations
                         .HasForeignKey("ReviewerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Course");
 
                     b.Navigation("Professor");
 

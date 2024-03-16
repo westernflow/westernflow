@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d611b8f2cc464e4a8eb7e713bcd6f202>>
+ * @generated SignedSource<<5dbb979e06ce51c5ffe71f89f8fdfd30>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -256,7 +256,8 @@ return {
                   }
                 ],
                 "storageKey": null
-              }
+              },
+              (v2/*: any*/)
             ],
             "storageKey": null
           }
@@ -266,12 +267,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "8484cc764ccfecf1140d4da45d3e2f0c",
+    "cacheID": "e0e4195011c4f85a052e94ffd76bfca6",
     "id": null,
     "metadata": {},
     "name": "CoursePresenterCourseQuery",
     "operationKind": "query",
-    "text": "query CoursePresenterCourseQuery(\n  $code: Int!\n  $facultyAbbreviation: String!\n) {\n  courseByCode(code: $code, facultyAbbreviation: $facultyAbbreviation) {\n    id\n    name\n    number\n    description\n    faculty {\n      id\n      abbreviation\n    }\n    ...CourseOfferingPresenter_offeringData\n  }\n}\n\nfragment CourseOfferingPresenter_offeringData on Course {\n  courseOfferings {\n    sections {\n      id\n      componentType\n      number\n      classNumber\n      professorNames\n      status\n      waitListSize\n      campus\n      delivery\n      timingDetails {\n        daysOfWeekBitmap\n        time\n        location\n      }\n    }\n  }\n}\n"
+    "text": "query CoursePresenterCourseQuery(\n  $code: Int!\n  $facultyAbbreviation: String!\n) {\n  courseByCode(code: $code, facultyAbbreviation: $facultyAbbreviation) {\n    id\n    name\n    number\n    description\n    faculty {\n      id\n      abbreviation\n    }\n    ...CourseOfferingPresenter_offeringData\n  }\n}\n\nfragment CourseOfferingPresenter_offeringData on Course {\n  courseOfferings {\n    sections {\n      id\n      componentType\n      number\n      classNumber\n      professorNames\n      status\n      waitListSize\n      campus\n      delivery\n      timingDetails {\n        daysOfWeekBitmap\n        time\n        location\n      }\n    }\n    id\n  }\n}\n"
   }
 };
 })();
