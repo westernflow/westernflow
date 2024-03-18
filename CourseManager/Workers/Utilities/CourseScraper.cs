@@ -568,5 +568,4 @@ public static class CourseScraper
         return await ProcessFacultyDocuments(facultyDocuments, faculty);
     }
 
-
 }

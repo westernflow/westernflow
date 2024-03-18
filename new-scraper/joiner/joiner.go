@@ -5,9 +5,11 @@ package joiner
 // join two tables in sql
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	connector "scraper/db"
+	"scraper/models"
 
 	_ "github.com/lib/pq"
 )
@@ -46,6 +48,39 @@ func JoinTables() {
 
 }
 
-func main() {
-	JoinTables()
+func MergeCourseDataSlices(existing []models.Course, new []models.ScrapedCourse) []models.Course {
+	for _, course := range new {
+		for _, existingCourse := range existing {
+			if course.InternalID == existingCourse.InternalCourseID {
+				existingCourse = MergeCourseData(existingCourse, course)
+			} else {
+				existing = append(existing, models.Course{
+					FacultyID:           1,
+					Number:              1,
+					Name:                course.CourseName,
+					InternalCourseID:    course.InternalID,
+					AntirequisiteString: sql.NullString{String: course.Antireqs, Valid: true},
+					PrerequisiteString:  sql.NullString{String: course.Prereqs, Valid: true},
+					CorequisiteString:   sql.NullString{String: course.CoReqs, Valid: true},
+					Weight:              sql.NullFloat64{Float64: course.Weight, Valid: true},
+					ExtraInformation:    sql.NullString{String: course.ExtraInfo, Valid: true},
+					BreadthCategories:   sql.NullString{String: course.BreadthCategory, Valid: true},
+					Description:         sql.NullString{String: course.Description, Valid: true},
+				})
+			}
+		}
+	}
+	return existing
+}
+
+func MergeCourseData(existing models.Course, new models.ScrapedCourse) models.Course {
+
+	existing.AntirequisiteString = sql.NullString{String: new.Antireqs, Valid: true}
+	existing.PrerequisiteString = sql.NullString{String: new.Prereqs, Valid: true}
+	existing.CorequisiteString = sql.NullString{String: new.CoReqs, Valid: true}
+	existing.Weight = sql.NullFloat64{Float64: new.Weight, Valid: true}
+	existing.ExtraInformation = sql.NullString{String: new.ExtraInfo, Valid: true}
+	existing.BreadthCategories = sql.NullString{String: new.BreadthCategory, Valid: true}
+	existing.Description = sql.NullString{String: new.Description, Valid: true}
+	return existing
 }

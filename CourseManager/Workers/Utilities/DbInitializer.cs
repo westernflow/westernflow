@@ -7,7 +7,7 @@ namespace Scrapers.Utilities;
 public static class DbInitializer
 {
     public static IServiceProvider? ServiceProvider { get; set; }
-    
+
     public static async Task InitializeDatabase()
     {
         await PopulateFaculties();
@@ -17,7 +17,7 @@ public static class DbInitializer
     private static async Task PopulateFaculties()
     {
         var facultyRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<IFacultyRepository>();
-        
+
         var faculties = await CourseScraper.ScrapeFaculties();
         await facultyRepository.InsertRangeAsync(faculties);
     }
