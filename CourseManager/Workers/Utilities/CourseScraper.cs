@@ -19,19 +19,19 @@ public static class CourseScraper
         var configuration = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<IConfiguration>();
         // Get a new cookie
         var cookie = await CookieManager.GetCookie(configuration);
-        
+
         // create new http client for the request to pass in headers
         var client = new HttpClient();
         client.DefaultRequestHeaders.Add("Cookie", cookie.Value);
-        
+
         var response = await client.GetAsync(configuration["Scraper:BuilderUrl"]);
         var html = await response.Content.ReadAsStringAsync();
-        
+
         if (string.IsNullOrWhiteSpace(html))
         {
             throw new Exception("No html was returned from the request");
         }
-        
+
         // parse the HTML string to DOM nodes for AngleSharp
         var config = Configuration.Default;
         var context = BrowsingContext.New(config);
@@ -63,7 +63,7 @@ public static class CourseScraper
     public static async Task<IDocument> OpenFacultyDocument(Faculty faculty, List<KeyValuePair<string, string>> sectionTypes)
     {
         var configuration = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<IConfiguration>();
-        
+
         // get cookies
         var cookie = await CookieManager.GetCookie(configuration);
 
@@ -88,7 +88,7 @@ public static class CourseScraper
             new KeyValuePair<string, string>("end_time", ""),
             new KeyValuePair<string, string>("command_search", "search")
         }.Concat(sectionTypes));
-        
+
         var response = await client.PostAsync(configuration["Scraper:BuilderUrl"], requestData);
         var html = await response.Content.ReadAsStringAsync();
 
@@ -100,7 +100,7 @@ public static class CourseScraper
         // parse the HTML string to DOM nodes for AngleSharp
         var config = Configuration.Default;
         var context = BrowsingContext.New(config);
-        
+
         var document = await context.OpenAsync(req => req.Content(html));
         if (document == null)
         {
@@ -177,18 +177,18 @@ public static class CourseScraper
     public static Suffix GetSuffix(IElement courseHeader)
     {
         var courseNumber = courseHeader.TextContent.Split(" - ")[0].Split(" ")[1];
-        
+
         // suffix is either at end of course number or not present
         // check if last character is a letter
         if (!char.IsLetter(courseNumber[^1])) return Suffix.NoSuffix;
-        
+
         var suffixChar = courseNumber[^1];
         // try to convert to suffix enum
         if (Enum.TryParse<Suffix>(suffixChar.ToString(), out var suffix))
         {
             return suffix;
         }
-            
+
         throw new Exception("Could not parse suffix");
 
     }
@@ -196,7 +196,7 @@ public static class CourseScraper
     public static TimingDetails ScrapeTimingDetail(IHtmlTableRowElement row)
     {
         var cells = row.Cells;
-        
+
         // ex. <td width="34%>M &nbsp; W Th F </td>
         // 1. get days of week bitmap; split by " " and filter out &nbsp; then convert to DaysOfWeek enum
         var daysOfWeekStrings = cells[0].InnerHtml.Trim().Split(" ").Where(x => x != "&nbsp;");
@@ -216,7 +216,7 @@ public static class CourseScraper
             };
             daysOfWeek.Add(dayOfWeek);
         }
-        
+
         // Map Monday to first bit, Tuesday to second bit, etc.
         var daysOfWeekToBitmapIndex = new Dictionary<DayOfWeek, int>()
         {
@@ -228,7 +228,7 @@ public static class CourseScraper
             {DayOfWeek.Saturday, 5},
             {DayOfWeek.Sunday, 6}
         };
-        
+
         // convert days of week to bitmap
         var daysOfWeekBits = new List<char> {'0', '0', '0', '0', '0', '0', '0'};
         foreach (var dayOfWeek in daysOfWeek)
@@ -236,14 +236,14 @@ public static class CourseScraper
             daysOfWeekBits[daysOfWeekToBitmapIndex[dayOfWeek]] = '1';
         }
         var daysOfWeekBitmap = new string(daysOfWeekBits.ToArray());
-        
+
         // 2. get time
         var time = cells[1].TextContent.Trim() ?? string.Empty;
         if (time == "-")
         {
             time = string.Empty;
         }
-        
+
         return new TimingDetails()
         {
             DaysOfWeekBitmap = daysOfWeekBitmap,
@@ -251,13 +251,13 @@ public static class CourseScraper
             Location = cells[2].TextContent.Trim()
         };
     }
-    
+
     public static async Task<Section> ScrapeSection(IHtmlTableRowElement row, int courseOfferingId)
     {
         var sectionRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<ISectionRepository>();
-        
+
         var cells = row.Cells;
-        
+
         // 1. get component type string
         var componentTypeString = cells[0].TextContent.Trim();
         var component = componentTypeString switch
@@ -274,37 +274,37 @@ public static class CourseScraper
         {
             throw new Exception($"Could not parse section number: {sectionNumberString}");
         }
-        
+
         // 3. get class number
         var classNumberString = cells[2].TextContent.Trim();
         if (!int.TryParse(classNumberString, out var classNumber))
         {
             throw new Exception($"Could not parse class number: {classNumberString}");
         }
-        
+
         // 4. get instructors (they are separated by <br> tags so split based on the html)
         var instructorNames = cells[3].InnerHtml.Split("<br>").Select(x => x.Trim()).ToList();
-        
+
         // there is a trailing <br> tag so remove the last element
         instructorNames.RemoveAt(instructorNames.Count - 1);
 
         // 5. get timetable requisite string
         var timetableRequisiteString = cells[4].TextContent.Trim();
-        
+
         // 6. Section location and times
         var sectionLocationAndTimesTable = cells[5].QuerySelector("table") as IHtmlTableElement;
         if (sectionLocationAndTimesTable == null)
         {
             throw new Exception("Could not find section location and times table");
         }
-        
+
         var timingDetails = new List<TimingDetails>();
         foreach (var sectionLocationAndTimesRow in sectionLocationAndTimesTable.Rows)
         {
             var timingDetail = ScrapeTimingDetail(sectionLocationAndTimesRow);
             timingDetails.Add(timingDetail);
         }
-        
+
         // 7. get status
         var statusString = cells[7].TextContent.Trim();
         var status = statusString switch
@@ -313,14 +313,14 @@ public static class CourseScraper
             "Not Full" => StatusType.NotFull,
             _ => throw new Exception($"Could not parse section status: {statusString}")
         };
-        
+
         // 8. get waitList size
         var waitListSizeString = cells[8].TextContent.Trim();
         if (!int.TryParse(waitListSizeString, out var waitListSize))
         {
             throw new Exception($"Could not parse waitList size: {waitListSizeString}");
         }
-        
+
         // 9. get campus
         var campusString = cells[9].TextContent.Trim();
         var campus = campusString switch
@@ -332,7 +332,7 @@ public static class CourseScraper
             "" => Campus.Unknown,
             _ => throw new Exception($"Could not parse campus: {campusString}")
         };
-        
+
         // 10. get delivery type
         var deliveryTypeString = cells[10].TextContent.Trim();
         var deliveryType = deliveryTypeString switch
@@ -343,9 +343,9 @@ public static class CourseScraper
             "Other" => DeliveryType.Other,
             _ => throw new Exception($"Could not parse delivery type: {deliveryTypeString}")
         };
-        
+
         var sectionParams = new SectionConstructorParams()
-        {   
+        {
             ComponentType = component,
             Number = sectionNumber,
             ClassNumber = classNumber,
@@ -358,9 +358,9 @@ public static class CourseScraper
             Delivery = deliveryType,
             CourseOfferingId = courseOfferingId
         };
-        
+
         var section = new Section(sectionParams);
-        
+
         // insert to the database
         await sectionRepository.InsertAsync(section);
         return section;
@@ -369,7 +369,7 @@ public static class CourseScraper
     public static async Task<List<Section>> ScrapeAndPopulateOfferingSections(IElement courseHeader, int courseOfferingId)
     {
         var sections = new List<Section>();
-        
+
         var htmlElement = courseHeader.NextElementSibling;
         while (htmlElement != null && htmlElement.TagName != "TABLE")
         {
@@ -398,7 +398,7 @@ public static class CourseScraper
         {
             return true;
         }
-        
+
         if (alertElement.InnerHtml.Contains("Unable to display your search results as it exceeds 300 courses. Please refine your search."))
         {
             return false;
@@ -406,43 +406,43 @@ public static class CourseScraper
 
         return true;
     }
-    
+
     // Adds all courses and subentities in the document to the database
     public static async Task<List<Course>> PopulateCoursesInDocument(IDocument document, Faculty faculty)
     {
         var courseRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<ICourseRepository>();
         var courseOfferingRepository = ServiceProvider.GetRequiredService<ICourseOfferingRepository>();
-        
+
         var courses = new List<Course>();
-        
+
         // get the year and calendar source from the document
-        
+
         // find the select elemenet
         var selectElement = document.QuerySelector("#select_term");
         if (selectElement == null)
         {
             throw new Exception("Could not find select element");
         }
-        
+
         // get selected option
         var selectedOption = selectElement.QuerySelector("option[selected]");
         if (selectedOption == null)
         {
             throw new Exception("Could not find selected option");
         }
-        
+
         // get the internal term id from the value attribute
         var termId = selectedOption.GetAttribute("value");
         if (!int.TryParse(termId, out var parsedTermId))
         {
             throw new Exception("Could not parse term id");
         }
-        
+
         // get the year and calendar source from the selected option inner text in the format "Fall Winter YEAR" or "Summer YEAR"
         var termString = selectedOption.TextContent.Trim();
         var year = int.Parse(termString.Split(" ").Last());
         var calendarSource = termString.Split(" ")[..^1].Aggregate((x, y) => x + " " + y);
-        
+
         // parse calendar source to enum
         var calendarSourceEnum = calendarSource switch
         {
@@ -450,7 +450,7 @@ public static class CourseScraper
             "Summer" => CalendarSource.Summer,
             _ => throw new Exception($"Could not parse calendar source: {calendarSource}")
         };
-        
+
         var courseHeaders = document.QuerySelectorAll("div.container-fluid.col-md-12 > h4");
 
         // each course header presents a course offering of a possibly existing course
@@ -459,18 +459,18 @@ public static class CourseScraper
             var scrapedCourse = ScrapeCourse(courseHeader);
             // check db for existing course
             var existingCourse = await courseRepository.GetSingleOrDefaultAsync(x => x.Number == scrapedCourse.Number && x.FacultyId == faculty.Id);
-            
+
             if (existingCourse == null)
             {
                 scrapedCourse.FacultyId = faculty.Id;
-                
+
                 // insert the course into the database
                 await courseRepository.InsertAsync(scrapedCourse);
-                
+
                 courses.Add(scrapedCourse);
             }
             var course = existingCourse ?? scrapedCourse;
-            
+
             // see if offering already exists in the database
             var existingOffering = await courseOfferingRepository.GetSingleOrDefaultAsync(x =>
                 x.Year == year && x.Suffix == GetSuffix(courseHeader) && x.CalendarSource == calendarSourceEnum &&
@@ -483,23 +483,23 @@ public static class CourseScraper
                 // add the sections to the existing offerings sections add range
                 var existingSections = existingOffering.Sections.ToList();
                 existingSections.AddRange(sections);
-                existingOffering.Sections = existingSections;   
+                existingOffering.Sections = existingSections;
             }
             else
             {
                 var courseOffering = new CourseOffering(year, GetSuffix(courseHeader), calendarSourceEnum, course.Id, parsedTermId);
                 course.CourseOfferings.Add(courseOffering);
-                
+
                 // insert the course offering into the database
                 await courseOfferingRepository.InsertAsync(courseOffering);
-                
+
                 // populate the course offering with the sessions
                 var sections = await ScrapeAndPopulateOfferingSections(courseHeader, courseOffering.Id);
                 courseOffering.Sections = sections;
             }
         }
-        
-        return courses; 
+
+        return courses;
     }
 
     public static async Task<List<Course>> ProcessFacultyDocuments(List<IDocument> facultyDocuments, Faculty faculty)
@@ -520,7 +520,7 @@ public static class CourseScraper
 
         return courses;
     }
-    
+
     public static async Task<List<Course>> PopulateCoursesByFaculty(Faculty faculty)
     {
         Dictionary<Campus, KeyValuePair<string,string>> campusTypes = new Dictionary<Campus, KeyValuePair<string, string>>
@@ -530,7 +530,7 @@ public static class CourseScraper
             {Campus.Huron, new KeyValuePair<string, string>("Campus", "HURON")},
             {Campus.Main, new KeyValuePair<string, string>("Campus", "MAIN")}
         };
-        
+
         Dictionary<ComponentType, KeyValuePair<string, string>> sectionTypes = new Dictionary<ComponentType, KeyValuePair<string, string>>
         {
             {ComponentType.Lecture, new KeyValuePair<string, string>("course_component", "LEC")},
@@ -538,7 +538,7 @@ public static class CourseScraper
             {ComponentType.Lab, new KeyValuePair<string, string>("course_component", "LAB")}
         };
 
-        // Try opening the document with all campuses and every single section type 
+        // Try opening the document with all campuses and every single section type
         var document = await OpenFacultyDocument(faculty, sectionTypes.Values.ToList().Append(campusTypes[Campus.All]).ToList());
 
         try
@@ -564,7 +564,9 @@ public static class CourseScraper
                 facultyDocuments.Add(documentForCampusAndSectionType);
             }
         }
-        
+
         return await ProcessFacultyDocuments(facultyDocuments, faculty);
-    } 
+    }
+
+
 }
