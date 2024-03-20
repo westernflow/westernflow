@@ -1,7 +1,7 @@
-type Course {
+type Course implements Node {
   faculty: Faculty
   courseOfferings: [CourseOffering]
-  id: Int!
+  id: ID!
   number: Int!
   name: String!
   prerequisiteString: String
@@ -10,24 +10,26 @@ type Course {
   description: String
   extraInformation: String
   weight: Decimal
-  breadthCategory: BreadthCategory!
+  breadthCategories: String
   internalCourseId: String!
   facultyId: Int!
   relatedProfessorReviews: [ProfessorReview!]!
 }
 
-type CourseOffering {
+type CourseOffering implements Node {
   sections: [Section]
-  id: Int!
+  id: ID!
+  termId: Int!
   year: Int!
+  calendarSource: CalendarSource!
   suffix: Suffix!
   courseId: Int!
   course: Course!
 }
 
-type Section {
+type Section implements Node {
   timingDetails: [TimingDetails]
-  id: Int!
+  id: ID!
   number: Int!
   componentType: ComponentType!
   classNumber: Int!
@@ -42,7 +44,34 @@ type Section {
   professors: [JoinedSectionProfessor!]!
 }
 
+"""
+The node interface is implemented by entities that have a global unique identifier.
+"""
+interface Node {
+  id: ID!
+}
+
 type Query {
+  """
+  Fetches an object given its ID.
+  """
+  node(
+    """
+    ID of the object.
+    """
+    id: ID!
+  ): Node
+
+  """
+  Lookup nodes by a list of IDs.
+  """
+  nodes(
+    """
+    The list of node IDs.
+    """
+    ids: [ID!]!
+  ): [Node]!
+  jwt: String!
   courses(
     """
     Returns the first _n_ elements from the list.
@@ -65,15 +94,18 @@ type Query {
     before: String
     where: CourseFilterInput
   ): CoursesConnection
-  courseById(id: Int!): Course!
-  facultyById(id: Int!): Faculty!
+  courseByCode(facultyAbbreviation: String!, code: Int!): Course!
+  courseById(id: ID!): Course!
+  facultyById(id: ID!): Faculty!
+  courseOfferingById(id: ID!): CourseOffering!
+  sectionById(id: ID!): Section!
   courseOfferingsByCourseId(courseId: Int!): [CourseOffering!]!
   sectionsByCourseOfferingId(courseOfferingId: Int!): [Section!]!
   timingDetailsBySectionId(sectionId: Int!): [TimingDetails!]!
 }
 
-type Faculty {
-  id: Int!
+type Faculty implements Node {
+  id: ID!
   name: String!
   abbreviation: String!
   courses: [Course!]!
@@ -83,13 +115,6 @@ type Faculty {
 The built-in `Decimal` scalar type.
 """
 scalar Decimal
-
-enum BreadthCategory {
-  UNDEFINED
-  A
-  B
-  C
-}
 
 type ProfessorReview {
   id: Int!
@@ -106,6 +131,11 @@ type ProfessorReview {
   professorId: Int!
   professor: Professor!
   likedBy: [JoinedReviewerProfessorReview!]
+}
+
+enum CalendarSource {
+  FALL_WINTER
+  SUMMER
 }
 
 enum Suffix {
@@ -191,7 +221,7 @@ input CourseFilterInput {
   description: StringOperationFilterInput
   extraInformation: StringOperationFilterInput
   weight: DecimalOperationFilterInput
-  breadthCategory: BreadthCategoryOperationFilterInput
+  breadthCategories: StringOperationFilterInput
   internalCourseId: StringOperationFilterInput
   facultyId: IntOperationFilterInput
   faculty: FacultyFilterInput
@@ -262,13 +292,6 @@ input DecimalOperationFilterInput {
   nlt: Decimal
   lte: Decimal
   nlte: Decimal
-}
-
-input BreadthCategoryOperationFilterInput {
-  eq: BreadthCategory
-  neq: BreadthCategory
-  in: [BreadthCategory!]
-  nin: [BreadthCategory!]
 }
 
 input FacultyFilterInput {
@@ -345,7 +368,9 @@ input CourseOfferingFilterInput {
   and: [CourseOfferingFilterInput!]
   or: [CourseOfferingFilterInput!]
   id: IntOperationFilterInput
+  termId: IntOperationFilterInput
   year: IntOperationFilterInput
+  calendarSource: CalendarSourceOperationFilterInput
   suffix: SuffixOperationFilterInput
   courseId: IntOperationFilterInput
   course: CourseFilterInput
@@ -369,6 +394,13 @@ input ProfessorReviewFilterInput {
   professorId: IntOperationFilterInput
   professor: ProfessorFilterInput
   likedBy: ListFilterInputTypeOfJoinedReviewerProfessorReviewFilterInput
+}
+
+input CalendarSourceOperationFilterInput {
+  eq: CalendarSource
+  neq: CalendarSource
+  in: [CalendarSource!]
+  nin: [CalendarSource!]
 }
 
 input SuffixOperationFilterInput {

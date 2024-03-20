@@ -35,8 +35,9 @@ namespace Data.Migrations
                         .HasMaxLength(3000)
                         .HasColumnType("character varying(3000)");
 
-                    b.Property<int>("BreadthCategory")
-                        .HasColumnType("integer");
+                    b.Property<string>("BreadthCategories")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("CorequisiteString")
                         .HasMaxLength(3000)
@@ -124,7 +125,10 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DateWritten")
+                    b.Property<int>("CourseId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("EasyRating")
@@ -133,13 +137,16 @@ namespace Data.Migrations
                     b.Property<bool>("IsLiked")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int?>("ProfessorId")
                         .HasColumnType("integer");
 
                     b.Property<string>("ReviewText")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<int>("ReviewerId")
                         .HasColumnType("integer");
@@ -148,6 +155,8 @@ namespace Data.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
 
                     b.HasIndex("ProfessorId");
 
@@ -275,7 +284,7 @@ namespace Data.Migrations
                     b.Property<int?>("CourseId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("DateWritten")
+                    b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Difficulty")
@@ -283,6 +292,9 @@ namespace Data.Migrations
 
                     b.Property<int>("Helpful")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("ProfessorId")
                         .HasColumnType("integer");
@@ -292,8 +304,8 @@ namespace Data.Migrations
 
                     b.Property<string>("ReviewText")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<int>("ReviewerId")
                         .HasColumnType("integer");
@@ -317,24 +329,14 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Email")
+                    b.Property<string>("SubjectId")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
+                    b.HasIndex("SubjectId")
                         .IsUnique();
 
                     b.ToTable("Reviewers", (string)null);
@@ -450,6 +452,12 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.CourseReview", b =>
                 {
+                    b.HasOne("Data.Entities.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Data.Entities.Professor", "Professor")
                         .WithMany("CourseReviews")
                         .HasForeignKey("ProfessorId");
@@ -459,6 +467,8 @@ namespace Data.Migrations
                         .HasForeignKey("ReviewerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Course");
 
                     b.Navigation("Professor");
 

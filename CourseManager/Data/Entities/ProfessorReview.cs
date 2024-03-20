@@ -5,7 +5,7 @@ using Data.Interfaces;
 
 namespace Data.Entities;
 
-public class ProfessorReview : IEntity
+public class ProfessorReview : IEntity, ITrackCreated, ITrackModified
 {
     // see https://stackoverflow.com/questions/54400115/no-suitable-constructor-found-for-entity-type-string
     private ProfessorReview()
@@ -19,9 +19,8 @@ public class ProfessorReview : IEntity
     public int Difficulty { get; set; }
     public int Helpful { get; set; }
     public int Clarity { get; set; }
-    [StringLength(500)]
+    [StringLength(1000)]
     public string ReviewText { get; set; } = String.Empty;
-    public DateTime DateWritten { get; set; }
 
     public int ReviewerId { get; set; }
     [ForeignKey(nameof(ReviewerId))]
@@ -39,4 +38,6 @@ public class ProfessorReview : IEntity
     public Professor Professor { get; set; } = null!;
 
     public virtual IEnumerable<JoinedReviewerProfessorReview>? LikedBy { get; set; } = new List<JoinedReviewerProfessorReview>();
+    public DateTime CreatedDate { get; set; }
+    public DateTime ModifiedDate { get; set; }
 }

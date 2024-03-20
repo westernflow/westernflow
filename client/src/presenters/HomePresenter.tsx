@@ -1,17 +1,56 @@
-import { ContentContainer, YellowPurpleGradiant } from "../constants/styleNames";
-import { SearchBar } from "../shared/SearchBar";
+import SearchBar from "../components/SearchBar"
+import ContentContainer from "../components/ContentContainer";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import {Spacer, VStack} from "@chakra-ui/react";
+import {Suspense, useEffect} from "react";
+import QueryOnRender from "../components/QueryOnRender";
+import {useAuth0} from "@auth0/auth0-react";
 
-function HomePresenter() {
-    return (
-        <div className={`flex flex-col h-screen justify-center ${YellowPurpleGradiant}`}>
-            <div className={`flex flex-col  mx-auto p-8 m-10 w-2/3 ${ContentContainer}`}>
-                <p className="text-5xl text-white font-bold mb-3">Western Review</p>
-                <p className="text-gray-50 text-2xl mb-3">
-                    Course and professor reviewing site for University of Western Ontario students
-                </p>
-                <SearchBar textColor="text-gray-700" bgColor="bg-slate-50" rounded={false} />
-            </div>
-        </div>
-    );
+export default function Home() {
+	return (
+		<div className="bg-slate-50">
+			<ContentContainer additionalClasses="border bg-white">
+				<VStack className="min-h-screen">
+					<Navbar showSearchBar={false}/>
+					<div className="flex justify-center flex-col xl:flex-row">
+						<div className="flex flex-col">
+							<HeaderSection/>
+							<Suspense fallback={<div>loading</div>}>
+								<SearchBar />
+							</Suspense>
+						</div>
+					</div>
+					<Spacer />
+					<Footer/>
+				</VStack>
+			</ContentContainer>
+		</div>
+	);
 }
-export default HomePresenter;
+
+export function HeaderSection() {
+	const { getAccessTokenSilently } = useAuth0();
+	
+	useEffect(() => {
+		getAccessTokenSilently().then(token => {
+			console.log("token", token)
+		})
+	}, [getAccessTokenSilently])
+	
+	return (
+		<div className="bg-white py-4 sm:py-10">
+			<div className="mx-auto px-3">
+				<div className="mx-auto">
+					<a className="text-base font-semibold leading-7 text-indigo-600" href="https://uwflow.com">Inspired
+						by UW Flow</a>
+					<h2 className="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Westernflow </h2>
+					<p className="mt-6 text-lg leading-8 text-gray-600 w-3/4">
+						A platform to centralize timetable information, course reviews, professor information, and more
+						for University of Western Ontario students.
+					</p>
+				</div>
+			</div>
+		</div>
+	)
+}
