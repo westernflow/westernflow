@@ -4,7 +4,6 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {Spacer, VStack} from "@chakra-ui/react";
 import {Suspense, useEffect} from "react";
-import QueryOnRender from "../components/QueryOnRender";
 import {useAuth0} from "@auth0/auth0-react";
 
 export default function Home() {

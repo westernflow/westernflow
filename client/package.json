@@ -41,7 +41,9 @@
     "build": "relay-compiler --validate && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "relay": "relay-compiler"
+    "relay": "relay-compiler",
+    "lint": "eslint --max-warnings=0 .",
+    "lint:fix": "eslint --fix ."
   },
   "eslintConfig": {
     "extends": [

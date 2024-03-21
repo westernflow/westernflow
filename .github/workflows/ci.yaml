@@ -10,4 +10,9 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-            - run: "pwd"
+            - name: Install dependencies
+              run: yarn install
+            - name: Lint code
+              run: yarn lint
+            - name: Build
+              run: yarn build
