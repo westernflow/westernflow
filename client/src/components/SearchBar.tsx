@@ -73,8 +73,6 @@ export default function SearchBar() {
         });
 
         setCourses(mappedCourses);
-
-        localStorage.setItem("indexedCourses", JSON.stringify(mappedCourses));
     }, [indexedCourses]);
 
     useEffect(() => {
@@ -93,13 +91,6 @@ export default function SearchBar() {
             );
         }
     }, [selectedCourse, navigate]);
-
-    useEffect(() => {
-        const storedIndexedCourses = localStorage.getItem("indexedCourses");
-        if (storedIndexedCourses) {
-            setCourses(JSON.parse(storedIndexedCourses));
-        }
-    }, []);
 
     const filteredCourses = filterCourses(courses, query);
 

@@ -15,7 +15,7 @@ services:
             args:
                 BUILDPLATFORM: "linux/amd64"
         ports:
-            - 8080:80
+            - 5095:80
 
     db:
         image: postgres

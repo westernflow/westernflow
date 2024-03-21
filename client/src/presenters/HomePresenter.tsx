@@ -1,10 +1,9 @@
-import SearchBar from "../components/SearchBar";
-import ContentContainer from "../components/ContentContainer";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 import { Spacer, VStack } from "@chakra-ui/react";
-import { Suspense, useEffect } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
+import { Suspense } from "react";
+import ContentContainer from "../components/ContentContainer";
+import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
+import SearchBar from "../components/SearchBar";
 
 export default function Home() {
     return (
