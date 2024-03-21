@@ -6,10 +6,11 @@ import RelayModernEnvironment from "relay-runtime/lib/store/RelayModernEnvironme
 import { createRelayEnvironment } from "./RelayEnvironment";
 import { CoursePresenter } from "./presenters/CoursePresenter";
 import Home from "./presenters/HomePresenter";
+import SuspenseScreen from "./components/Spinner";
 
 const SuspendedCoursePresenter = () => {
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<SuspenseScreen />}>
             <CoursePresenter />
         </Suspense>
     );
@@ -30,7 +31,7 @@ function App() {
     }, [getAccessTokenSilently]);
 
     if (!relayEnvironment) {
-        return <div>Loading Relay environment...</div>;
+        return <SuspenseScreen />;
     }
 
     return (

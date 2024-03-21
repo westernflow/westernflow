@@ -1,9 +1,10 @@
-import { Spacer, VStack } from "@chakra-ui/react";
+import {Spacer, VStack} from "@chakra-ui/react";
 import { Suspense } from "react";
 import ContentContainer from "../components/ContentContainer";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import SearchBar from "../components/SearchBar";
+import SuspenseScreen from "../components/Spinner";
 
 export default function Home() {
     return (
@@ -14,7 +15,7 @@ export default function Home() {
                     <div className="flex justify-center flex-col xl:flex-row">
                         <div className="flex flex-col">
                             <HeaderSection />
-                            <Suspense fallback={<div>loading</div>}>
+                            <Suspense fallback={<SuspenseScreen />}>
                                 <SearchBar />
                             </Suspense>
                         </div>
