@@ -68,6 +68,7 @@
     "@types/relay-runtime": "^14.1.23",
     "babel-plugin-relay": "^16.2.0",
     "graphql": "^16.8.1",
+    "prettier": "3.2.5",
     "relay-compiler": "^16.2.0"
   }
 }
