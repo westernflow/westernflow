@@ -66,6 +66,8 @@ export default function SearchBar() {
 		})
 
 		setCourses(mappedCourses)
+
+		localStorage.setItem('indexedCourses', JSON.stringify(mappedCourses));
 	}, [indexedCourses])
 
 
@@ -80,6 +82,13 @@ export default function SearchBar() {
 			navigate("/course/" + selectedCourse.facultyAbbreviation.toLowerCase() + "-" + selectedCourse.number.toString())
 		}
 	}, [selectedCourse, navigate]);
+
+	useEffect(() => {
+		const storedIndexedCourses = localStorage.getItem('indexedCourses');
+		if (storedIndexedCourses) {
+		  setCourses(JSON.parse(storedIndexedCourses));
+		}
+	  }, []);
 
 	const filteredCourses = filterCourses(courses, query)
 
