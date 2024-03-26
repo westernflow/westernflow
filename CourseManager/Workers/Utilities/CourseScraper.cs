@@ -252,10 +252,8 @@ public static class CourseScraper
         };
     }
     
-    public static async Task<Section> ScrapeSection(IHtmlTableRowElement row, int courseOfferingId)
+    public static Section ScrapeSection(IHtmlTableRowElement row)
     {
-        var sectionRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<ISectionRepository>();
-        
         var cells = row.Cells;
         
         // 1. get component type string
@@ -356,17 +354,14 @@ public static class CourseScraper
             WaitListSize = waitListSize,
             Campus = campus,
             Delivery = deliveryType,
-            CourseOfferingId = courseOfferingId
         };
         
         var section = new Section(sectionParams);
         
-        // insert to the database
-        await sectionRepository.InsertAsync(section);
         return section;
     }
 
-    public static async Task<List<Section>> ScrapeAndPopulateOfferingSections(IElement courseHeader, int courseOfferingId)
+    public static List<Section> ScrapeOfferingSections(IElement courseHeader)
     {
         var sections = new List<Section>();
         
@@ -383,7 +378,7 @@ public static class CourseScraper
 
         foreach (var row in tableElement.Rows.Skip(1))
         {
-            var section = await ScrapeSection(row, courseOfferingId);
+            var section = ScrapeSection(row);
             sections.Add(section);
         }
 
@@ -407,11 +402,11 @@ public static class CourseScraper
         return true;
     }
     
-    // Adds all courses and subentities in the document to the database
     public static async Task<List<Course>> PopulateCoursesInDocument(IDocument document, Faculty faculty)
     {
         var courseRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<ICourseRepository>();
         var courseOfferingRepository = ServiceProvider.GetRequiredService<ICourseOfferingRepository>();
+        var sectionRepository = ServiceProvider.GetRequiredService<ISectionRepository>();
         
         var courses = new List<Course>();
         
@@ -457,46 +452,41 @@ public static class CourseScraper
         foreach (var courseHeader in courseHeaders)
         {
             var scrapedCourse = ScrapeCourse(courseHeader);
-            // check db for existing course
-            var existingCourse = await courseRepository.GetSingleOrDefaultAsync(x => x.Number == scrapedCourse.Number && x.FacultyId == faculty.Id);
+            scrapedCourse.FacultyId = faculty.Id;
             
+            var existingCourse = await courseRepository.GetSingleOrDefaultAsync(x => x.Number == scrapedCourse.Number && x.FacultyId == faculty.Id);
             if (existingCourse == null)
             {
-                scrapedCourse.FacultyId = faculty.Id;
-                
-                // insert the course into the database
                 await courseRepository.InsertAsync(scrapedCourse);
-                
                 courses.Add(scrapedCourse);
             }
+            
             var course = existingCourse ?? scrapedCourse;
             
-            // see if offering already exists in the database
-            var existingOffering = await courseOfferingRepository.GetSingleOrDefaultAsync(x =>
-                x.Year == year && x.Suffix == GetSuffix(courseHeader) && x.CalendarSource == calendarSourceEnum &&
-                x.CourseId == course.Id && x.TermId == parsedTermId);
+            var courseOffering = new CourseOffering(year, GetSuffix(courseHeader), calendarSourceEnum, course.Id, parsedTermId);
+            var sections = ScrapeOfferingSections(courseHeader);
+            
+            // need to handle the case where the offering is already added, but we are doing the lab, sec, tut split
+            var existingCourseOffering = await courseOfferingRepository.GetSingleOrDefaultAsync(x => x.CourseId == course.Id && x.Year == year && x.Suffix == GetSuffix(courseHeader) && x.CalendarSource == calendarSourceEnum && x.TermId == parsedTermId);
 
-            if (existingOffering != null)
+            if (existingCourseOffering == null)
             {
-                // case where the offering already exists but we are scraping additional sections
-                var sections = await ScrapeAndPopulateOfferingSections(courseHeader, existingOffering.Id);
-                // add the sections to the existing offerings sections add range
-                var existingSections = existingOffering.Sections.ToList();
-                existingSections.AddRange(sections);
-                existingOffering.Sections = existingSections;   
+                await courseOfferingRepository.InsertAsync(courseOffering);
+                course.CourseOfferings.Add(courseOffering);
+                
+                foreach (var section in sections)
+                {
+                    section.CourseOfferingId = courseOffering.Id;
+                }
             }
             else
             {
-                var courseOffering = new CourseOffering(year, GetSuffix(courseHeader), calendarSourceEnum, course.Id, parsedTermId);
-                course.CourseOfferings.Add(courseOffering);
-                
-                // insert the course offering into the database
-                await courseOfferingRepository.InsertAsync(courseOffering);
-                
-                // populate the course offering with the sessions
-                var sections = await ScrapeAndPopulateOfferingSections(courseHeader, courseOffering.Id);
-                courseOffering.Sections = sections;
+                foreach (var section in sections)
+                {
+                    section.CourseOfferingId = existingCourseOffering.Id;
+                }
             }
+            await sectionRepository.InsertRangeAsync(sections);
         }
         
         return courses; 
