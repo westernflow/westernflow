@@ -1,3 +1,4 @@
+using AngleSharp.Html.Construction;
 using Data.Entities;
 using Repositories.Interfaces;
 using Scrapers.ScrapingUtilities;
@@ -8,24 +9,25 @@ public static class DbInitializer
 {
     public static IServiceProvider? ServiceProvider { get; set; }
     
-    public static async Task InitializeDatabase()
+    public static async Task ScrapeCurrentTerm(bool isSummer)
     {
-        await PopulateFaculties();
-        await PopulateCourses();
+        CourseScraper.isSummerTerm = isSummer;
+        var faculties = await PopulateFaculties();
+        await PopulateCourses(faculties);
     }
 
-    private static async Task PopulateFaculties()
+    private static async Task<List<Faculty>> PopulateFaculties()
     {
         var facultyRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<IFacultyRepository>();
         
         var faculties = await CourseScraper.ScrapeFaculties();
         await facultyRepository.InsertRangeAsync(faculties);
+        return faculties;
     }
 
-    private static async Task PopulateCourses()
+    private static async Task PopulateCourses(List<Faculty> faculties)
     {
         var facultyRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<IFacultyRepository>();
-        var faculties = await facultyRepository.GetAllAsync();
 
         // log progress as percentage of faculties completed
         double progress = 0;

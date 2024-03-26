@@ -24,6 +24,10 @@ public class FacultyRepository : GenericRepository<Faculty>, IFacultyRepository
             {
                await dbContext.AddAsync(entity);
             }
+            else
+            {
+               entity.Id = existingEntity.Id;
+            }
          }
          
          await dbContext.SaveChangesAsync();

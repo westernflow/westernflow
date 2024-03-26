@@ -44,7 +44,7 @@ public class CourseManagerDbContext : ContextBase
             .IsUnique();
 
         modelBuilder.Entity<Section>()
-            .HasIndex(c => new { c.Number, c.CourseOfferingId })
+            .HasIndex(c => new { c.Number, c.CourseOfferingId, c.ClassNumber })
             .IsUnique();
 
         modelBuilder.Entity<TimingDetails>()

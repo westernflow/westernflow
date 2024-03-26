@@ -10,8 +10,7 @@ public class Reviewer : IEntity
     [Key]
     public int Id { get; set; }
 
-    [MaxLength(255)]
-    public string SubjectId { get; set; }
+    [MaxLength(255)] public string SubjectId { get; set; } = string.Empty;
 
     [InverseProperty("Reviewer")]
     public virtual ICollection<CourseReview> CourseReviewsWritten { get; set; } = new List<CourseReview>();
