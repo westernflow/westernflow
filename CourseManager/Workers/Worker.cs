@@ -28,7 +28,7 @@ public class Worker : BackgroundService
         DbInitializer.ServiceProvider = _serviceProvider;
         CourseScraper.ServiceProvider = _serviceProvider;
 
-        await DbInitializer.InitializeDatabase();
+        await DbInitializer.ScrapeCurrentTerm(isSummer: false);
         
         // ExecuteAsync runs for the entire lifetime of the Application. We want to run the 
         // ExecuteAsync code then kill the application since there is no more work left to do.

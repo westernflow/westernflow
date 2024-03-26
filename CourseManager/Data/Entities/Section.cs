@@ -20,6 +20,7 @@ public record SectionConstructorParams
     public DeliveryType Delivery { get; init; }
     public List<string> ProfessorNames { get; init; } = new();
     public List<TimingDetails> TimingDetails { get; init; } = new();
+    public string TimingDetailsText { get; init; } = string.Empty;
     public int CourseOfferingId { get; init; }
 }
 
@@ -42,6 +43,7 @@ public class Section :IEntity
         Delivery = sectionConstructorParams.Delivery;
         ProfessorNames = sectionConstructorParams.ProfessorNames;
         TimingDetails = sectionConstructorParams.TimingDetails;
+        TimingDetailsText = sectionConstructorParams.TimingDetailsText;
         CourseOfferingId = sectionConstructorParams.CourseOfferingId;
     }
 
@@ -61,6 +63,8 @@ public class Section :IEntity
 
     [InverseProperty(nameof(Entities.TimingDetails.Section))]
     public List<TimingDetails> TimingDetails { get; set; } = new List<TimingDetails>();
+    [StringLength(100)]
+    public string TimingDetailsText { get; set; } = string.Empty;
     
     public int CourseOfferingId { get; set; }
     [ForeignKey(nameof(CourseOfferingId))]

@@ -13,6 +13,8 @@ namespace Scrapers.Utilities;
 public static class CourseScraper
 {
     public static IServiceProvider? ServiceProvider { get; set; } = null;
+    
+    public static bool isSummerTerm = false;
 
     public static async Task<List<Faculty>> ScrapeFaculties()
     {
@@ -24,7 +26,7 @@ public static class CourseScraper
         var client = new HttpClient();
         client.DefaultRequestHeaders.Add("Cookie", cookie.Value);
         
-        var response = await client.GetAsync(configuration["Scraper:BuilderUrl"]);
+        var response = await client.GetAsync(isSummerTerm ? configuration["Scraper:SummerBuilderUrl"] : configuration["Scraper:BuilderUrl"]);
         var html = await response.Content.ReadAsStringAsync();
         
         if (string.IsNullOrWhiteSpace(html))
@@ -89,7 +91,7 @@ public static class CourseScraper
             new KeyValuePair<string, string>("command_search", "search")
         }.Concat(sectionTypes));
         
-        var response = await client.PostAsync(configuration["Scraper:BuilderUrl"], requestData);
+        var response = await client.PostAsync(isSummerTerm ? configuration["Scraper:SummerBuilderUrl"] : configuration["Scraper:BuilderUrl"], requestData);
         var html = await response.Content.ReadAsStringAsync();
 
         if (string.IsNullOrWhiteSpace(html))
@@ -119,6 +121,7 @@ public static class CourseScraper
         }
 
         var description = descriptionElement.TextContent.Trim();
+        Console.WriteLine(courseHeader.TextContent);
 
         var courseName = courseHeader.TextContent.Split(" - ")[1].Trim();
         var courseNumber = courseHeader.TextContent.Split(" - ")[0].Split(" ")[1].Trim();
@@ -303,6 +306,10 @@ public static class CourseScraper
             timingDetails.Add(timingDetail);
         }
         
+        // Get the timing details string in the span within cells[5]
+        var timingDetailsSpan = cells[5].QuerySelector("span") as IHtmlSpanElement;
+        var timingDetailsText = timingDetailsSpan?.TextContent.Trim();
+        
         // 7. get status
         var statusString = cells[7].TextContent.Trim();
         var status = statusString switch
@@ -319,8 +326,17 @@ public static class CourseScraper
             throw new Exception($"Could not parse waitList size: {waitListSizeString}");
         }
         
-        // 9. get campus
-        var campusString = cells[9].TextContent.Trim();
+        var validCampusNames = new List<string> {"Main", "King's", "Huron", "Brescia", ""};
+        
+        // 9. check if campus has been moved over (section is inbetween in the summer schdule)
+        var tenthCellContents = cells[10].TextContent.Trim();
+        int offset = 0;
+        if (validCampusNames.Contains(tenthCellContents))
+        {
+            offset = 1;
+        }
+        
+        var campusString = cells[9 + offset].TextContent.Trim();
         var campus = campusString switch
         {
             "Main" => Campus.Main,
@@ -332,7 +348,7 @@ public static class CourseScraper
         };
         
         // 10. get delivery type
-        var deliveryTypeString = cells[10].TextContent.Trim();
+        var deliveryTypeString = cells[10 + offset].TextContent.Trim();
         var deliveryType = deliveryTypeString switch
         {
             "In Person" => DeliveryType.InPerson,
@@ -350,6 +366,7 @@ public static class CourseScraper
             ProfessorNames = instructorNames,
             TimetableRequisiteString = timetableRequisiteString,
             TimingDetails = timingDetails,
+            TimingDetailsText = timingDetailsText ?? string.Empty,
             Status = status,
             WaitListSize = waitListSize,
             Campus = campus,
@@ -375,7 +392,7 @@ public static class CourseScraper
         {
             throw new Exception("Could not find table element");
         }
-
+        
         foreach (var row in tableElement.Rows.Skip(1))
         {
             var section = ScrapeSection(row);
@@ -447,9 +464,11 @@ public static class CourseScraper
         };
         
         var courseHeaders = document.QuerySelectorAll("div.container-fluid.col-md-12 > h4");
+        
 
         // each course header presents a course offering of a possibly existing course
-        foreach (var courseHeader in courseHeaders)
+        // if summer skip the first course header since for some reason there is a random text block which is h4 in summer but h3 in fall/winter lol
+        foreach (var courseHeader in isSummerTerm ? courseHeaders.Skip(1) : courseHeaders)
         {
             var scrapedCourse = ScrapeCourse(courseHeader);
             scrapedCourse.FacultyId = faculty.Id;
@@ -472,7 +491,6 @@ public static class CourseScraper
             if (existingCourseOffering == null)
             {
                 await courseOfferingRepository.InsertAsync(courseOffering);
-                course.CourseOfferings.Add(courseOffering);
                 
                 foreach (var section in sections)
                 {
