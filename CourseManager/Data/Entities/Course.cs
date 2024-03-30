@@ -34,13 +34,16 @@ public class Course : IEntity
     public string InternalCourseId { get; set; } = string.Empty;
     
     public int FacultyId { get; set; }
+
     [ForeignKey(nameof(FacultyId))]
     [InverseProperty("Courses")]
     public Faculty Faculty { get; set; } = null!;
 
     [InverseProperty(nameof(CourseOffering.Course))]
     public ICollection<CourseOffering> CourseOfferings { get; set; } = new List<CourseOffering>();
-    
+
     [InverseProperty(nameof(ProfessorReview.Course))]
-    public  ICollection<ProfessorReview> RelatedProfessorReviews { get; set; } = new List<ProfessorReview>();
+    public ICollection<ProfessorReview> RelatedProfessorReviews { get; set; } = new List<ProfessorReview>();
+
+    [Key] public int Id { get; set; }
 }

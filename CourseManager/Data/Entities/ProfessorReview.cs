@@ -12,32 +12,36 @@ public class ProfessorReview : IEntity, ITrackCreated, ITrackModified
     {
     }
 
-    [Key]
-    public int Id { get; set; }
-    
     public int Quality { get; set; }
     public int Difficulty { get; set; }
     public int Helpful { get; set; }
     public int Clarity { get; set; }
-    [StringLength(1000)]
-    public string ReviewText { get; set; } = String.Empty;
+
+    [StringLength(1000)] public string ReviewText { get; set; } = string.Empty;
 
     public int ReviewerId { get; set; }
+
     [ForeignKey(nameof(ReviewerId))]
     [InverseProperty("ProfessorReviewsWritten")]
     public virtual Reviewer Reviewer { get; set; } = null!;
-    
+
     public int? CourseId { get; set; }
+
     [ForeignKey(nameof(CourseId))]
     [InverseProperty("RelatedProfessorReviews")]
     public Course? Course { get; set; }
-    
+
     public int ProfessorId { get; set; }
+
     [ForeignKey(nameof(ProfessorId))]
     [InverseProperty("ProfessorReviews")]
     public Professor Professor { get; set; } = null!;
 
-    public virtual IEnumerable<JoinedReviewerProfessorReview>? LikedBy { get; set; } = new List<JoinedReviewerProfessorReview>();
+    public virtual IEnumerable<JoinedReviewerProfessorReview>? LikedBy { get; set; } =
+        new List<JoinedReviewerProfessorReview>();
+
+    [Key] public int Id { get; set; }
+
     public DateTime CreatedDate { get; set; }
     public DateTime ModifiedDate { get; set; }
 }

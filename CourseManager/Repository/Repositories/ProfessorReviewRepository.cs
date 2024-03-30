@@ -6,7 +6,8 @@ namespace Repositories.Repositories;
 
 internal class ProfessorReviewRepository : GenericRepository<ProfessorReview>
 {
-   public ProfessorReviewRepository(IDbContextFactory<CourseManagerDbContext> dbContextFactory) : base(dbContextFactory)
-   {
-   }
+    public ProfessorReviewRepository(IDbContextFactory<CourseManagerDbContext> dbContextFactory) : base(
+        dbContextFactory)
+    {
+    }
 }

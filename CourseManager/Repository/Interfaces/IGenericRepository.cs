@@ -3,7 +3,9 @@ using Data;
 using Data.Interfaces;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Repositories.Interfaces
+namespace Repositories.Interfaces;
+
+public interface IGenericRepository<TEntity> where TEntity : IEntity
 {
      public interface IGenericRepository<TEntity> where TEntity : class, IEntity
      {

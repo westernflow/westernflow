@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
@@ -24,13 +23,13 @@ public record SectionConstructorParams
     public int CourseOfferingId { get; init; }
 }
 
-public class Section :IEntity
+public class Section : IEntity
 {
     // see https://stackoverflow.com/questions/54400115/no-suitable-constructor-found-for-entity-type-string
     private Section()
     {
     }
-    
+
     public Section([NotNull] SectionConstructorParams sectionConstructorParams)
     {
         Number = sectionConstructorParams.Number;
@@ -47,29 +46,29 @@ public class Section :IEntity
         CourseOfferingId = sectionConstructorParams.CourseOfferingId;
     }
 
-    [Key]
-    public int Id { get; set; }
-    
     public int Number { get; set; }
     public ComponentType ComponentType { get; set; }
     public int ClassNumber { get; set; }
-    [StringLength(5000)]
-    public string? TimetableRequisiteString { get; set; }
+
+    [StringLength(5000)] public string? TimetableRequisiteString { get; set; }
+
     public int WaitListSize { get; set; }
     public StatusType Status { get; set; }
     public Campus Campus { get; set; }
     public DeliveryType Delivery { get; set; }
-    public List<string> ProfessorNames { get; set; } = new List<string>();
+    public List<string> ProfessorNames { get; set; } = new();
 
     [InverseProperty(nameof(Entities.TimingDetails.Section))]
-    public List<TimingDetails> TimingDetails { get; set; } = new List<TimingDetails>();
-    [StringLength(100)]
-    public string TimingDetailsText { get; set; } = string.Empty;
-    
+    public List<TimingDetails> TimingDetails { get; set; } = new();
+
+    [StringLength(100)] public string TimingDetailsText { get; set; } = string.Empty;
+
     public int CourseOfferingId { get; set; }
-    [ForeignKey(nameof(CourseOfferingId))]
-    public CourseOffering CourseOffering { get; set; } = null!;
-    
+
+    [ForeignKey(nameof(CourseOfferingId))] public CourseOffering CourseOffering { get; set; } = null!;
+
     // An attempt will be made to resolve this field via the listed instructors on RMP
     public IEnumerable<JoinedSectionProfessor> Professors { get; set; } = new List<JoinedSectionProfessor>();
+
+    [Key] public int Id { get; set; }
 }

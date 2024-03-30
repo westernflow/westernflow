@@ -7,11 +7,7 @@ namespace Repositories.Repositories;
 
 public class FacultyRepository : GenericRepository<Faculty>, IFacultyRepository
 {
-   private readonly IDbContextFactory<CourseManagerDbContext> _dbContextFactory;
-   public FacultyRepository(IDbContextFactory<CourseManagerDbContext> dbContextFactory) : base(dbContextFactory)
-   {  
-      _dbContextFactory = dbContextFactory;
-   }
+    private readonly IDbContextFactory<CourseManagerDbContext> _dbContextFactory;
 
    public new async Task InsertRangeAsync(IReadOnlyCollection<Faculty> entities)
    {
@@ -22,15 +18,14 @@ public class FacultyRepository : GenericRepository<Faculty>, IFacultyRepository
             var existingEntity = await GetSingleOrDefaultAsync(e => e.Abbreviation == entity.Abbreviation);
             if (existingEntity == null)
             {
-               await dbContext.AddAsync(entity);
+                var existingEntity = await GetSingleOrDefaultAsync(e => e.Name == entity.Name);
+                if (existingEntity == null)
+                    await dbContext.AddAsync(entity);
+                else
+                    entity.Id = existingEntity.Id;
             }
-            else
-            {
-               entity.Id = existingEntity.Id;
-            }
-         }
-         
-         await dbContext.SaveChangesAsync();
-      }
-   }
+
+            await dbContext.SaveChangesAsync();
+        }
+    }
 }

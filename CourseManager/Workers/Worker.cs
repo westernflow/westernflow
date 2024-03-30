@@ -1,18 +1,16 @@
-using Repositories.Interfaces;
-using Scrapers.ScrapingUtilities;
 using Scrapers.Utilities;
 
 namespace Scrapers;
 
 public class Worker : BackgroundService
 {
-    private readonly ILogger<Worker> _logger;
     private readonly IHostApplicationLifetime _appLifetime;
+    private readonly ILogger<Worker> _logger;
     private readonly IServiceProvider _serviceProvider;
 
     public Worker(
-        ILogger<Worker> logger, 
-        IHostApplicationLifetime appLifetime, 
+        ILogger<Worker> logger,
+        IHostApplicationLifetime appLifetime,
         IServiceProvider serviceProvider)
     {
         _logger = logger;
@@ -23,7 +21,7 @@ public class Worker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("Worker started running at: {time}", DateTimeOffset.Now);
-        
+
         // anti-pattern since this makes testing harder but I am not testing either way l0l
         DbInitializer.ServiceProvider = _serviceProvider;
         CourseScraper.ServiceProvider = _serviceProvider;

@@ -7,9 +7,6 @@ namespace Data.Entities;
 
 public class Reviewer : IEntity
 {
-    [Key]
-    public int Id { get; set; }
-
     [MaxLength(255)] public string SubjectId { get; set; } = string.Empty;
 
     [InverseProperty("Reviewer")]
@@ -20,6 +17,9 @@ public class Reviewer : IEntity
 
     public virtual IEnumerable<JoinedReviewerCourseReview>? CourseReviewsLiked { get; set; } =
         new List<JoinedReviewerCourseReview>();
-    
-    public virtual IEnumerable<JoinedReviewerProfessorReview>? ProfessorReviewsLiked { get; set; } = new List<JoinedReviewerProfessorReview>();
+
+    public virtual IEnumerable<JoinedReviewerProfessorReview>? ProfessorReviewsLiked { get; set; } =
+        new List<JoinedReviewerProfessorReview>();
+
+    [Key] public int Id { get; set; }
 }

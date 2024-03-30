@@ -10,8 +10,8 @@ namespace Business.Services;
 public class CourseReviewService : ICourseReviewService
 {
     private readonly ICourseReviewRepository _courseReviewRepository;
-    private readonly IReviewerInfoProvider _reviewerInfoProvider;
     private readonly CreateCourseReviewInputValidator _createCourseReviewInputValidator;
+    private readonly IReviewerInfoProvider _reviewerInfoProvider;
 
     public CourseReviewService(ICourseReviewRepository courseReviewRepository,
         IReviewerInfoProvider reviewerInfoProvider, CreateCourseReviewInputValidator createCourseReviewInputValidator)

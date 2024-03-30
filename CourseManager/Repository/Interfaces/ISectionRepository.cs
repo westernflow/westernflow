@@ -4,5 +4,4 @@ namespace Repositories.Interfaces;
 
 public interface ISectionRepository : IGenericRepository<Section>
 {
-    
 }
