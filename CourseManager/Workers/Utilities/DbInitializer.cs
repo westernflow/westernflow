@@ -32,7 +32,7 @@ public static class DbInitializer
         // log progress as percentage of faculties completed
         double progress = 0;
         double increment = 100.0 / faculties.Count;
-        foreach (var faculty in faculties)
+        foreach (var faculty in faculties.Take(1))
         {
             Console.WriteLine("Processing faculty: " + faculty.Name);
             await CourseScraper.PopulateCoursesByFaculty(faculty);

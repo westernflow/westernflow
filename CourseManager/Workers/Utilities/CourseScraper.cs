@@ -256,7 +256,7 @@ public static class CourseScraper
         };
     }
     
-    public static Section ScrapeSection(IHtmlTableRowElement row)
+    public static async Task<Section> ScrapeSection(IHtmlTableRowElement row)
     {
         var cells = row.Cells;
         
@@ -286,6 +286,52 @@ public static class CourseScraper
         
         // 4. get instructors (they are separated by <br> tags so split based on the html)
         var instructorNames = cells[3].InnerHtml.Split("<br>").Select(x => x.Trim()).ToList();
+        
+        foreach (var instructor in instructorNames)
+        {
+            if (string.IsNullOrWhiteSpace(instructor))
+            {
+                continue;
+            }
+            
+            Console.WriteLine($"Processing instructor: {instructor}");
+            
+            // instructor name follows format first initial + period + last name e.g. J. Elyk-Smith
+            var splitName = instructor.Split(".");
+            if (splitName.Length != 2)
+            {
+                throw new Exception($"Could not parse instructor name: {instructor}");
+            }
+
+            var firstName = splitName[0].Trim();
+            var lastName = splitName[1].Trim();
+            
+            Console.WriteLine($"Processed name: {firstName} {lastName}");
+            
+            // Make a request to the directory to get the professor
+            var possibleProfessors = await DirectoryScraper.GetProfessorsInDirectory(firstName, lastName,
+                    DirectoryScraper.SearchOption.StartsWith);
+            
+            // handle this case with better searching (e.g. contains + NLP)
+            if (possibleProfessors.Count == 0)
+            {
+                throw new Exception($"Could not find professor: {firstName} {lastName}");
+            }
+            
+            if (possibleProfessors.Count == 1)
+            {
+                Console.WriteLine("Found professor: " + possibleProfessors[0].FirstName + " " + possibleProfessors[0].LastName + " " + possibleProfessors[0].UwoId + " " + possibleProfessors[0].Email + " " + possibleProfessors[0].Departments);
+            }
+            
+            if (possibleProfessors.Count > 1)
+            {
+                foreach (var professor in possibleProfessors)
+                {
+                    Console.WriteLine("professor: " + professor.FirstName + " " + professor.LastName + " " + professor.UwoId + " " + professor.Email + " " + professor.Departments);
+                }
+                throw new Exception($"Found multiple professors: {firstName} {lastName}");
+            }
+        }
         
         // there is a trailing <br> tag so remove the last element
         instructorNames.RemoveAt(instructorNames.Count - 1);
@@ -379,7 +425,7 @@ public static class CourseScraper
         return section;
     }
 
-    public static List<Section> ScrapeOfferingSections(IElement courseHeader)
+    public static async Task<List<Section>> ScrapeOfferingSections(IElement courseHeader)
     {
         var sections = new List<Section>();
         
@@ -396,7 +442,7 @@ public static class CourseScraper
         
         foreach (var row in tableElement.Rows.Skip(1))
         {
-            var section = ScrapeSection(row);
+            var section = await ScrapeSection(row);
             sections.Add(section);
         }
 
@@ -484,7 +530,7 @@ public static class CourseScraper
             var course = existingCourse ?? scrapedCourse;
             
             var courseOffering = new CourseOffering(year, GetSuffix(courseHeader), calendarSourceEnum, course.Id, parsedTermId);
-            var sections = ScrapeOfferingSections(courseHeader);
+            var sections = await ScrapeOfferingSections(courseHeader);
             
             // need to handle the case where the offering is already added, but we are doing the lab, sec, tut split
             var existingCourseOffering = await courseOfferingRepository.GetSingleOrDefaultAsync(x => x.CourseId == course.Id && x.Year == year && x.Suffix == GetSuffix(courseHeader) && x.CalendarSource == calendarSourceEnum && x.TermId == parsedTermId);
