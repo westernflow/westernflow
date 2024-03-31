@@ -30,11 +30,11 @@ add_routes(
     path="/joke",
     )
 
-prompt = ChatPromptTemplate.from_template("From the given list of professors: {professorOptions}, output the "
+prompt = ChatPromptTemplate.from_template("[No prose] From the given list of professors: {professorOptions}, output the "
                                           "one you believe matches this professor: {professorInformation}."
-                                          "Output your response as json containing the professor's name (excluding "
-                                          "honorifics such as Dr, Mrs, etc) and their email address as separate "
-                                          "fields.")
+                                          "Output your response as json with two fields: professorName (excluding "
+                                          "honorifics such as Dr, Mrs, etc) and emailAddress. E.g. "
+                                          "")
 chain = prompt | model
 add_routes(
     app,

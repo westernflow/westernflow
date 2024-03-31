@@ -106,7 +106,7 @@ public static class DirectoryScraper
                 Departments = departments.Trim()
             });
 
-            Console.WriteLine($"{first} - {last} - {uwoId} - {email} - {departments}");
+            Console.WriteLine($"Puppeteer scraped professor: {first} - {last} - {uwoId} - {email} - {departments}");
         }
 
         Cache.Set(cacheKey, professors, TimeSpan.FromMinutes(1000));
