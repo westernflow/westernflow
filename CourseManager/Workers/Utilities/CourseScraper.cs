@@ -379,7 +379,7 @@ public static class CourseScraper
             if (possibleProfessors.Count == 1)
             {
                 var directoryProfessor = possibleProfessors.First();
-                
+
                await UpsertDirectoryProfessor(directoryProfessor);
             }
 
@@ -416,16 +416,19 @@ public static class CourseScraper
             Name = directoryProfessor.Name,
             UwoId = directoryProfessor.UwoId
         };
-        
+
+        Console.WriteLine($"Checking for existing professor with UWO ID: {scrapedProfessor.UwoId}");
         var existingProfessor = await professorRepository.GetSingleOrDefaultAsync(x => x.UwoId == scrapedProfessor.UwoId);
         
         if (existingProfessor == null)
         {
+            Console.WriteLine("Doesn't exist yet... Creating the professor in the database..");
             scrapedProfessor.Sections.Add(Context.Section ?? throw new InvalidOperationException("Missing section in context"));
             await professorRepository.InsertAsync(scrapedProfessor);
         }
         else
         {
+            Console.WriteLine("Professor already exists... Updating the professor in the database..");
             existingProfessor.Sections.Add(Context.Section ?? throw new InvalidOperationException("Missing section in context"));
             await professorRepository.UpdateAsync(existingProfessor);
         }

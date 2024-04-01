@@ -36,7 +36,7 @@ public static class DirectoryScraper
         
         var options = new LaunchOptions
         {
-            Headless = false,
+            Headless = true,
             ExecutablePath = configuration["Scraper:ChromeExecutablePath"],
         };
         
