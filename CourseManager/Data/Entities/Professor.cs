@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Data.Entities.JoinTables;
 using Data.Interfaces;
 
 namespace Data.Entities;
@@ -24,7 +23,7 @@ public class Professor : IEntity
 
     [InverseProperty("Professor")]
     public virtual ICollection<CourseReview> CourseReviews { get; set; } = new List<CourseReview>();
-
-    public virtual IEnumerable<JoinedSectionProfessor>? Sections { get; set; } = new List<JoinedSectionProfessor>();
+    
+    public List<Section> Sections { get; set; } = new List<Section>();
     [Key] public int Id { get; set; }
 }

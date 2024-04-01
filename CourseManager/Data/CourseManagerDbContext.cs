@@ -1,5 +1,4 @@
 using Data.Entities;
-using Data.Entities.JoinTables;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data;
@@ -19,9 +18,6 @@ public class CourseManagerDbContext : ContextBase
     public DbSet<CourseOffering> CourseOfferings { get; set; } = null!;
     public DbSet<CourseReview> CourseReviews { get; set; } = null!;
     public DbSet<Reviewer> Reviewers { get; set; } = null!;
-    public DbSet<JoinedReviewerCourseReview> JoinedReviewerCourseReviews { get; set; } = null!;
-    public DbSet<JoinedReviewerProfessorReview> JoinedReviewerProfessorReviews { get; set; } = null!;
-    public DbSet<JoinedSectionProfessor> JoinedSectionProfessors { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -72,50 +68,5 @@ public class CourseManagerDbContext : ContextBase
         // name the Reviewer table Reviewers
         modelBuilder.Entity<Reviewer>()
             .ToTable("Reviewers");
-
-        // Create CourseReview - Reviewer join table
-        modelBuilder.Entity<JoinedReviewerCourseReview>()
-            .HasKey(r => new { r.CourseReviewId, r.ReviewerId });
-
-        // Configure many-to-many from CourseReview.LikedBy to Reviewer.LikedCourseReviews
-        modelBuilder.Entity<JoinedReviewerCourseReview>()
-            .HasOne(r => r.Reviewer)
-            .WithMany(r => r.CourseReviewsLiked)
-            .HasForeignKey(r => r.ReviewerId);
-
-        modelBuilder.Entity<JoinedReviewerCourseReview>()
-            .HasOne(r => r.CourseReview)
-            .WithMany(r => r.LikedBy)
-            .HasForeignKey(r => r.CourseReviewId);
-
-        // Create ProfessorReview - Reviewer join table
-        modelBuilder.Entity<JoinedReviewerProfessorReview>()
-            .HasKey(r => new { r.ProfessorReviewId, r.ReviewerId });
-
-        // Configure many-to-many from ProfessorReview.LikedBy to Reviewer.LikedProfessorReviews
-        modelBuilder.Entity<JoinedReviewerProfessorReview>()
-            .HasOne(r => r.Reviewer)
-            .WithMany(r => r.ProfessorReviewsLiked)
-            .HasForeignKey(r => r.ReviewerId);
-
-        modelBuilder.Entity<JoinedReviewerProfessorReview>()
-            .HasOne(r => r.ProfessorReview)
-            .WithMany(r => r.LikedBy)
-            .HasForeignKey(r => r.ProfessorReviewId);
-
-        // Create Section - Professor join table
-        modelBuilder.Entity<JoinedSectionProfessor>()
-            .HasKey(r => new { r.SectionId, r.ProfessorId });
-
-        // Configure many-to-many from Section.Professors to Professor.Sections
-        modelBuilder.Entity<JoinedSectionProfessor>()
-            .HasOne(r => r.Section)
-            .WithMany(r => r.Professors)
-            .HasForeignKey(r => r.SectionId);
-
-        modelBuilder.Entity<JoinedSectionProfessor>()
-            .HasOne(r => r.Professor)
-            .WithMany(r => r.Sections)
-            .HasForeignKey(r => r.ProfessorId);
     }
 }

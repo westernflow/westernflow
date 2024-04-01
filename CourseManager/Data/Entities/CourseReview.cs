@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Data.Entities.JoinTables;
 using Data.Interfaces;
 
 namespace Data.Entities;
@@ -26,9 +25,8 @@ public class CourseReview : IEntity, ITrackCreated, ITrackModified
     public int? ProfessorId { get; set; }
 
     [ForeignKey(nameof(ProfessorId))] public virtual Professor? Professor { get; set; }
-
-    public virtual IEnumerable<JoinedReviewerCourseReview>? LikedBy { get; set; } =
-        new List<JoinedReviewerCourseReview>();
+    
+    public List<Reviewer> LikedBy { get; set; } = new List<Reviewer>();
 
     [Key] public int Id { get; set; }
 

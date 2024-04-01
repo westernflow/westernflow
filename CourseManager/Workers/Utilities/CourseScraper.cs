@@ -2,10 +2,8 @@ using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using Data.Entities;
-using Data.Entities.JoinTables;
 using Data.Enums;
 using Repositories.Interfaces;
-using Repositories.Interfaces.JoinTables;
 using Scrapers.ScrapingUtilities;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
@@ -15,6 +13,7 @@ public class GlobalContext
 {
     public Faculty? Faculty { get; set; }
     public CourseOffering? Offering { get; set; }
+    public Section? Section { get; set; }
 }
 
 public static class CourseScraper
@@ -348,19 +347,17 @@ public static class CourseScraper
     private static async Task<Section> ControlScrapedSection(IHtmlTableRowElement row)
     {
         if (ServiceProvider == null) throw new InvalidOperationException();
-        var sectionProfessorRepository = ServiceProvider.GetRequiredService<ISectionProfessorRepository>();
         var sectionRepository = ServiceProvider.GetRequiredService<ISectionRepository>();
 
         var section = ScrapeSection(row);
+        Context.Section = section;
         
         await sectionRepository.InsertAsync(section);
         foreach (var professorName in section.ProfessorNames)
         {
             if (string.IsNullOrWhiteSpace(professorName)) continue;
 
-            Console.WriteLine($"Processing instructor: {professorName}");
-
-            // instructor name follows format first initial + period + last name e.g. J. Elyk-Smith
+            // instructor name follows format first initial + period + last name e.g. J. Ali-Hassan
             var splitName = professorName.Split(".");
             if (splitName.Length != 2) throw new Exception($"Could not parse instructor name: {professorName}");
 
@@ -381,18 +378,9 @@ public static class CourseScraper
 
             if (possibleProfessors.Count == 1)
             {
-                // insert a new prof into the database and link it to the section
                 var directoryProfessor = possibleProfessors.First();
                 
-                var insertedProfessor = await InsertDirectoryProfessor(directoryProfessor);
-                
-                var sectionProfessor = new JoinedSectionProfessor() 
-                {
-                    ProfessorId = insertedProfessor.Id,
-                    SectionId = section.Id
-                };
-                
-                await sectionProfessorRepository.InsertAsync(sectionProfessor);
+               await UpsertDirectoryProfessor(directoryProfessor);
             }
 
 
@@ -411,40 +399,38 @@ public static class CourseScraper
                     continue;
                 }
                 
-                var insertedProfessor = await InsertDirectoryProfessor(matchingProfessor);
-                
-                var sectionProfessor = new JoinedSectionProfessor() 
-                {
-                    ProfessorId = insertedProfessor.Id,
-                    SectionId = section.Id
-                };
-                
-                await sectionProfessorRepository.InsertAsync(sectionProfessor);
+                await UpsertDirectoryProfessor(matchingProfessor);
             }
         }
-
 
         return section;
     }
 
     // returns existing professor if already in db otherwise returns the newly inserted professor
-    private static async Task<Professor> InsertDirectoryProfessor(DirectoryScraper.DirectoryProfessor directoryProfessor)
+    private static async Task<Professor> UpsertDirectoryProfessor(DirectoryScraper.DirectoryProfessor directoryProfessor)
     {
         var professorRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<IProfessorRepository>();
-        var professor = new Professor
+        var scrapedProfessor = new Professor
         {
             Email = directoryProfessor.Email,
             Name = directoryProfessor.Name,
             UwoId = directoryProfessor.UwoId
         };
         
-        var existingProfessor = await professorRepository.GetSingleOrDefaultAsync(x => x.UwoId == professor.UwoId);
+        var existingProfessor = await professorRepository.GetSingleOrDefaultAsync(x => x.UwoId == scrapedProfessor.UwoId);
+        
         if (existingProfessor == null)
         {
-            await professorRepository.InsertAsync(professor);
+            scrapedProfessor.Sections.Add(Context.Section ?? throw new InvalidOperationException("Missing section in context"));
+            await professorRepository.InsertAsync(scrapedProfessor);
+        }
+        else
+        {
+            existingProfessor.Sections.Add(Context.Section ?? throw new InvalidOperationException("Missing section in context"));
+            await professorRepository.UpdateAsync(existingProfessor);
         }
         
-        return existingProfessor ?? professor;
+        return existingProfessor ?? scrapedProfessor;
     }
 
     private static async Task<List<Section>> ScrapeOfferingSections(IElement courseHeader)
@@ -483,7 +469,6 @@ public static class CourseScraper
         var courseRepository = (ServiceProvider ?? throw new InvalidOperationException())
             .GetRequiredService<ICourseRepository>();
         var courseOfferingRepository = ServiceProvider.GetRequiredService<ICourseOfferingRepository>();
-        var sectionRepository = ServiceProvider.GetRequiredService<ISectionRepository>();
         
         Context.Faculty = faculty;
 

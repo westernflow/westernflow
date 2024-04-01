@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
-using Data.Entities.JoinTables;
 using Data.Enums;
 using Data.Interfaces;
 
@@ -67,8 +66,7 @@ public class Section : IEntity
 
     [ForeignKey(nameof(CourseOfferingId))] public CourseOffering CourseOffering { get; set; } = null!;
 
-    // An attempt will be made to resolve this field via the listed instructors on RMP
-    public IEnumerable<JoinedSectionProfessor> Professors { get; set; } = new List<JoinedSectionProfessor>();
+    public List<Professor> Professors { get; set; } = new List<Professor>();
 
     [Key] public int Id { get; set; }
 }
