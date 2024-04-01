@@ -11,8 +11,7 @@ public static class DirectoryScraper
     
     public record DirectoryProfessor
     {
-        public string FirstName { get; set; } = String.Empty;
-        public string LastName { get; set; } = String.Empty;
+        public string Name { get; set; } = String.Empty;
         public string Email { get; set; } = String.Empty;
         public string UwoId { get; set; } = String.Empty;
         public string Departments { get; set; } = String.Empty;
@@ -63,17 +62,20 @@ public static class DirectoryScraper
                 throw new ArgumentOutOfRangeException(nameof(option), option, null);
         }
 
-        var response = await page.WaitForNavigationAsync(new NavigationOptions
+        await page.WaitForNavigationAsync(new NavigationOptions
         {
             WaitUntil = new[] {WaitUntilNavigation.Networkidle0},
             Timeout = 10000
         });
         
-        // get html of new page
-        var html = await page.GetContentAsync();
-        
         // select table with id id="people_search_results"
         var table = await page.QuerySelectorAsync("#people_search_results");
+        if (table == null)
+        {
+            Console.WriteLine("Error finding the table.");
+            await browser.CloseAsync();
+            return new List<DirectoryProfessor>();
+        }
         
         // get all rows in the table
         var rows = await table.QuerySelectorAllAsync("tr");
@@ -85,28 +87,23 @@ public static class DirectoryScraper
             var cells = await row.QuerySelectorAllAsync("td");
             var name = await cells[0].EvaluateFunctionAsync<string>("node => node.textContent");
             var emailLink = await cells[1].QuerySelectorAsync("a");
+            if (emailLink == null)
+            {
+                continue;
+            }
             var email = await emailLink.EvaluateFunctionAsync<string>("node => node.textContent");
+
             var departments = await cells[2].EvaluateFunctionAsync<string>("node => node.textContent");
             
-            // get first name and last name split by comma and trim
-            var names = name.Split(",");
-            var first = names[1].Trim();
-            var last = names[0].Trim();
-            
-            // get uwo id by splitting email by @ and taking the first part
-            var uwoId = email.Split("@")[0].Trim();
-            
-            // clean name, email departments whitespace and insert into professor lists
             professors.Add(new DirectoryProfessor
             {
-                FirstName = first,
-                LastName = last,
-                UwoId = uwoId,
+                Name = name.Trim(),
                 Email = email.Trim(),
+                UwoId = email.Split('@')[0].Trim(),
                 Departments = departments.Trim()
             });
 
-            Console.WriteLine($"Puppeteer scraped professor: {first} - {last} - {uwoId} - {email} - {departments}");
+            Console.WriteLine($"Puppeteer scraped professor: {name} - {email} - {departments}");
         }
 
         Cache.Set(cacheKey, professors, TimeSpan.FromMinutes(1000));

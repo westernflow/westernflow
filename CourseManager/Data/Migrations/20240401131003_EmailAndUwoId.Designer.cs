@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(CourseManagerDbContext))]
-    partial class CourseManagerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240401131003_EmailAndUwoId")]
+    partial class EmailAndUwoId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,25 +33,25 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Antirequisites")
-                        .IsRequired()
+                    b.Property<string>("AntirequisiteString")
                         .HasMaxLength(3000)
                         .HasColumnType("character varying(3000)");
 
-                    b.Property<string>("Corequisites")
-                        .IsRequired()
+                    b.Property<string>("BreadthCategories")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("CorequisiteString")
                         .HasMaxLength(3000)
                         .HasColumnType("character varying(3000)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(3000)
                         .HasColumnType("character varying(3000)");
 
                     b.Property<string>("ExtraInformation")
-                        .IsRequired()
-                        .HasMaxLength(3000)
-                        .HasColumnType("character varying(3000)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<int>("FacultyId")
                         .HasColumnType("integer");
@@ -67,13 +69,12 @@ namespace Data.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Prerequisites")
-                        .IsRequired()
+                    b.Property<string>("PrerequisiteString")
                         .HasMaxLength(3000)
                         .HasColumnType("character varying(3000)");
 
                     b.Property<decimal?>("Weight")
-                        .HasColumnType("numeric(3,2)");
+                        .HasColumnType("numeric(2,2)");
 
                     b.HasKey("Id");
 
@@ -179,19 +180,12 @@ namespace Data.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<string>("EnumBitmap")
-                        .HasMaxLength(3)
-                        .HasColumnType("character varying(3)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Abbreviation")
-                        .IsUnique();
 
                     b.HasIndex("Name")
                         .IsUnique();

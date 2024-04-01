@@ -9,7 +9,7 @@ public static class DbInitializer
 
     public static async Task ScrapeCurrentTerm(bool isSummer)
     {
-        CourseScraper.isSummerTerm = isSummer;
+        CourseScraper.IsSummerTerm = isSummer;
         var faculties = await PopulateFaculties();
         await PopulateCourses(faculties);
     }

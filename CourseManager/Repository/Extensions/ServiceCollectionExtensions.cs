@@ -1,6 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Repositories.Interfaces;
+using Repositories.Interfaces.JoinTables;
 using Repositories.Repositories;
+using Repositories.Repositories.JoinTables;
 
 namespace Repositories.Extensions;
 
@@ -16,6 +18,7 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddScoped<ICourseOfferingRepository, CourseOfferingRepository>();
         serviceCollection.AddScoped<IReviewerRepository, ReviewerRepository>();
         serviceCollection.AddScoped<ICourseReviewRepository, CourseReviewRepository>();
+        serviceCollection.AddScoped<ISectionProfessorRepository, SectionProfessorRepository>();
         return serviceCollection;
     }
 
@@ -29,6 +32,7 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddSingleton<ICourseOfferingRepository, CourseOfferingRepository>();
         serviceCollection.AddSingleton<IReviewerRepository, ReviewerRepository>();
         serviceCollection.AddSingleton<ICourseReviewRepository, CourseReviewRepository>();
+        serviceCollection.AddSingleton<ISectionProfessorRepository, SectionProfessorRepository>();
         return serviceCollection;
     }
 }

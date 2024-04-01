@@ -49,6 +49,14 @@ public class CourseManagerDbContext : ContextBase
             .HasIndex(c => new { c.Number, c.CourseOfferingId, c.ClassNumber })
             .IsUnique();
 
+        modelBuilder.Entity<Professor>()
+            .HasIndex(p => new { p.Email })
+            .IsUnique();
+        
+        modelBuilder.Entity<Professor>()
+            .HasIndex(p => new { p.UwoId })
+            .IsUnique();
+
         modelBuilder.Entity<TimingDetails>()
             .HasIndex(c => new { c.DaysOfWeekBitmap, c.Time, c.SectionId })
             .IsUnique();

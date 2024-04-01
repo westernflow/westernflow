@@ -7,16 +7,15 @@ namespace Data.Entities;
 
 public class Professor : IEntity
 {
-    private Professor()
+    public Professor()
     {
-    }
-
-    public Professor(string name)
-    {
-        Name = name;
     }
 
     [StringLength(100)] public string Name { get; set; } = string.Empty;
+    
+    [StringLength(100)] public string Email { get; set; } = string.Empty;
+    
+    [StringLength(100)] public string UwoId { get; set; } = string.Empty;
 
     [StringLength(100)] public string? RmpId { get; set; }
 
