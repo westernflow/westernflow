@@ -145,7 +145,7 @@ public static class PublicScraper
 
             // check faculty repository for existing faculty with the same abbreviation or name
             var existingFaculty =
-                await facultyRepository.GetSingleOrDefaultAsync(f => f.Name == name);
+                await facultyRepository.GetSingleOrDefaultAsync(f => f.Abbreviation == abbreviation);
 
             // Get the breadth category string in cells[1]
             var breadthCategory = cells[1].TextContent;

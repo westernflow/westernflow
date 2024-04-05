@@ -29,7 +29,8 @@ public class Worker : BackgroundService
         CourseScraper.ServiceProvider = _serviceProvider;
         PublicScraper.ServiceProvider = _serviceProvider;
 
-        // await DbInitializer.ScrapeCurrentTerm(isSummer: false);
+        await DbInitializer.ScrapeCurrentTerm(isSummer: false);
+        await DbInitializer.ScrapeCurrentTerm(isSummer: true);
         await PublicScraper.ScrapePublicCourseInformation();
         
         // ExecuteAsync runs for the entire lifetime of the Application. We want to run the 
