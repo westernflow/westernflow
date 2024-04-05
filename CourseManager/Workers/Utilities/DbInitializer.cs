@@ -34,6 +34,10 @@ public static class DbInitializer
         double increment = 100.0 / faculties.Count;
         foreach (var faculty in faculties)
         {
+            if (faculty.Name != "Calculus")
+            {
+                continue;
+            }
             Console.WriteLine("Processing faculty: " + faculty.Name);
             await CourseScraper.PopulateCoursesByFaculty(faculty);
             progress += increment;

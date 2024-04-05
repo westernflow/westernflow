@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(CourseManagerDbContext))]
-    partial class CourseManagerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240405150029_IncreaseCoursestringlimits")]
+    partial class IncreaseCoursestringlimits
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,6 +37,11 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasMaxLength(3000)
                         .HasColumnType("character varying(3000)");
+
+                    b.Property<string>("BreadthCategories")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("Corequisites")
                         .IsRequired()
@@ -73,7 +80,7 @@ namespace Data.Migrations
                         .HasColumnType("character varying(3000)");
 
                     b.Property<decimal?>("Weight")
-                        .HasColumnType("numeric(3,2)");
+                        .HasColumnType("numeric(2,2)");
 
                     b.HasKey("Id");
 

@@ -55,7 +55,11 @@ public static class CourseScraper
             // Skip the first option as it is just a placeholder
             if (!string.IsNullOrWhiteSpace(abbreviation))
             {
-                faculties.Add(new Faculty(name, abbreviation));
+                faculties.Add(new Faculty()
+                {
+                    Name = name,
+                    Abbreviation = abbreviation,
+                });
             }
         }
 
@@ -163,16 +167,13 @@ public static class CourseScraper
             throw new Exception("Could not find internal course id");
         }
 
-        var courseConstructorParams = new CourseConstructorParams
+        var course = new Course()
         {
             Number = parsedCourseNumber,
             Name = courseName,
             Description = description,
-            BreadthCategories = String.Empty,
             InternalCourseId = internalCourseId
         };
-
-        var course = new Course(courseConstructorParams);
 
         return course;
     }

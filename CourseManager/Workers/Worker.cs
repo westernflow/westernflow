@@ -27,8 +27,10 @@ public class Worker : BackgroundService
         // anti-pattern since this makes testing harder but I am not testing either way l0l
         DbInitializer.ServiceProvider = _serviceProvider;
         CourseScraper.ServiceProvider = _serviceProvider;
+        PublicScraper.ServiceProvider = _serviceProvider;
 
-        await DbInitializer.ScrapeCurrentTerm(isSummer: false);
+        // await DbInitializer.ScrapeCurrentTerm(isSummer: false);
+        await PublicScraper.ScrapePublicCourseInformation();
         
         // ExecuteAsync runs for the entire lifetime of the Application. We want to run the 
         // ExecuteAsync code then kill the application since there is no more work left to do.
