@@ -36,7 +36,6 @@ public class Course : IEntity
     public int FacultyId { get; set; }
 
     [ForeignKey(nameof(FacultyId))]
-    [InverseProperty("Courses")]
     public Faculty Faculty { get; set; } = null!;
 
     [InverseProperty(nameof(CourseOffering.Course))]
@@ -44,6 +43,4 @@ public class Course : IEntity
 
     [InverseProperty(nameof(ProfessorReview.Course))]
     public ICollection<ProfessorReview> RelatedProfessorReviews { get; set; } = new List<ProfessorReview>();
-
-    [Key] public int Id { get; set; }
 }

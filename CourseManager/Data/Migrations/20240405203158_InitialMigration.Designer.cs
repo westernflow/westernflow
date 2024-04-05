@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(CourseManagerDbContext))]
-    [Migration("20240225185708_MakeBreadthCatString")]
-    partial class MakeBreadthCatString
+    [Migration("20240405203158_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,6 +25,21 @@ namespace Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("CourseReviewReviewer", b =>
+                {
+                    b.Property<int>("CourseReviewsLikedId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("LikedById")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CourseReviewsLikedId", "LikedById");
+
+                    b.HasIndex("LikedById");
+
+                    b.ToTable("CourseReviewReviewer");
+                });
+
             modelBuilder.Entity("Data.Entities.Course", b =>
                 {
                     b.Property<int>("Id")
@@ -33,25 +48,25 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AntirequisiteString")
+                    b.Property<string>("Antirequisites")
+                        .IsRequired()
                         .HasMaxLength(3000)
                         .HasColumnType("character varying(3000)");
 
-                    b.Property<string>("BreadthCategories")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<string>("CorequisiteString")
+                    b.Property<string>("Corequisites")
+                        .IsRequired()
                         .HasMaxLength(3000)
                         .HasColumnType("character varying(3000)");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasMaxLength(3000)
                         .HasColumnType("character varying(3000)");
 
                     b.Property<string>("ExtraInformation")
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
+                        .IsRequired()
+                        .HasMaxLength(3000)
+                        .HasColumnType("character varying(3000)");
 
                     b.Property<int>("FacultyId")
                         .HasColumnType("integer");
@@ -69,12 +84,13 @@ namespace Data.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("integer");
 
-                    b.Property<string>("PrerequisiteString")
+                    b.Property<string>("Prerequisites")
+                        .IsRequired()
                         .HasMaxLength(3000)
                         .HasColumnType("character varying(3000)");
 
                     b.Property<decimal?>("Weight")
-                        .HasColumnType("numeric(2,2)");
+                        .HasColumnType("numeric(3,2)");
 
                     b.HasKey("Id");
 
@@ -127,7 +143,10 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DateWritten")
+                    b.Property<int>("CourseId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("EasyRating")
@@ -136,13 +155,16 @@ namespace Data.Migrations
                     b.Property<bool>("IsLiked")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int?>("ProfessorId")
                         .HasColumnType("integer");
 
                     b.Property<string>("ReviewText")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<int>("ReviewerId")
                         .HasColumnType("integer");
@@ -151,6 +173,8 @@ namespace Data.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
 
                     b.HasIndex("ProfessorId");
 
@@ -169,8 +193,12 @@ namespace Data.Migrations
 
                     b.Property<string>("Abbreviation")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("EnumBitmap")
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -179,64 +207,13 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Abbreviation")
+                        .IsUnique();
+
                     b.HasIndex("Name")
                         .IsUnique();
 
                     b.ToTable("Faculties");
-                });
-
-            modelBuilder.Entity("Data.Entities.JoinTables.JoinedReviewerCourseReview", b =>
-                {
-                    b.Property<int>("CourseReviewId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ReviewerId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
-
-                    b.HasKey("CourseReviewId", "ReviewerId");
-
-                    b.HasIndex("ReviewerId");
-
-                    b.ToTable("JoinedReviewerCourseReviews");
-                });
-
-            modelBuilder.Entity("Data.Entities.JoinTables.JoinedReviewerProfessorReview", b =>
-                {
-                    b.Property<int>("ProfessorReviewId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ReviewerId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ProfessorReviewId", "ReviewerId");
-
-                    b.HasIndex("ReviewerId");
-
-                    b.ToTable("JoinedReviewerProfessorReviews");
-                });
-
-            modelBuilder.Entity("Data.Entities.JoinTables.JoinedSectionProfessor", b =>
-                {
-                    b.Property<int>("SectionId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ProfessorId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
-
-                    b.HasKey("SectionId", "ProfessorId");
-
-                    b.HasIndex("ProfessorId");
-
-                    b.ToTable("JoinedSectionProfessors");
                 });
 
             modelBuilder.Entity("Data.Entities.Professor", b =>
@@ -247,6 +224,11 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -256,9 +238,20 @@ namespace Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("UwoId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("UwoId")
                         .IsUnique();
 
                     b.ToTable("Professors");
@@ -278,7 +271,7 @@ namespace Data.Migrations
                     b.Property<int?>("CourseId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("DateWritten")
+                    b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Difficulty")
@@ -286,6 +279,9 @@ namespace Data.Migrations
 
                     b.Property<int>("Helpful")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("ProfessorId")
                         .HasColumnType("integer");
@@ -295,8 +291,8 @@ namespace Data.Migrations
 
                     b.Property<string>("ReviewText")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<int>("ReviewerId")
                         .HasColumnType("integer");
@@ -320,24 +316,14 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Email")
+                    b.Property<string>("SubjectId")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
+                    b.HasIndex("SubjectId")
                         .IsUnique();
 
                     b.ToTable("Reviewers", (string)null);
@@ -380,6 +366,11 @@ namespace Data.Migrations
                         .HasMaxLength(5000)
                         .HasColumnType("character varying(5000)");
 
+                    b.Property<string>("TimingDetailsText")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<int>("WaitListSize")
                         .HasColumnType("integer");
 
@@ -387,7 +378,7 @@ namespace Data.Migrations
 
                     b.HasIndex("CourseOfferingId");
 
-                    b.HasIndex("Number", "CourseOfferingId")
+                    b.HasIndex("Number", "CourseOfferingId", "ClassNumber")
                         .IsUnique();
 
                     b.ToTable("Sections");
@@ -429,10 +420,55 @@ namespace Data.Migrations
                     b.ToTable("TimingDetails");
                 });
 
+            modelBuilder.Entity("ProfessorReviewReviewer", b =>
+                {
+                    b.Property<int>("LikedById")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProfessorReviewsLikedId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("LikedById", "ProfessorReviewsLikedId");
+
+                    b.HasIndex("ProfessorReviewsLikedId");
+
+                    b.ToTable("ProfessorReviewReviewer");
+                });
+
+            modelBuilder.Entity("ProfessorSection", b =>
+                {
+                    b.Property<int>("ProfessorsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SectionsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ProfessorsId", "SectionsId");
+
+                    b.HasIndex("SectionsId");
+
+                    b.ToTable("ProfessorSection");
+                });
+
+            modelBuilder.Entity("CourseReviewReviewer", b =>
+                {
+                    b.HasOne("Data.Entities.CourseReview", null)
+                        .WithMany()
+                        .HasForeignKey("CourseReviewsLikedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.Entities.Reviewer", null)
+                        .WithMany()
+                        .HasForeignKey("LikedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Data.Entities.Course", b =>
                 {
                     b.HasOne("Data.Entities.Faculty", "Faculty")
-                        .WithMany("Courses")
+                        .WithMany()
                         .HasForeignKey("FacultyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -453,6 +489,12 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.CourseReview", b =>
                 {
+                    b.HasOne("Data.Entities.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Data.Entities.Professor", "Professor")
                         .WithMany("CourseReviews")
                         .HasForeignKey("ProfessorId");
@@ -463,66 +505,11 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Professor");
-
-                    b.Navigation("Reviewer");
-                });
-
-            modelBuilder.Entity("Data.Entities.JoinTables.JoinedReviewerCourseReview", b =>
-                {
-                    b.HasOne("Data.Entities.CourseReview", "CourseReview")
-                        .WithMany("LikedBy")
-                        .HasForeignKey("CourseReviewId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Data.Entities.Reviewer", "Reviewer")
-                        .WithMany("CourseReviewsLiked")
-                        .HasForeignKey("ReviewerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CourseReview");
-
-                    b.Navigation("Reviewer");
-                });
-
-            modelBuilder.Entity("Data.Entities.JoinTables.JoinedReviewerProfessorReview", b =>
-                {
-                    b.HasOne("Data.Entities.ProfessorReview", "ProfessorReview")
-                        .WithMany("LikedBy")
-                        .HasForeignKey("ProfessorReviewId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Data.Entities.Reviewer", "Reviewer")
-                        .WithMany("ProfessorReviewsLiked")
-                        .HasForeignKey("ReviewerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProfessorReview");
-
-                    b.Navigation("Reviewer");
-                });
-
-            modelBuilder.Entity("Data.Entities.JoinTables.JoinedSectionProfessor", b =>
-                {
-                    b.HasOne("Data.Entities.Professor", "Professor")
-                        .WithMany("Sections")
-                        .HasForeignKey("ProfessorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Data.Entities.Section", "Section")
-                        .WithMany("Professors")
-                        .HasForeignKey("SectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Course");
 
                     b.Navigation("Professor");
 
-                    b.Navigation("Section");
+                    b.Navigation("Reviewer");
                 });
 
             modelBuilder.Entity("Data.Entities.ProfessorReview", b =>
@@ -572,6 +559,36 @@ namespace Data.Migrations
                     b.Navigation("Section");
                 });
 
+            modelBuilder.Entity("ProfessorReviewReviewer", b =>
+                {
+                    b.HasOne("Data.Entities.Reviewer", null)
+                        .WithMany()
+                        .HasForeignKey("LikedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.Entities.ProfessorReview", null)
+                        .WithMany()
+                        .HasForeignKey("ProfessorReviewsLikedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProfessorSection", b =>
+                {
+                    b.HasOne("Data.Entities.Professor", null)
+                        .WithMany()
+                        .HasForeignKey("ProfessorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.Entities.Section", null)
+                        .WithMany()
+                        .HasForeignKey("SectionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Data.Entities.Course", b =>
                 {
                     b.Navigation("CourseOfferings");
@@ -584,45 +601,22 @@ namespace Data.Migrations
                     b.Navigation("Sections");
                 });
 
-            modelBuilder.Entity("Data.Entities.CourseReview", b =>
-                {
-                    b.Navigation("LikedBy");
-                });
-
-            modelBuilder.Entity("Data.Entities.Faculty", b =>
-                {
-                    b.Navigation("Courses");
-                });
-
             modelBuilder.Entity("Data.Entities.Professor", b =>
                 {
                     b.Navigation("CourseReviews");
 
                     b.Navigation("ProfessorReviews");
-
-                    b.Navigation("Sections");
-                });
-
-            modelBuilder.Entity("Data.Entities.ProfessorReview", b =>
-                {
-                    b.Navigation("LikedBy");
                 });
 
             modelBuilder.Entity("Data.Entities.Reviewer", b =>
                 {
-                    b.Navigation("CourseReviewsLiked");
-
                     b.Navigation("CourseReviewsWritten");
-
-                    b.Navigation("ProfessorReviewsLiked");
 
                     b.Navigation("ProfessorReviewsWritten");
                 });
 
             modelBuilder.Entity("Data.Entities.Section", b =>
                 {
-                    b.Navigation("Professors");
-
                     b.Navigation("TimingDetails");
                 });
 #pragma warning restore 612, 618

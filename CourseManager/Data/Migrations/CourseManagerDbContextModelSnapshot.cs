@@ -191,8 +191,8 @@ namespace Data.Migrations
 
                     b.Property<string>("Abbreviation")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("EnumBitmap")
                         .HasMaxLength(3)
@@ -466,7 +466,7 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Entities.Course", b =>
                 {
                     b.HasOne("Data.Entities.Faculty", "Faculty")
-                        .WithMany("Courses")
+                        .WithMany()
                         .HasForeignKey("FacultyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -597,11 +597,6 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Entities.CourseOffering", b =>
                 {
                     b.Navigation("Sections");
-                });
-
-            modelBuilder.Entity("Data.Entities.Faculty", b =>
-                {
-                    b.Navigation("Courses");
                 });
 
             modelBuilder.Entity("Data.Entities.Professor", b =>

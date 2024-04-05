@@ -61,11 +61,9 @@ public class CourseManagerDbContext : ContextBase
             .HasIndex(c => new { c.SubjectId })
             .IsUnique();
 
-        // Name the CourseReview table CourseReviews
         modelBuilder.Entity<CourseReview>()
             .ToTable("CourseReviews");
 
-        // name the Reviewer table Reviewers
         modelBuilder.Entity<Reviewer>()
             .ToTable("Reviewers");
     }

@@ -26,6 +26,7 @@ public class Worker : BackgroundService
         DbInitializer.ServiceProvider = _serviceProvider;
         CourseScraper.ServiceProvider = _serviceProvider;
         PublicScraper.ServiceProvider = _serviceProvider;
+        DirectoryScraper.ServiceProvider = _serviceProvider;
 
         await DbInitializer.ScrapeCurrentTerm(isSummer: false);
         await DbInitializer.ScrapeCurrentTerm(isSummer: true);
