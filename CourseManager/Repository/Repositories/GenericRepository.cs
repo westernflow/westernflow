@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using Data;
 using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Repositories.Interfaces;
 
 namespace Repositories.Repositories;
@@ -41,6 +42,17 @@ public abstract class GenericRepository<TEntity> : IGenericRepository<TEntity> w
             dbContext.Update(entity);
             await dbContext.SaveChangesAsync();
         }
+    }
+
+    public async Task UpdateAsync(TEntity entity, CourseManagerDbContext dbContext, EntityEntry<TEntity> contextEntity, params Expression<Func<TEntity, object>>[] properties)
+    {
+        // we expect the contextEntity to be attached and not null, since there should be an existing entity in context
+        foreach (var property in properties)
+        {
+            contextEntity.Property(property).IsModified = true;
+            contextEntity.Property(property).CurrentValue = property.Compile().Invoke(entity);
+        }
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(int id)

@@ -8,7 +8,7 @@ namespace graphql;
 
 public class Query
 {
-    public string GetJWTAsync([Service] IReviewerInfoProvider identityService)
+    public string GetJwtAsync([Service] IReviewerInfoProvider identityService)
         => identityService.GetJWTAsync();
     
     [UsePaging(MaxPageSize = 5000)]
@@ -17,7 +17,7 @@ public class Query
     public async Task<IEnumerable<Course>> GetCoursesAsync([Service] ICourseRepository courseRepository)
         => await courseRepository.GetAllAsync();
     
-    public async Task<Course> GetCourseByCodeAsync(string facultyAbbreviation, int code, [Service] ICourseRepository courseRepository)
+    public async Task<Course?> GetCourseByCodeAsync(string facultyAbbreviation, int code, [Service] ICourseRepository courseRepository)
         => await courseRepository.GetByCodeAsync(facultyAbbreviation, code);
     
     [NodeResolver]

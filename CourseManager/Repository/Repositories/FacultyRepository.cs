@@ -19,7 +19,7 @@ public class FacultyRepository : GenericRepository<Faculty>, IFacultyRepository
       {
          foreach (var entity in entities)
          {
-            var existingEntity = await GetSingleOrDefaultAsync(e => e.Name == entity.Name);
+            var existingEntity = await GetSingleOrDefaultAsync(e => e.Abbreviation == entity.Abbreviation);
             if (existingEntity == null)
             {
                await dbContext.AddAsync(entity);

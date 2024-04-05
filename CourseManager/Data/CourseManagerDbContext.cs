@@ -38,6 +38,10 @@ public class CourseManagerDbContext : ContextBase
         modelBuilder.Entity<Faculty>()
             .HasIndex(f => f.Name)
             .IsUnique();
+        
+        modelBuilder.Entity<Faculty>() 
+            .HasIndex(f => f.Abbreviation)
+            .IsUnique();
 
         modelBuilder.Entity<CourseOffering>()
             .HasIndex(c => new {c.Year, c.Suffix, c.CourseId, c.CalendarSource})
