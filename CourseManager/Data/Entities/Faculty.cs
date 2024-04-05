@@ -9,6 +9,10 @@ public class Faculty : IEntity
 {
    [Key]
    public int Id { get; set; }
+   
+   [StringLength(3)]
+   public string? EnumBitmap { get; set; } = string.Empty;
+   
    [StringLength(100)]
    public string Name { get; set; } = string.Empty;
 
@@ -17,13 +21,7 @@ public class Faculty : IEntity
    [InverseProperty(nameof(Course.Faculty))]
    public virtual IEnumerable<Course> Courses { get; set; } = new List<Course>();
 
-   private Faculty()
+   public Faculty()
    {
-   }
-
-   public Faculty(string facultyName, string abbreviation)
-   {
-      Name = facultyName;
-      Abbreviation = abbreviation;
    }
 }
