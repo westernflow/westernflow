@@ -28,7 +28,6 @@ public static class DirectoryScraper
         var cacheKey = $"GetProfessorsInDirectory-{firstName}-{lastName}-{option}";
         if (Cache.TryGetValue(cacheKey, out List<DirectoryProfessor> cachedResult))
         {
-            Console.WriteLine("Cached result found! Returning cached result.");
             return cachedResult;
         }
         
@@ -86,6 +85,11 @@ public static class DirectoryScraper
         {
             var cells = await row.QuerySelectorAllAsync("td");
             var name = await cells[0].EvaluateFunctionAsync<string>("node => node.textContent");
+            if (name.Split(',')[0].ToLower().Trim() != lastName.ToLower().Trim())
+            {
+                continue;
+            }
+            
             var emailLink = await cells[1].QuerySelectorAsync("a");
             if (emailLink == null)
             {
@@ -103,7 +107,6 @@ public static class DirectoryScraper
                 Departments = departments.Trim()
             });
 
-            Console.WriteLine($"Puppeteer scraped professor: {name} - {email} - {departments}");
         }
 
         Cache.Set(cacheKey, professors, TimeSpan.FromMinutes(1000));

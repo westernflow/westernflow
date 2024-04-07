@@ -25,8 +25,6 @@ public static class ProfLinkerHelper
         request.Content = content;
         var response = await client.SendAsync(request);
         response.EnsureSuccessStatusCode();
-        Console.WriteLine(await response.Content.ReadAsStringAsync());
-        
         var professorInformationJson = await response.Content.ReadAsStringAsync();
         
         return ParseProfessorInformation(professorInformationJson) ?? new ProfessorInformation();
@@ -34,13 +32,29 @@ public static class ProfLinkerHelper
     
     public static ProfessorInformation? ParseProfessorInformation(string professorInformationJson)
     {
-        var outerResponse = JsonConvert.DeserializeObject<OuterResponse>(professorInformationJson);
+        OuterResponse? outerResponse;
+        try
+        {
+            outerResponse = JsonConvert.DeserializeObject<OuterResponse>(professorInformationJson);
+        }
+        catch
+        {
+            return null;
+        }
         string? contentJson = outerResponse?.Output?.Content ?? string.Empty;
 
         if (!string.IsNullOrEmpty(contentJson))
         {
             // Deserialize the 'content' JSON string to get the inner object
-            var contentObject = JsonConvert.DeserializeObject<LinkedProfessor>(contentJson);
+            LinkedProfessor? contentObject;
+            try
+            {
+                contentObject = JsonConvert.DeserializeObject<LinkedProfessor>(contentJson);
+            }
+            catch
+            {
+                return null;
+            }
 
             return new ProfessorInformation
             {

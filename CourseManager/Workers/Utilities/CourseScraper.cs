@@ -1,3 +1,4 @@
+using System.Net;
 using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
@@ -323,7 +324,7 @@ public static class CourseScraper
             _ => throw new Exception($"Could not parse delivery type: {deliveryTypeString}")
         };
 
-        var sectionParams = new SectionConstructorParams
+        var section = new Section()
         {
             ComponentType = component,
             Number = sectionNumber,
@@ -336,10 +337,9 @@ public static class CourseScraper
             WaitListSize = waitListSize,
             Campus = campus,
             Delivery = deliveryType,
-            CourseOfferingId = Context.Offering?.Id ?? throw new InvalidOperationException("Missing course offering in context")
+            CourseOfferingId = Context.Offering?.Id ??
+                               throw new InvalidOperationException("Missing course offering in context")
         };
-
-        var section = new Section(sectionParams);
         
         return section;
     }
@@ -352,35 +352,37 @@ public static class CourseScraper
         var section = ScrapeSection(row);
         Context.Section = section;
         
+        var existingSection = await sectionRepository.GetSingleOrDefaultAsync(x =>
+            x.Number == section.Number && x.CourseOfferingId == section.CourseOfferingId);
+        
+        if (existingSection != null)
+        {
+            return existingSection;
+        }
+        
         await sectionRepository.InsertAsync(section);
+        Console.WriteLine($"Processing section: {section.Number} with id {section.Id}");
         foreach (var professorName in section.ProfessorNames)
         {
-            if (string.IsNullOrWhiteSpace(professorName)) continue;
+            if (string.IsNullOrWhiteSpace(professorName) || section.Campus != Campus.Main) continue;
 
             // instructor name follows format first initial + period + last name e.g. J. Ali-Hassan
             var splitName = professorName.Split(".");
-            if (splitName.Length != 2) throw new Exception($"Could not parse instructor name: {professorName}");
+            if (splitName.Length != 2) continue;
 
             var firstName = splitName[0].Trim();
             var lastName = splitName[1].Trim();
 
-            Console.WriteLine($"Processed name: {firstName} {lastName}");
-
             // Make a request to the directory to get the professor
             var possibleProfessors = await DirectoryScraper.GetProfessorsInDirectory(firstName, lastName,
                 DirectoryScraper.SearchOption.StartsWith);
-
-            // handle this case with better searching (e.g. contains + NLP)
-            if (possibleProfessors.Count == 0)
-            {
-                Console.WriteLine($"Could not find any matching professors with name: {firstName} {lastName}");
-            }
 
             if (possibleProfessors.Count == 1)
             {
                 var directoryProfessor = possibleProfessors.First();
 
                await UpsertDirectoryProfessor(directoryProfessor);
+               Console.WriteLine("Linked professor: " + directoryProfessor.Name + " " + directoryProfessor.Email);
             }
 
 
@@ -388,8 +390,9 @@ public static class CourseScraper
             {
                 var professorOptionsString = string.Join(";", possibleProfessors.Select(x => x.Name + " " + x.Departments + " " + x.Email));
                 var professorInformation = $"Name: {firstName} {lastName}; Department: {Context?.Faculty?.Name ?? "Missing faculty in context"}";
-                var linkedProfessor = await ProfLinkerHelper.LinkProfessor(professorInformation, professorOptionsString);
-                
+                var linkedProfessor =
+                    await ProfLinkerHelper.LinkProfessor(professorInformation, professorOptionsString);
+
                 Console.WriteLine("Linked professor: " + linkedProfessor.ProfessorName + " " + linkedProfessor.Email);
                 
                 var matchingProfessor = possibleProfessors.FirstOrDefault(x => x.Email == linkedProfessor.Email);
@@ -407,7 +410,7 @@ public static class CourseScraper
     }
 
     // returns existing professor if already in db otherwise returns the newly inserted professor
-    private static async Task<Professor> UpsertDirectoryProfessor(DirectoryScraper.DirectoryProfessor directoryProfessor)
+    private static async Task UpsertDirectoryProfessor(DirectoryScraper.DirectoryProfessor directoryProfessor)
     {
         var professorRepository = (ServiceProvider ?? throw new InvalidOperationException()).GetRequiredService<IProfessorRepository>();
         var scrapedProfessor = new Professor
@@ -417,23 +420,8 @@ public static class CourseScraper
             UwoId = directoryProfessor.UwoId
         };
 
-        Console.WriteLine($"Checking for existing professor with UWO ID: {scrapedProfessor.UwoId}");
-        var existingProfessor = await professorRepository.GetSingleOrDefaultAsync(x => x.UwoId == scrapedProfessor.UwoId);
-        
-        if (existingProfessor == null)
-        {
-            Console.WriteLine("Doesn't exist yet... Creating the professor in the database..");
-            scrapedProfessor.Sections.Add(Context.Section ?? throw new InvalidOperationException("Missing section in context"));
-            await professorRepository.InsertAsync(scrapedProfessor);
-        }
-        else
-        {
-            Console.WriteLine("Professor already exists... Updating the professor in the database..");
-            existingProfessor.Sections.Add(Context.Section ?? throw new InvalidOperationException("Missing section in context"));
-            await professorRepository.UpdateAsync(existingProfessor);
-        }
-        
-        return existingProfessor ?? scrapedProfessor;
+        var section = Context.Section ?? throw new InvalidOperationException("Missing section in context");
+        await professorRepository.AddSection(scrapedProfessor, section);
     }
 
     private static async Task<List<Section>> ScrapeOfferingSections(IElement courseHeader)
@@ -563,9 +551,6 @@ public static class CourseScraper
     {
         var campusTypes = new Dictionary<Campus, KeyValuePair<string, string>>
         {
-            { Campus.All, new KeyValuePair<string, string>("Campus", "Any") },
-            { Campus.King, new KeyValuePair<string, string>("Campus", "KINGS") },
-            { Campus.Huron, new KeyValuePair<string, string>("Campus", "HURON") },
             { Campus.Main, new KeyValuePair<string, string>("Campus", "MAIN") }
         };
 
@@ -576,9 +561,9 @@ public static class CourseScraper
             { ComponentType.Lab, new KeyValuePair<string, string>("course_component", "LAB") }
         };
 
-        // Try opening the document with all campuses and every single section type 
+        // Try opening the document with only main campus and every single section type 
         var document = await OpenFacultyDocument(faculty,
-            sectionTypes.Values.ToList().Append(campusTypes[Campus.All]).ToList());
+            sectionTypes.Values.ToList().Append(campusTypes[Campus.Main]).ToList());
 
         try
         {
@@ -589,7 +574,7 @@ public static class CourseScraper
             // ignored
         }
 
-        // Try the fine-grained approach and make a query for each campus and section type all 9 combinations (king, huron, main) x (lec, tut, lab)
+        // Try the fine-grained approach and make a query for each campus and section type all 3 combinations (main) x (lec, tut, lab)
         var facultyDocuments = new List<IDocument>();
         foreach (var campusType in campusTypes)
         foreach (var sectionType in sectionTypes)

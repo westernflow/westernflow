@@ -14,17 +14,28 @@ internal class ProfessorRepository : GenericRepository<Professor>, IProfessorRep
         _dbContextFactory = dbContextFactory;
     }
     
-    public new async Task InsertAsync(Professor entity)
+    public async Task AddSection(Professor entity, Section section)
     {
-        using (var dbContext = await _dbContextFactory.CreateDbContextAsync())
+        await using var context = _dbContextFactory.CreateDbContext();
+        var sectionInContext = await context.Sections.FirstOrDefaultAsync(s => s.Id == section.Id);
+        
+        if (sectionInContext == null)
         {
-            foreach (var section in entity.Sections)
-            {
-                dbContext.Entry(section).State = EntityState.Unchanged;
-            }
-            
-            await dbContext.Professors.AddAsync(entity);
-            await dbContext.SaveChangesAsync();
+            throw new ArgumentException("Section not found");
         }
+        
+        var professor = await context.Professors
+            .Include(p => p.Sections)
+            .FirstOrDefaultAsync(p => p.UwoId == entity.UwoId);
+        
+        if (professor == null)
+        {
+            await context.Professors.AddAsync(entity);
+        }
+        
+        professor = professor ?? entity;
+        
+        professor.Sections.Add(sectionInContext);
+        await context.SaveChangesAsync();
     }
 }

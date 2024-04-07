@@ -22,11 +22,7 @@ app = FastAPI(
 set_llm_cache(InMemoryCache())
 llm = ChatOpenAI(model="gpt-4", api_key=openai_api_key)
 
-prompt = ChatPromptTemplate.from_template("[No prose] From the given list of professors: {professorOptions}, output the "
-                                          "one you believe matches this professor: {professorInformation}."
-                                          "Output your response as json with two fields: professorName (excluding "
-                                          "honorifics such as Dr, Mrs, etc) and emailAddress. E.g. "
-                                          "")
+prompt = ChatPromptTemplate.from_template("[No prose] From the list of professors: {professorOptions}, output the matching professor: {professorInformation}. Output response as json with two fields: professorName (no honorifics e.g. Dr, Mrs) and emailAddress.")
 chain = prompt | llm
 add_routes(
     app,
