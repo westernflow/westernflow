@@ -4,3 +4,4 @@
 **/go.sum
 .vscode
 .idea/
+*.targets

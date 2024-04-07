@@ -5,13 +5,13 @@ namespace Scrapers;
 
 public class Startup
 {
-    public IConfiguration Configuration { get; }
-    
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
     }
-    
+
+    public IConfiguration Configuration { get; }
+
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddCourseManagerDbContext(Configuration);
@@ -21,5 +21,5 @@ public class Startup
 
     public void Configure(IHost host)
     {
-    } 
+    }
 }
