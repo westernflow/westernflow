@@ -7,15 +7,15 @@ services:
     #         args:
     #             BUILDPLATFORM: "linux/amd64"
 
-    api:
-        build:
-            context: .
-            dockerfile: Dockerfile.api
-            target: final
-            args:
-                BUILDPLATFORM: "linux/amd64"
-        ports:
-            - 5095:80
+    # api:
+    #     build:
+    #         context: .
+    #         dockerfile: Dockerfile.api
+    #         target: final
+    #         args:
+    #             BUILDPLATFORM: "linux/amd64"
+    #     ports:
+    #         - 5095:80
 
     db:
         image: postgres

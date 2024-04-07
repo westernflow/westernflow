@@ -13,13 +13,13 @@ public static class ServiceCollectionExtension
         serviceCollection.AddScoped<IReviewerInfoProvider, ReviewerInfoProvider>();
         return serviceCollection;
     }
-    
+
     public static IServiceCollection AddScopedBusinessServices(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<ICourseReviewService, CourseReviewService>();
         return serviceCollection;
     }
-    
+
     public static IServiceCollection AddScopedBusinessValidators(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<CreateCourseReviewInputValidator>();

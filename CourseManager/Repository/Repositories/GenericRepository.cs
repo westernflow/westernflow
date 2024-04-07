@@ -16,16 +16,16 @@ public abstract class GenericRepository<TEntity> : IGenericRepository<TEntity> w
     {
         _dbContextFactory = dbContextFactory;
     }
-    
+
     public async Task InsertAsync(TEntity entity)
     {
         using (var dbContext = await _dbContextFactory.CreateDbContextAsync())
         {
-           await dbContext.AddAsync(entity);
-           await dbContext.SaveChangesAsync();
+            await dbContext.AddAsync(entity);
+            await dbContext.SaveChangesAsync();
         }
     }
-    
+
     public async Task InsertRangeAsync(IReadOnlyCollection<TEntity> entities)
     {
         using (var dbContext = await _dbContextFactory.CreateDbContextAsync())
@@ -65,7 +65,7 @@ public abstract class GenericRepository<TEntity> : IGenericRepository<TEntity> w
                 dbContext.Remove(entity);
                 await dbContext.SaveChangesAsync();
             }
-        }   
+        }
     }
 
     public async Task<TEntity?> GetSingleOrDefaultAsync(Expression<Func<TEntity, bool>> expression)
@@ -82,11 +82,8 @@ public abstract class GenericRepository<TEntity> : IGenericRepository<TEntity> w
         using (var dbContext = await _dbContextFactory.CreateDbContextAsync())
         {
             var entity = await dbContext.Set<TEntity>().FirstOrDefaultAsync(e => e.Id == id);
-            
-            if (entity == null)
-            {
-                throw new Exception($"Entity with id {id} not found");
-            }
+
+            if (entity == null) throw new Exception($"Entity with id {id} not found");
             return entity;
         }
     }

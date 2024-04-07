@@ -1,6 +1,6 @@
 namespace Data.Enums;
 
-public enum CalendarSource 
+public enum CalendarSource
 {
     FallWinter,
     Summer
