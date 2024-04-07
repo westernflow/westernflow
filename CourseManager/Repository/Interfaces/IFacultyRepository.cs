@@ -4,5 +4,5 @@ namespace Repositories.Interfaces;
 
 public interface IFacultyRepository : IGenericRepository<Faculty>
 {
-    Task InsertRangeAsync(IReadOnlyCollection<Faculty> faculties);
+    new Task InsertRangeAsync(IReadOnlyCollection<Faculty> faculties);
 }

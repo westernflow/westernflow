@@ -164,6 +164,7 @@ public static class PublicScraper
             
             currentFaculty.EnumBitmap = bitmap;
             await facultyRepository.UpdateAsync(currentFaculty);
+            Console.WriteLine(currentFaculty.Abbreviation);
             
             // get the value of the href attribute value and append it to the base url and make a get request
             // to get the html of the page
@@ -184,6 +185,12 @@ public static class PublicScraper
             {
                 // courseHeaderText is stored in an h4 element with class courseTitleNoBlueLink
                 var courseHeaderText = courseRow.QuerySelector("h4")?.TextContent;
+                var image = courseRow.QuerySelector("img")?.GetAttribute("src")?.Trim();
+                if (image == null || image != "images/westernStacked.png")
+                {
+                    continue;
+                }
+                
                 // get courseHeaderText = facultyName + " " + courseNumber + prefixes.join("/") + "  " + courseName
                 // e.g. "Actuarial Science 4824A/B SHORT TERM ACTUARIAL MATHEMATICS II"
                 if (courseHeaderText == null)
