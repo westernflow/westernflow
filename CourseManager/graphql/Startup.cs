@@ -32,6 +32,7 @@ public class Startup
         });
         services.AddCors();
         services.AddCourseManagerDbContext(Configuration);
+        services.AddControllers();
         services.AddScopedRepositories();
         services.AddScopedBusinessProviders();
         services.AddScopedBusinessServices();
@@ -69,5 +70,10 @@ public class Startup
         );
         app.UseRouting();
         app.UseAuthentication();
+        
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
     }
 }
