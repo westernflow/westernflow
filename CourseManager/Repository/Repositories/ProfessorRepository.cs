@@ -14,6 +14,11 @@ internal class ProfessorRepository : GenericRepository<Professor>, IProfessorRep
         _dbContextFactory = dbContextFactory;
     }
     
+    public IQueryable<Professor> GetQueryable()
+    {
+        return _dbContextFactory.CreateDbContext().Set<Professor>().AsNoTracking();
+    }
+    
     public async Task AddSection(Professor entity, Section section)
     {
         await using var context = _dbContextFactory.CreateDbContext();

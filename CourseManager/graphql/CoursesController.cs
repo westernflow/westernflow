@@ -29,7 +29,7 @@ public class CoursesController(IDbContextFactory<CourseManagerDbContext> dbConte
                 id = p.Id,
                 name = p.Name,
                 courses = new List<object>(),
-                code = p.Name.ToLower(),
+                code = p.UwoId,
                 rating_count = 0
             }).ToList();
 

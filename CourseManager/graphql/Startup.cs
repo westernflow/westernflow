@@ -3,6 +3,7 @@ using Business.Interfaces;
 using Business.Providers;
 using Data.Extensions;
 using graphql.DataLoaders;
+using graphql.Extensions;
 using graphql.Types;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Repositories.Extensions;
@@ -38,23 +39,7 @@ public class Startup
         services.AddScopedBusinessServices();
         services.AddScopedBusinessValidators();
         services.AddHttpContextAccessor();
-        services.AddGraphQLServer()
-            .AddQueryType<Query>()
-            .AddMutationType<Mutation>()
-            .AddMutationConventions()
-            .AddType<CourseType>()
-            .AddType<CourseOfferingType>()
-            .AddType<SectionType>()
-            .AddGlobalObjectIdentification()
-            .AddDataLoader<CourseBatchDataLoader>()
-            .AddDataLoader<FacultyBatchDataLoader>()
-            .AddDataLoader<CourseOfferingGroupedDataLoader>()
-            .AddDataLoader<SectionGroupedDataLoader>()
-            .AddDataLoader<TimingDetailsGroupedDataLoader>()
-            .AddFiltering()
-            .AddProjections()
-            .ModifyRequestOptions(o =>
-                o.IncludeExceptionDetails = true);
+        services.AddGqlTypes();
     }
 
     public void Configure(IApplicationBuilder app)
