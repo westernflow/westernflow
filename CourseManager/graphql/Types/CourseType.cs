@@ -55,5 +55,11 @@ public class CourseType : ObjectType<Course>
 
                 return true;
             });
+
+        descriptor.Field("prof_ids")
+            .Resolve(context =>
+            {
+                return new List<int>();
+            });
     }
 }
