@@ -1,13 +1,20 @@
-using Data;
 using Data.Entities;
 using graphql.DataLoaders;
-using Microsoft.EntityFrameworkCore;
-using Repositories.Interfaces;
+using graphql.Resolvers;
 
 namespace graphql.Types;
 
 public class CourseType : ObjectType<Course>
 {
+    public class CourseReviewAggregate 
+    {
+        public double AverageLiked { get; set; }
+        public double AverageEasiness { get; set; }
+        public double AverageUsefulness { get; set; }
+        public int TotalComments { get; set; }
+        public int TotalReviews { get; set; }
+    }
+    
     protected override void Configure(IObjectTypeDescriptor<Course> descriptor)
     {
         descriptor.Field(f => f.Faculty)
@@ -33,5 +40,8 @@ public class CourseType : ObjectType<Course>
                 
                 return faculty.Abbreviation + " " + course.Number;
             });
+        
+        
+        descriptor.Field("rating").ResolveWith<CourseResolver>(r => r.GetRating(default!, default!));
     }
 }

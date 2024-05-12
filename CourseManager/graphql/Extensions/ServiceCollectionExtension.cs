@@ -20,11 +20,13 @@ public static class ServiceCollectionExtension
             .AddDataLoader<CourseBatchDataLoader>()
             .AddDataLoader<FacultyBatchDataLoader>()
             .AddDataLoader<CourseOfferingGroupedDataLoader>()
-            .AddDataLoader<ProfessorReviewGroupedDataLoader>()
             .AddDataLoader<SectionGroupedDataLoader>()
             .AddDataLoader<TimingDetailsGroupedDataLoader>()
+            .AddDataLoader<CourseReviewGroupedDataLoader>()
+            .AddDataLoader<ProfessorReviewGroupedDataLoader>()
             
             .AddResolver<ProfessorResolver>()
+            .AddResolver<CourseResolver>()
             
             .AddMutationConventions()
             .AddGlobalObjectIdentification()
