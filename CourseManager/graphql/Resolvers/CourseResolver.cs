@@ -39,4 +39,12 @@ public class CourseResolver
             TotalReviews = reviewCount
         };
     }
+    
+    [GraphQLName("terms")]
+    public async Task<IEnumerable<int>> GetTerms([Parent] Course course,
+        [Service] CourseOfferingGroupedDataLoader courseOfferingDataLoader)
+    {
+        var courseOfferings = await courseOfferingDataLoader.LoadAsync(course.Id, default);
+        return courseOfferings.Select(co => co.TermId).Distinct();
+    }
 }

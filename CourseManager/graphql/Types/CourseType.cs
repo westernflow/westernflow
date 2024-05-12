@@ -38,7 +38,7 @@ public class CourseType : ObjectType<Course>
                 var facultyDataLoader = context.Service<FacultyBatchDataLoader>();
                 var faculty = await facultyDataLoader.LoadAsync(course.FacultyId, context.RequestAborted);
 
-                return faculty.Abbreviation + " " + course.Number;
+                return faculty.Abbreviation + course.Number;
             });
 
 
@@ -61,5 +61,11 @@ public class CourseType : ObjectType<Course>
             {
                 return new List<int>();
             });
+        
+        descriptor.Field("terms")
+            .ResolveWith<CourseResolver>(r => r.GetTerms(default!, default!));
+        
+        descriptor.Field("postrequisites")
+            .Resolve(context => new List<Course>());
     }
 }

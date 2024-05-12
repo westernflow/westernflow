@@ -29,7 +29,6 @@ public static class ServiceCollectionExtension
             .AddResolver<CourseResolver>()
             
             .AddMutationConventions()
-            .AddGlobalObjectIdentification()
             
             .AddFiltering()
             .AddProjections()

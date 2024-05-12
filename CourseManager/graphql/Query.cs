@@ -19,6 +19,8 @@ public class Query
         public string Query { get; set; }
     }
 
+    [UseProjection]
+    [UseFiltering]
     public IQueryable<Course> GetCourses(ExploreArgs? args,
         [Service] ICourseRepository courseRepository)
     {
@@ -37,23 +39,6 @@ public class Query
         return professorRepository.GetQueryable();
     }
 
-    [NodeResolver]
-    public async Task<Course> GetCourseByIdAsync(int id, [Service] ICourseRepository courseRepository)
-        => await courseRepository.GetByIdAsync(id);
-    
-    [NodeResolver]
-    public async Task<Faculty> GetFacultyByIdAsync(int id, [Service] IFacultyRepository facultyRepository)
-        => await facultyRepository.GetByIdAsync(id);
-    
-    [NodeResolver]
-    public async Task<CourseOffering> GetCourseOfferingByIdAsync(int id, [Service] ICourseOfferingRepository courseOfferingRepository)
-        => await courseOfferingRepository.GetByIdAsync(id);
-    
-    [NodeResolver]
-    public async Task<Section> GetSectionByIdAsync(int id, [Service] ISectionRepository sectionRepository)
-        => await sectionRepository.GetByIdAsync(id);
-    
-    [NodeResolver]
     public async Task<Reviewer> GetReviewerByIdAsync(int id, [Service] IReviewerRepository reviewerRepository)
         => await reviewerRepository.GetByIdAsync(id);
     
