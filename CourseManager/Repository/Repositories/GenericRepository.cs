@@ -16,6 +16,12 @@ public abstract class GenericRepository<TEntity> : IGenericRepository<TEntity> w
     {
         _dbContextFactory = dbContextFactory;
     }
+    
+    public IQueryable<TEntity> GetQueryable()
+    {
+        using var dbContext = _dbContextFactory.CreateDbContext();
+        return dbContext.Set<TEntity>().AsQueryable();
+    }
 
     public async Task InsertAsync(TEntity entity)
     {

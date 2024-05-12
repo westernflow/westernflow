@@ -1,4 +1,5 @@
 using Data.Entities;
+using graphql.DataLoaders;
 using graphql.Resolvers;
 using Repositories.Interfaces;
 
@@ -11,7 +12,8 @@ public class ProfessorType : ObjectType<Professor>
         descriptor.Field("rating")
             .ResolveWith<ProfessorResolver>(r => r.GetRatingAsync(default!, default!));
         descriptor.Field("profCourses")
-            .ResolveWith<ProfessorResolver>(r => r.GetProfCoursesAsync(default!, default!));
+            .ResolveWith<ProfessorResolver>(r => r.GetProfCoursesAsync(default!));
+        
     }
 
     public class ReviewAggregate

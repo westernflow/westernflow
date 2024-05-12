@@ -1,5 +1,4 @@
 ﻿using Business.Interfaces;
-using Business.Providers;
 using Data.Entities;
 using graphql.DataLoaders;
 using Repositories.Interfaces;
@@ -14,6 +13,22 @@ public class Query
     public async Task<Course?> GetCourseByCodeAsync(string facultyAbbreviation, int code,
         [Service] ICourseRepository courseRepository)
         => await courseRepository.GetByCodeAsync(facultyAbbreviation, code);
+
+    public class ExploreArgs
+    {
+        public string Query { get; set; }
+    }
+
+    public IQueryable<Course> GetCourses(ExploreArgs? args,
+        [Service] ICourseRepository courseRepository)
+    {
+        if (args is null || string.IsNullOrWhiteSpace(args.Query))
+        {
+            return courseRepository.GetQueryable();
+        }
+        
+        return courseRepository.GetQueryable().Where(c => c.Faculty.Abbreviation.Contains(args.Query));
+    }
     
     [UseProjection]
     [UseFiltering]

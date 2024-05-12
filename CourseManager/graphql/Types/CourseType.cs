@@ -23,5 +23,12 @@ public class CourseType : ObjectType<Course>
                 var courseOfferingGroupedDataLoader = context.Service<CourseOfferingGroupedDataLoader>();
                 return courseOfferingGroupedDataLoader.LoadAsync(context.Parent<Course>().Id, context.RequestAborted);
             });
+        
+        descriptor.Field("code").Type<NonNullType<StringType>>()
+            .Resolve(async context =>
+            {
+                var course = context.Parent<Course>();
+                return course.Faculty.Abbreviation + " " + course.Number;
+            });
     }
 }

@@ -7,6 +7,7 @@ namespace Repositories.Interfaces;
 
 public interface IGenericRepository<TEntity> where TEntity : class, IEntity
 {
+    IQueryable<TEntity> GetQueryable();
     Task InsertAsync(TEntity entity);
     Task InsertRangeAsync(IReadOnlyCollection<TEntity> entities);
     Task UpdateAsync(TEntity entity);

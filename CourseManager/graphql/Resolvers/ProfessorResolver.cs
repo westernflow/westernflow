@@ -1,41 +1,24 @@
-using Data;
 using Data.Entities;
+using graphql.DataLoaders;
 using graphql.Types;
-using Microsoft.EntityFrameworkCore;
-using Repositories.Interfaces;
 
 namespace graphql.Resolvers;
 
 public class ProfessorResolver
 {
-    private readonly ICourseRepository _courseRepository;
-
-    public ProfessorResolver(ICourseRepository courseRepository)
-    {
-        _courseRepository = courseRepository;
-    }
-
     [GraphQLName("profCourses")]
-    public async Task<IEnumerable<Course>> GetProfCoursesAsync([Parent] Professor professor,
-        [Service] IDbContextFactory<CourseManagerDbContext> contextFactory)
+    public async Task<IReadOnlyCollection<Course>> GetProfCoursesAsync([Parent] Professor professor)
     {
-        await using var context = contextFactory.CreateDbContext();
-        
-        var courses = await context.Sections.Where(section => section.Professors.Any(p => p.Id == professor.Id))
-            .Select(section => section.CourseOffering.Course)
-            .Distinct()
-            .ToListAsync();
-        
-        return courses;
+        return new List<Course>();
     }
 
     [GraphQLName("rating")]
     public async Task<ProfessorType.ReviewAggregate> GetRatingAsync([Parent] Professor professor,
-        [Service] IProfessorReviewRepository professorReviewRepository)
+        [Service] ProfessorReviewGroupedDataLoader reviewDataLoader)
     {
-        var reviews = await professorReviewRepository.GetByConditionAsync(review => review.ProfessorId == professor.Id);
+        var reviews = await reviewDataLoader.LoadAsync(professor.Id);
 
-        var reviewCount = reviews.Count;
+        var reviewCount = reviews.Length;
         if (reviewCount == 0)
         {
             return new ProfessorType.ReviewAggregate()
