@@ -16,7 +16,7 @@ public class CoursesController(IDbContextFactory<CourseManagerDbContext> dbConte
            .Select(c => new
             {
                 id = c.Id,
-                code = (c.Faculty.Abbreviation + c.Number).ToLower(),
+                code = (c.Faculty.Abbreviation + " " + c.Number).ToLower(),
                 name = c.Name,
                 profs = new string [] {},
                 rating_count = 0

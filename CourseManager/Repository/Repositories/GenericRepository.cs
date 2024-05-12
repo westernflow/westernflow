@@ -19,7 +19,7 @@ public abstract class GenericRepository<TEntity> : IGenericRepository<TEntity> w
     
     public IQueryable<TEntity> GetQueryable()
     {
-        using var dbContext = _dbContextFactory.CreateDbContext();
+        var dbContext = _dbContextFactory.CreateDbContext();
         return dbContext.Set<TEntity>().AsQueryable();
     }
 

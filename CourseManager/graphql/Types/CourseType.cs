@@ -28,7 +28,10 @@ public class CourseType : ObjectType<Course>
             .Resolve(async context =>
             {
                 var course = context.Parent<Course>();
-                return course.Faculty.Abbreviation + " " + course.Number;
+                var facultyDataLoader = context.Service<FacultyBatchDataLoader>();
+                var faculty = await facultyDataLoader.LoadAsync(course.FacultyId, context.RequestAborted);
+                
+                return faculty.Abbreviation + " " + course.Number;
             });
     }
 }
