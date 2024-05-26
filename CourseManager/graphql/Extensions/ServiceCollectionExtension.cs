@@ -24,6 +24,7 @@ public static class ServiceCollectionExtension
             .AddDataLoader<TimingDetailsGroupedDataLoader>()
             .AddDataLoader<CourseReviewGroupedDataLoader>()
             .AddDataLoader<ProfessorReviewGroupedDataLoader>()
+            .AddDataLoader<ProfessorGroupedDataLoader>()
             
             .AddResolver<ProfessorResolver>()
             .AddResolver<CourseResolver>()

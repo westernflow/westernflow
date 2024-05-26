@@ -14,22 +14,11 @@ public class Query
         [Service] ICourseRepository courseRepository)
         => await courseRepository.GetByCodeAsync(facultyAbbreviation, code);
 
-    public class ExploreArgs
-    {
-        public string Query { get; set; }
-    }
-
     [UseProjection]
     [UseFiltering]
-    public IQueryable<Course> GetCourses(ExploreArgs? args,
-        [Service] ICourseRepository courseRepository)
+    public IQueryable<Course> GetCourses([Service] ICourseRepository courseRepository)
     {
-        if (args is null || string.IsNullOrWhiteSpace(args.Query))
-        {
-            return courseRepository.GetQueryable();
-        }
-        
-        return courseRepository.GetQueryable().Where(c => c.Faculty.Abbreviation.Contains(args.Query));
+        return courseRepository.GetQueryable();
     }
     
     [UseProjection]
