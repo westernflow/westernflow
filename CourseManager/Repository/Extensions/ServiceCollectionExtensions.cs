@@ -16,6 +16,7 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddScoped<ICourseOfferingRepository, CourseOfferingRepository>();
         serviceCollection.AddScoped<IReviewerRepository, ReviewerRepository>();
         serviceCollection.AddScoped<ICourseReviewRepository, CourseReviewRepository>();
+        serviceCollection.AddScoped<IProfessorReviewRepository, ProfessorReviewRepository>();
         return serviceCollection;
     }
 
