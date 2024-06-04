@@ -1,5 +1,4 @@
 ﻿using Business.Interfaces;
-using Business.Providers;
 using Data.Entities;
 using graphql.DataLoaders;
 using Repositories.Interfaces;
@@ -10,33 +9,25 @@ public class Query
 {
     public string GetJwtAsync([Service] IReviewerInfoProvider identityService)
         => identityService.GetJWTAsync();
-    
-    [UsePaging(MaxPageSize = 5000)]
+
+    public async Task<Course?> GetCourseByCodeAsync(string facultyAbbreviation, int code,
+        [Service] ICourseRepository courseRepository)
+        => await courseRepository.GetByCodeAsync(facultyAbbreviation, code);
+
     [UseProjection]
     [UseFiltering]
-    public async Task<IEnumerable<Course>> GetCoursesAsync([Service] ICourseRepository courseRepository)
-        => await courseRepository.GetAllAsync();
+    public IQueryable<Course> GetCourses([Service] ICourseRepository courseRepository)
+    {
+        return courseRepository.GetQueryable();
+    }
     
-    public async Task<Course?> GetCourseByCodeAsync(string facultyAbbreviation, int code, [Service] ICourseRepository courseRepository)
-        => await courseRepository.GetByCodeAsync(facultyAbbreviation, code);
-    
-    [NodeResolver]
-    public async Task<Course> GetCourseByIdAsync(int id, [Service] ICourseRepository courseRepository)
-        => await courseRepository.GetByIdAsync(id);
-    
-    [NodeResolver]
-    public async Task<Faculty> GetFacultyByIdAsync(int id, [Service] IFacultyRepository facultyRepository)
-        => await facultyRepository.GetByIdAsync(id);
-    
-    [NodeResolver]
-    public async Task<CourseOffering> GetCourseOfferingByIdAsync(int id, [Service] ICourseOfferingRepository courseOfferingRepository)
-        => await courseOfferingRepository.GetByIdAsync(id);
-    
-    [NodeResolver]
-    public async Task<Section> GetSectionByIdAsync(int id, [Service] ISectionRepository sectionRepository)
-        => await sectionRepository.GetByIdAsync(id);
-    
-    [NodeResolver]
+    [UseProjection]
+    [UseFiltering]
+    public IQueryable<Professor> GetProfessors([Service] IProfessorRepository professorRepository)
+    {
+        return professorRepository.GetQueryable();
+    }
+
     public async Task<Reviewer> GetReviewerByIdAsync(int id, [Service] IReviewerRepository reviewerRepository)
         => await reviewerRepository.GetByIdAsync(id);
     

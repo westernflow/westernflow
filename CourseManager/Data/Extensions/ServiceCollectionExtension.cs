@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,7 +12,8 @@ public static class ServiceCollectionExtension
     {
         var connectionString = configuration.GetConnectionString("CourseManagerDbConnection");
         serviceCollection.AddPooledDbContextFactory<CourseManagerDbContext>(
-            builder => builder.UseNpgsql(connectionString));
+            builder => builder.UseNpgsql(connectionString)
+                .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.MultipleCollectionIncludeWarning)));
         return serviceCollection;
     }
 }
