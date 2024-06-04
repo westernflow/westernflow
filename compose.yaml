@@ -1,14 +1,39 @@
 services:
-    backend:
-        build: backend/.
-        env_file:
-            - backend/.env
+    # scraper:
+    #     build:
+    #         context: .
+    #         dockerfile: CourseManager/Dockerfile.scraper
+    #         target: final
+    #         args:
+    #             BUILDPLATFORM: "linux/amd64"
+
+    api:
+        build:
+            context: .
+            dockerfile: CourseManager/Dockerfile.api
+            target: final
+            args:
+                BUILDPLATFORM: "linux/amd64"
         ports:
-            - "8080:8080"
+            - 5095:80
+
+    db:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: example
+        ports:
+            - 5432:5432
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8079:8080
 
     frontend:
         build: client/.
         ports:
             - "3000:3000"
         depends_on:
-            - backend
+            - api
