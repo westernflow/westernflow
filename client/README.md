@@ -1,0 +1,36 @@
+#  UW Flow 2.0 Frontend
+
+[![CircleCI](https://circleci.com/gh/UWFlow/uwflow_frontend.svg?style=svg)](https://circleci.com/gh/UWFlow/uwflow_frontend.svg?style=svg)
+
+## ⚙️ Frontend Setup ⚙
+
+1. `yarn install` to install dependencies
+2. `yarn start` to run the server locally at [localhost:3000](localhost:3000)
+
+## 🎬 Building for Production 🎬
+
+1. `yarn lint` to check that there are no linter errors, otherwise the site will not compile
+2. `yarn build` to create a new production build in the `build` folder
+
+## 🌐 Interacting with the Backend 🌐
+
+- Run the backend Docker containers locally
+- To interact with the API server properly, the browser needs to have CORS disabled
+- To run Chrome without CORS
+  - MacOS - `open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security`
+  - Windows 10 - `"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --disable-web-security --disable-gpu --user-data-dir=~/chromeTemp`
+  - Linux - `google-chrome --disable-web-security`
+
+## 📚 Documentation 📚
+
+- [Code style guide](docs/style-guide.md)
+- [GraphQL and TypeScript code generation](docs/graphql.md)
+- [Using and creating modals](docs/modals.md)
+- [Creating new pages](docs/pages.md)
+- [Explanation of client-side search](docs/search.md)
+
+#### Important External Docs
+
+- [React](https://reactjs.org/)
+- [Apollo Client](https://www.apollographql.com/docs/react/)
+- [TypeScript](https://www.typescriptlang.org/index.html)
