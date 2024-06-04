@@ -3,12 +3,19 @@ using Repositories.Interfaces;
 
 namespace graphql.DataLoaders;
 
-public class CourseReviewGroupedDataLoader(
-    ICourseReviewRepository courseReviewRepository,
-    IBatchScheduler batchScheduler,
-    DataLoaderOptions? options = null)
-    : GroupedDataLoader<int, CourseReview>(batchScheduler, options)
+public class CourseReviewGroupedDataLoader : GroupedDataLoader<int, CourseReview>
 {
+    private readonly ICourseReviewRepository courseReviewRepository;
+    
+    public CourseReviewGroupedDataLoader(
+        ICourseReviewRepository courseReviewRepository,
+        IBatchScheduler batchScheduler,
+        DataLoaderOptions? options = null)
+        : base(batchScheduler, options)
+    {
+        this.courseReviewRepository = courseReviewRepository;
+    }
+    
     protected override async Task<ILookup<int, CourseReview>> LoadGroupedBatchAsync(
         IReadOnlyList<int> keys, 
         CancellationToken cancellationToken)

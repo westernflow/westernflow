@@ -3,12 +3,19 @@ using Repositories.Interfaces;
 
 namespace graphql.DataLoaders;
 
-public class ProfessorGroupedDataLoader(
-    IProfessorRepository professorRepository,
-    IBatchScheduler batchScheduler,
-    DataLoaderOptions? options = null)
-    : GroupedDataLoader<int, Professor>(batchScheduler, options)
+public class ProfessorGroupedDataLoader : GroupedDataLoader<int, Professor>
 {
+    private readonly IProfessorRepository professorRepository;
+    
+    public ProfessorGroupedDataLoader(
+        IProfessorRepository professorRepository,
+        IBatchScheduler batchScheduler,
+        DataLoaderOptions? options = null)
+        : base(batchScheduler, options)
+    {
+        this.professorRepository = professorRepository;
+    }
+    
     protected override async Task<ILookup<int, Professor>> LoadGroupedBatchAsync(
         IReadOnlyList<int> keys, 
         CancellationToken cancellationToken)

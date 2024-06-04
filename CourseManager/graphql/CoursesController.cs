@@ -6,12 +6,19 @@ namespace graphql.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CoursesController(IDbContextFactory<CourseManagerDbContext> dbContextFactory) : ControllerBase
+public class CoursesController : ControllerBase
 {
+    private readonly IDbContextFactory<CourseManagerDbContext> _dbContextFactory;
+    
+    public CoursesController(IDbContextFactory<CourseManagerDbContext> dbContextFactory)
+    {
+        _dbContextFactory = dbContextFactory;
+    }
+    
     [HttpGet]
     public IActionResult GetIndexedCoursesAndProfessors()
     {
-        using var dbContext = dbContextFactory.CreateDbContext();
+        using var dbContext = _dbContextFactory.CreateDbContext();
         var courses = dbContext.Courses
            .Select(c => new
             {
