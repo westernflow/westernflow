@@ -2679,12 +2679,8 @@ export type Course_Order_By = {
   authoritative?: Maybe<Order_By>;
   code?: Maybe<Order_By>;
   coreqs?: Maybe<Order_By>;
-  course_easy_buckets_aggregate?: Maybe<
-    Aggregate_Course_Easy_Buckets_Aggregate_Order_By
-  >;
-  course_useful_buckets_aggregate?: Maybe<
-    Aggregate_Course_Useful_Buckets_Aggregate_Order_By
-  >;
+  course_easy_buckets_aggregate?: Maybe<Aggregate_Course_Easy_Buckets_Aggregate_Order_By>;
+  course_useful_buckets_aggregate?: Maybe<Aggregate_Course_Useful_Buckets_Aggregate_Order_By>;
   description?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   name?: Maybe<Order_By>;
@@ -4499,9 +4495,7 @@ export type Mutation_Root = {
   /** delete data from the table: "prof_review_upvote" */
   delete_prof_review_upvote?: Maybe<Prof_Review_Upvote_Mutation_Response>;
   /** delete data from the table: "queue.section_subscribed" */
-  delete_queue_section_subscribed?: Maybe<
-    Queue_Section_Subscribed_Mutation_Response
-  >;
+  delete_queue_section_subscribed?: Maybe<Queue_Section_Subscribed_Mutation_Response>;
   /** delete single row from the table: "queue.section_subscribed" */
   delete_queue_section_subscribed_by_pk?: Maybe<Queue_Section_Subscribed>;
   /** delete data from the table: "review" */
@@ -4557,9 +4551,7 @@ export type Mutation_Root = {
   /** insert a single row into the table: "prof_review_upvote" */
   insert_prof_review_upvote_one?: Maybe<Prof_Review_Upvote>;
   /** insert data into the table: "queue.section_subscribed" */
-  insert_queue_section_subscribed?: Maybe<
-    Queue_Section_Subscribed_Mutation_Response
-  >;
+  insert_queue_section_subscribed?: Maybe<Queue_Section_Subscribed_Mutation_Response>;
   /** insert a single row into the table: "queue.section_subscribed" */
   insert_queue_section_subscribed_one?: Maybe<Queue_Section_Subscribed>;
   /** insert data into the table: "review" */
@@ -4617,9 +4609,7 @@ export type Mutation_Root = {
   /** update data of the table: "prof_review_upvote" */
   update_prof_review_upvote?: Maybe<Prof_Review_Upvote_Mutation_Response>;
   /** update data of the table: "queue.section_subscribed" */
-  update_queue_section_subscribed?: Maybe<
-    Queue_Section_Subscribed_Mutation_Response
-  >;
+  update_queue_section_subscribed?: Maybe<Queue_Section_Subscribed_Mutation_Response>;
   /** update single row of the table: "queue.section_subscribed" */
   update_queue_section_subscribed_by_pk?: Maybe<Queue_Section_Subscribed>;
   /** update data of the table: "review" */
@@ -5407,13 +5397,9 @@ export type Prof_Order_By = {
   id?: Maybe<Order_By>;
   name?: Maybe<Order_By>;
   picture_url?: Maybe<Order_By>;
-  prof_clear_buckets_aggregate?: Maybe<
-    Aggregate_Prof_Clear_Buckets_Aggregate_Order_By
-  >;
+  prof_clear_buckets_aggregate?: Maybe<Aggregate_Prof_Clear_Buckets_Aggregate_Order_By>;
   prof_courses_aggregate?: Maybe<Prof_Teaches_Course_Aggregate_Order_By>;
-  prof_engaging_buckets_aggregate?: Maybe<
-    Aggregate_Prof_Engaging_Buckets_Aggregate_Order_By
-  >;
+  prof_engaging_buckets_aggregate?: Maybe<Aggregate_Prof_Engaging_Buckets_Aggregate_Order_By>;
   rating?: Maybe<Aggregate_Prof_Rating_Order_By>;
   reviews_aggregate?: Maybe<Review_Aggregate_Order_By>;
 };
@@ -7924,9 +7910,7 @@ export type Review_Order_By = {
   course_easy?: Maybe<Order_By>;
   course_id?: Maybe<Order_By>;
   course_review_rating?: Maybe<Aggregate_Course_Review_Rating_Order_By>;
-  course_review_upvotes_aggregate?: Maybe<
-    Course_Review_Upvote_Aggregate_Order_By
-  >;
+  course_review_upvotes_aggregate?: Maybe<Course_Review_Upvote_Aggregate_Order_By>;
   course_useful?: Maybe<Order_By>;
   created_at?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
@@ -12471,13 +12455,13 @@ export function useUpdateUserEmailMutation(
 export type UpdateUserEmailMutationHookResult = ReturnType<
   typeof useUpdateUserEmailMutation
 >;
-export type UpdateUserEmailMutationResult = ApolloReactCommon.MutationResult<
-  UpdateUserEmailMutation
->;
-export type UpdateUserEmailMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  UpdateUserEmailMutation,
-  UpdateUserEmailMutationVariables
->;
+export type UpdateUserEmailMutationResult =
+  ApolloReactCommon.MutationResult<UpdateUserEmailMutation>;
+export type UpdateUserEmailMutationOptions =
+  ApolloReactCommon.BaseMutationOptions<
+    UpdateUserEmailMutation,
+    UpdateUserEmailMutationVariables
+  >;
 export const UpsertReviewDocument = gql`
   mutation upsertReview(
     $user_id: Int
@@ -12574,9 +12558,8 @@ export function useUpsertReviewMutation(
 export type UpsertReviewMutationHookResult = ReturnType<
   typeof useUpsertReviewMutation
 >;
-export type UpsertReviewMutationResult = ApolloReactCommon.MutationResult<
-  UpsertReviewMutation
->;
+export type UpsertReviewMutationResult =
+  ApolloReactCommon.MutationResult<UpsertReviewMutation>;
 export type UpsertReviewMutationOptions = ApolloReactCommon.BaseMutationOptions<
   UpsertReviewMutation,
   UpsertReviewMutationVariables
@@ -12627,9 +12610,8 @@ export function useDeleteReviewMutation(
 export type DeleteReviewMutationHookResult = ReturnType<
   typeof useDeleteReviewMutation
 >;
-export type DeleteReviewMutationResult = ApolloReactCommon.MutationResult<
-  DeleteReviewMutation
->;
+export type DeleteReviewMutationResult =
+  ApolloReactCommon.MutationResult<DeleteReviewMutation>;
 export type DeleteReviewMutationOptions = ApolloReactCommon.BaseMutationOptions<
   DeleteReviewMutation,
   DeleteReviewMutationVariables
@@ -12693,13 +12675,13 @@ export function useUpsertLikedReviewMutation(
 export type UpsertLikedReviewMutationHookResult = ReturnType<
   typeof useUpsertLikedReviewMutation
 >;
-export type UpsertLikedReviewMutationResult = ApolloReactCommon.MutationResult<
-  UpsertLikedReviewMutation
->;
-export type UpsertLikedReviewMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  UpsertLikedReviewMutation,
-  UpsertLikedReviewMutationVariables
->;
+export type UpsertLikedReviewMutationResult =
+  ApolloReactCommon.MutationResult<UpsertLikedReviewMutation>;
+export type UpsertLikedReviewMutationOptions =
+  ApolloReactCommon.BaseMutationOptions<
+    UpsertLikedReviewMutation,
+    UpsertLikedReviewMutationVariables
+  >;
 export const InsertSectionSubscriptionDocument = gql`
   mutation insertSectionSubscription($section_id: Int, $user_id: Int) {
     insert_queue_section_subscribed(
@@ -12709,10 +12691,11 @@ export const InsertSectionSubscriptionDocument = gql`
     }
   }
 `;
-export type InsertSectionSubscriptionMutationFn = ApolloReactCommon.MutationFunction<
-  InsertSectionSubscriptionMutation,
-  InsertSectionSubscriptionMutationVariables
->;
+export type InsertSectionSubscriptionMutationFn =
+  ApolloReactCommon.MutationFunction<
+    InsertSectionSubscriptionMutation,
+    InsertSectionSubscriptionMutationVariables
+  >;
 
 /**
  * __useInsertSectionSubscriptionMutation__
@@ -12746,13 +12729,13 @@ export function useInsertSectionSubscriptionMutation(
 export type InsertSectionSubscriptionMutationHookResult = ReturnType<
   typeof useInsertSectionSubscriptionMutation
 >;
-export type InsertSectionSubscriptionMutationResult = ApolloReactCommon.MutationResult<
-  InsertSectionSubscriptionMutation
->;
-export type InsertSectionSubscriptionMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  InsertSectionSubscriptionMutation,
-  InsertSectionSubscriptionMutationVariables
->;
+export type InsertSectionSubscriptionMutationResult =
+  ApolloReactCommon.MutationResult<InsertSectionSubscriptionMutation>;
+export type InsertSectionSubscriptionMutationOptions =
+  ApolloReactCommon.BaseMutationOptions<
+    InsertSectionSubscriptionMutation,
+    InsertSectionSubscriptionMutationVariables
+  >;
 export const DeleteSectionSubscriptionDocument = gql`
   mutation deleteSectionSubscription($section_id: Int) {
     delete_queue_section_subscribed(
@@ -12762,10 +12745,11 @@ export const DeleteSectionSubscriptionDocument = gql`
     }
   }
 `;
-export type DeleteSectionSubscriptionMutationFn = ApolloReactCommon.MutationFunction<
-  DeleteSectionSubscriptionMutation,
-  DeleteSectionSubscriptionMutationVariables
->;
+export type DeleteSectionSubscriptionMutationFn =
+  ApolloReactCommon.MutationFunction<
+    DeleteSectionSubscriptionMutation,
+    DeleteSectionSubscriptionMutationVariables
+  >;
 
 /**
  * __useDeleteSectionSubscriptionMutation__
@@ -12798,13 +12782,13 @@ export function useDeleteSectionSubscriptionMutation(
 export type DeleteSectionSubscriptionMutationHookResult = ReturnType<
   typeof useDeleteSectionSubscriptionMutation
 >;
-export type DeleteSectionSubscriptionMutationResult = ApolloReactCommon.MutationResult<
-  DeleteSectionSubscriptionMutation
->;
-export type DeleteSectionSubscriptionMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  DeleteSectionSubscriptionMutation,
-  DeleteSectionSubscriptionMutationVariables
->;
+export type DeleteSectionSubscriptionMutationResult =
+  ApolloReactCommon.MutationResult<DeleteSectionSubscriptionMutation>;
+export type DeleteSectionSubscriptionMutationOptions =
+  ApolloReactCommon.BaseMutationOptions<
+    DeleteSectionSubscriptionMutation,
+    DeleteSectionSubscriptionMutationVariables
+  >;
 export const InsertUserShortlistDocument = gql`
   mutation insertUserShortlist($user_id: Int, $course_id: Int) {
     insert_user_shortlist(
@@ -12851,13 +12835,13 @@ export function useInsertUserShortlistMutation(
 export type InsertUserShortlistMutationHookResult = ReturnType<
   typeof useInsertUserShortlistMutation
 >;
-export type InsertUserShortlistMutationResult = ApolloReactCommon.MutationResult<
-  InsertUserShortlistMutation
->;
-export type InsertUserShortlistMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  InsertUserShortlistMutation,
-  InsertUserShortlistMutationVariables
->;
+export type InsertUserShortlistMutationResult =
+  ApolloReactCommon.MutationResult<InsertUserShortlistMutation>;
+export type InsertUserShortlistMutationOptions =
+  ApolloReactCommon.BaseMutationOptions<
+    InsertUserShortlistMutation,
+    InsertUserShortlistMutationVariables
+  >;
 export const DeleteUserShortlistDocument = gql`
   mutation deleteUserShortlist($course_id: Int) {
     delete_user_shortlist(where: { course_id: { _eq: $course_id } }) {
@@ -12901,13 +12885,13 @@ export function useDeleteUserShortlistMutation(
 export type DeleteUserShortlistMutationHookResult = ReturnType<
   typeof useDeleteUserShortlistMutation
 >;
-export type DeleteUserShortlistMutationResult = ApolloReactCommon.MutationResult<
-  DeleteUserShortlistMutation
->;
-export type DeleteUserShortlistMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  DeleteUserShortlistMutation,
-  DeleteUserShortlistMutationVariables
->;
+export type DeleteUserShortlistMutationResult =
+  ApolloReactCommon.MutationResult<DeleteUserShortlistMutation>;
+export type DeleteUserShortlistMutationOptions =
+  ApolloReactCommon.BaseMutationOptions<
+    DeleteUserShortlistMutation,
+    DeleteUserShortlistMutationVariables
+  >;
 export const InsertCourseReviewVoteDocument = gql`
   mutation insertCourseReviewVote($user_id: Int, $review_id: Int) {
     insert_course_review_upvote(
@@ -12917,10 +12901,11 @@ export const InsertCourseReviewVoteDocument = gql`
     }
   }
 `;
-export type InsertCourseReviewVoteMutationFn = ApolloReactCommon.MutationFunction<
-  InsertCourseReviewVoteMutation,
-  InsertCourseReviewVoteMutationVariables
->;
+export type InsertCourseReviewVoteMutationFn =
+  ApolloReactCommon.MutationFunction<
+    InsertCourseReviewVoteMutation,
+    InsertCourseReviewVoteMutationVariables
+  >;
 
 /**
  * __useInsertCourseReviewVoteMutation__
@@ -12954,13 +12939,13 @@ export function useInsertCourseReviewVoteMutation(
 export type InsertCourseReviewVoteMutationHookResult = ReturnType<
   typeof useInsertCourseReviewVoteMutation
 >;
-export type InsertCourseReviewVoteMutationResult = ApolloReactCommon.MutationResult<
-  InsertCourseReviewVoteMutation
->;
-export type InsertCourseReviewVoteMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  InsertCourseReviewVoteMutation,
-  InsertCourseReviewVoteMutationVariables
->;
+export type InsertCourseReviewVoteMutationResult =
+  ApolloReactCommon.MutationResult<InsertCourseReviewVoteMutation>;
+export type InsertCourseReviewVoteMutationOptions =
+  ApolloReactCommon.BaseMutationOptions<
+    InsertCourseReviewVoteMutation,
+    InsertCourseReviewVoteMutationVariables
+  >;
 export const DeleteCourseReviewVoteDocument = gql`
   mutation deleteCourseReviewVote($user_id: Int, $review_id: Int) {
     delete_course_review_upvote(
@@ -12970,10 +12955,11 @@ export const DeleteCourseReviewVoteDocument = gql`
     }
   }
 `;
-export type DeleteCourseReviewVoteMutationFn = ApolloReactCommon.MutationFunction<
-  DeleteCourseReviewVoteMutation,
-  DeleteCourseReviewVoteMutationVariables
->;
+export type DeleteCourseReviewVoteMutationFn =
+  ApolloReactCommon.MutationFunction<
+    DeleteCourseReviewVoteMutation,
+    DeleteCourseReviewVoteMutationVariables
+  >;
 
 /**
  * __useDeleteCourseReviewVoteMutation__
@@ -13007,13 +12993,13 @@ export function useDeleteCourseReviewVoteMutation(
 export type DeleteCourseReviewVoteMutationHookResult = ReturnType<
   typeof useDeleteCourseReviewVoteMutation
 >;
-export type DeleteCourseReviewVoteMutationResult = ApolloReactCommon.MutationResult<
-  DeleteCourseReviewVoteMutation
->;
-export type DeleteCourseReviewVoteMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  DeleteCourseReviewVoteMutation,
-  DeleteCourseReviewVoteMutationVariables
->;
+export type DeleteCourseReviewVoteMutationResult =
+  ApolloReactCommon.MutationResult<DeleteCourseReviewVoteMutation>;
+export type DeleteCourseReviewVoteMutationOptions =
+  ApolloReactCommon.BaseMutationOptions<
+    DeleteCourseReviewVoteMutation,
+    DeleteCourseReviewVoteMutationVariables
+  >;
 export const InsertProfReviewVoteDocument = gql`
   mutation insertProfReviewVote($user_id: Int, $review_id: Int) {
     insert_prof_review_upvote(
@@ -13060,13 +13046,13 @@ export function useInsertProfReviewVoteMutation(
 export type InsertProfReviewVoteMutationHookResult = ReturnType<
   typeof useInsertProfReviewVoteMutation
 >;
-export type InsertProfReviewVoteMutationResult = ApolloReactCommon.MutationResult<
-  InsertProfReviewVoteMutation
->;
-export type InsertProfReviewVoteMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  InsertProfReviewVoteMutation,
-  InsertProfReviewVoteMutationVariables
->;
+export type InsertProfReviewVoteMutationResult =
+  ApolloReactCommon.MutationResult<InsertProfReviewVoteMutation>;
+export type InsertProfReviewVoteMutationOptions =
+  ApolloReactCommon.BaseMutationOptions<
+    InsertProfReviewVoteMutation,
+    InsertProfReviewVoteMutationVariables
+  >;
 export const Delete_Prof_Review_VoteDocument = gql`
   mutation DELETE_PROF_REVIEW_VOTE($user_id: Int, $review_id: Int) {
     delete_prof_review_upvote(
@@ -13076,10 +13062,11 @@ export const Delete_Prof_Review_VoteDocument = gql`
     }
   }
 `;
-export type Delete_Prof_Review_VoteMutationFn = ApolloReactCommon.MutationFunction<
-  Delete_Prof_Review_VoteMutation,
-  Delete_Prof_Review_VoteMutationVariables
->;
+export type Delete_Prof_Review_VoteMutationFn =
+  ApolloReactCommon.MutationFunction<
+    Delete_Prof_Review_VoteMutation,
+    Delete_Prof_Review_VoteMutationVariables
+  >;
 
 /**
  * __useDelete_Prof_Review_VoteMutation__
@@ -13113,13 +13100,13 @@ export function useDelete_Prof_Review_VoteMutation(
 export type Delete_Prof_Review_VoteMutationHookResult = ReturnType<
   typeof useDelete_Prof_Review_VoteMutation
 >;
-export type Delete_Prof_Review_VoteMutationResult = ApolloReactCommon.MutationResult<
-  Delete_Prof_Review_VoteMutation
->;
-export type Delete_Prof_Review_VoteMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  Delete_Prof_Review_VoteMutation,
-  Delete_Prof_Review_VoteMutationVariables
->;
+export type Delete_Prof_Review_VoteMutationResult =
+  ApolloReactCommon.MutationResult<Delete_Prof_Review_VoteMutation>;
+export type Delete_Prof_Review_VoteMutationOptions =
+  ApolloReactCommon.BaseMutationOptions<
+    Delete_Prof_Review_VoteMutation,
+    Delete_Prof_Review_VoteMutationVariables
+  >;
 export const GetCourseDocument = gql`
   query getCourse($code: String, $user_id: Int) {
     course(where: { code: { _eq: $code } }) {
@@ -13460,10 +13447,11 @@ export type RefetchSectionSubscriptionsQueryHookResult = ReturnType<
 export type RefetchSectionSubscriptionsLazyQueryHookResult = ReturnType<
   typeof useRefetchSectionSubscriptionsLazyQuery
 >;
-export type RefetchSectionSubscriptionsQueryResult = ApolloReactCommon.QueryResult<
-  RefetchSectionSubscriptionsQuery,
-  RefetchSectionSubscriptionsQueryVariables
->;
+export type RefetchSectionSubscriptionsQueryResult =
+  ApolloReactCommon.QueryResult<
+    RefetchSectionSubscriptionsQuery,
+    RefetchSectionSubscriptionsQueryVariables
+  >;
 export const RefetchCourseReviewsDocument = gql`
   query refetchCourseReviews($code: String, $user_id: Int) {
     review(
@@ -13659,10 +13647,11 @@ export type CourseReviewsWithUserDataQueryHookResult = ReturnType<
 export type CourseReviewsWithUserDataLazyQueryHookResult = ReturnType<
   typeof useCourseReviewsWithUserDataLazyQuery
 >;
-export type CourseReviewsWithUserDataQueryResult = ApolloReactCommon.QueryResult<
-  CourseReviewsWithUserDataQuery,
-  CourseReviewsWithUserDataQueryVariables
->;
+export type CourseReviewsWithUserDataQueryResult =
+  ApolloReactCommon.QueryResult<
+    CourseReviewsWithUserDataQuery,
+    CourseReviewsWithUserDataQueryVariables
+  >;
 export const RefetchCourseReviewUpvoteDocument = gql`
   query refetchCourseReviewUpvote($review_id: Int) {
     review(where: { id: { _eq: $review_id } }) {
@@ -13716,10 +13705,11 @@ export type RefetchCourseReviewUpvoteQueryHookResult = ReturnType<
 export type RefetchCourseReviewUpvoteLazyQueryHookResult = ReturnType<
   typeof useRefetchCourseReviewUpvoteLazyQuery
 >;
-export type RefetchCourseReviewUpvoteQueryResult = ApolloReactCommon.QueryResult<
-  RefetchCourseReviewUpvoteQuery,
-  RefetchCourseReviewUpvoteQueryVariables
->;
+export type RefetchCourseReviewUpvoteQueryResult =
+  ApolloReactCommon.QueryResult<
+    RefetchCourseReviewUpvoteQuery,
+    RefetchCourseReviewUpvoteQueryVariables
+  >;
 export const CourseReviewProfsDocument = gql`
   query courseReviewProfs($id: [Int!]) {
     review(
@@ -14131,10 +14121,11 @@ export type Refetch_Prof_Review_UpvoteQueryHookResult = ReturnType<
 export type Refetch_Prof_Review_UpvoteLazyQueryHookResult = ReturnType<
   typeof useRefetch_Prof_Review_UpvoteLazyQuery
 >;
-export type Refetch_Prof_Review_UpvoteQueryResult = ApolloReactCommon.QueryResult<
-  Refetch_Prof_Review_UpvoteQuery,
-  Refetch_Prof_Review_UpvoteQueryVariables
->;
+export type Refetch_Prof_Review_UpvoteQueryResult =
+  ApolloReactCommon.QueryResult<
+    Refetch_Prof_Review_UpvoteQuery,
+    Refetch_Prof_Review_UpvoteQueryVariables
+  >;
 export const GetUserDocument = gql`
   query getUser($id: Int) {
     user(where: { id: { _eq: $id } }) {

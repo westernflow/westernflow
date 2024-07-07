@@ -145,8 +145,8 @@ const Review = ({ review, isCourseReview }: ReviewProps) => {
   const authorTitle = user
     ? 'You wrote this '
     : authorText.length || programText.length
-    ? `${authorText}${user ? '' : programText}`
-    : 'A student ';
+      ? `${authorText}${user ? '' : programText}`
+      : 'A student ';
 
   let timeAgo = `${moment(created_at).fromNow()}`;
   if (moment(created_at).isBefore(moment(new Date('01-01-2012')))) {

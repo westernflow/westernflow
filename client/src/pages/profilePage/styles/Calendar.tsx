@@ -162,15 +162,15 @@ export const EventWrapper = styled.div<{
       color === LEC
         ? theme.lecture
         : color === LAB
-        ? theme.lab
-        : theme.tutorial};
+          ? theme.lab
+          : theme.tutorial};
   border-left: 4px solid
     ${({ color, theme }) =>
       color === LEC
         ? theme.lecture
         : color === LAB
-        ? theme.lab
-        : theme.tutorial};
+          ? theme.lab
+          : theme.tutorial};
   width: calc(${({ truncate }) => (truncate ? 50 : 100)}% - 4px);
   padding: 2px 4px;
   font-size: 11px;

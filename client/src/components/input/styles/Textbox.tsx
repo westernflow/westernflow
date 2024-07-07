@@ -17,8 +17,8 @@ export const SearchInput = styled.input<{
     error
       ? `1px solid ${theme.red}`
       : options.border
-      ? options.border
-      : 'none'};
+        ? options.border
+        : 'none'};
   width: ${({ options }) => (options.width ? options.width : '400px')};
   min-width: 152px;
   font-size: inherit;

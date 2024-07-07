@@ -106,9 +106,7 @@ export type CourseFilterInput = {
   facultyId?: Maybe<IntOperationFilterInput>;
   faculty?: Maybe<FacultyFilterInput>;
   courseOfferings?: Maybe<ListFilterInputTypeOfCourseOfferingFilterInput>;
-  relatedProfessorReviews?: Maybe<
-    ListFilterInputTypeOfProfessorReviewFilterInput
-  >;
+  relatedProfessorReviews?: Maybe<ListFilterInputTypeOfProfessorReviewFilterInput>;
 };
 
 export type CourseOffering = {
@@ -480,13 +478,9 @@ export type ReviewerFilterInput = {
   or?: Maybe<Array<ReviewerFilterInput>>;
   subjectId?: Maybe<StringOperationFilterInput>;
   courseReviewsWritten?: Maybe<ListFilterInputTypeOfCourseReviewFilterInput>;
-  professorReviewsWritten?: Maybe<
-    ListFilterInputTypeOfProfessorReviewFilterInput
-  >;
+  professorReviewsWritten?: Maybe<ListFilterInputTypeOfProfessorReviewFilterInput>;
   courseReviewsLiked?: Maybe<ListFilterInputTypeOfCourseReviewFilterInput>;
-  professorReviewsLiked?: Maybe<
-    ListFilterInputTypeOfProfessorReviewFilterInput
-  >;
+  professorReviewsLiked?: Maybe<ListFilterInputTypeOfProfessorReviewFilterInput>;
   id?: Maybe<IntOperationFilterInput>;
 };
 

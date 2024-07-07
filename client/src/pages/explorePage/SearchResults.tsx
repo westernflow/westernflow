@@ -174,8 +174,8 @@ const SearchResults = ({
         ['code', 'name'].includes(sortKey)
           ? stringSort(a[sortKey], b[sortKey], desc)
           : sortKey === 'code_name' && a[sortKey] && a[sortKey].name
-          ? stringSort(a[sortKey].name, b[sortKey].name, desc)
-          : numberSort(a[sortKey], b[sortKey], desc),
+            ? stringSort(a[sortKey].name, b[sortKey].name, desc)
+            : numberSort(a[sortKey], b[sortKey], desc),
       );
     }
 

@@ -81,8 +81,8 @@ const CalendarColumn = ({ day, minHour, events = [] }: CalendarColumnProps) => (
       const color = event.section.includes(LEC)
         ? LEC
         : event.section.includes(LAB)
-        ? LAB
-        : TUT;
+          ? LAB
+          : TUT;
 
       return (
         <EventWrapper

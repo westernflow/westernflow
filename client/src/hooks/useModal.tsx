@@ -12,10 +12,10 @@ const useModal = (): [
   const [id] = useState(randString());
   const [openModal, closeModal] = useContext(ModalContext);
 
-  const open = useCallback((modal, props = {}) => openModal(modal, id, props), [
-    id,
-    openModal,
-  ]);
+  const open = useCallback(
+    (modal, props = {}) => openModal(modal, id, props),
+    [id, openModal],
+  );
   const close = useCallback((modal) => closeModal(modal, id), [id, closeModal]);
   return [open, close];
 };

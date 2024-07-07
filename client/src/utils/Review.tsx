@@ -35,7 +35,7 @@ export const sortByLiked = (a: any, b: any, defaultSort = sortByReviews) =>
   a.liked === b.liked
     ? defaultSort(a, b)
     : a.liked === null
-    ? 1
-    : b.liked === null
-    ? -1
-    : b.liked - a.liked;
+      ? 1
+      : b.liked === null
+        ? -1
+        : b.liked - a.liked;

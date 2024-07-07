@@ -576,9 +576,8 @@ const CourseReviewBox = ({ courseList, ...props }: CourseReviewBoxProps) => {
           if (!profsSeenByCourseID[currentProf.course_id]) {
             profsSeenByCourseID[currentProf.course_id] = {};
           }
-          profsSeenByCourseID[currentProf.course_id][
-            currentProf.prof.code
-          ] = true;
+          profsSeenByCourseID[currentProf.course_id][currentProf.prof.code] =
+            true;
         }
         return profs;
       }, {})

@@ -140,9 +140,8 @@ const ExplorePageContent = ({
   };
 
   useEffect(() => {
-    const filterStateURL: SearchFilterStateURL = mapFilterStateToURL(
-      filterState,
-    );
+    const filterStateURL: SearchFilterStateURL =
+      mapFilterStateToURL(filterState);
 
     // Add a comma to the end of the URL if there is only one filter, otherwise query-string can't parse single-element arrays
     const addComma = filterStateURL.exclude.length === 1 ? ',' : '';
@@ -190,8 +189,8 @@ const ExplorePageContent = ({
           {codeSearch
             ? `Showing all ${query.toUpperCase()} courses and professors`
             : exploreAll
-            ? `Showing all courses and professors`
-            : `Showing results for "${query}"`}
+              ? `Showing all courses and professors`
+              : `Showing results for "${query}"`}
         </ExploreHeaderText>
       </ExploreHeaderWrapper>
       <ColumnWrapper>

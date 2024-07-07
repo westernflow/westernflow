@@ -114,8 +114,8 @@ export const SchedulePasteBoxWrapper = styled.div<{
       uploadState === AWAITING_UPLOAD || uploadState === UPLOAD_PENDING
         ? theme.accent
         : uploadState === UPLOAD_SUCCESSFUL
-        ? theme.primary
-        : theme.red};
+          ? theme.primary
+          : theme.red};
 
   ${Hover()}
 `;
@@ -204,8 +204,8 @@ export const TranscriptUploadBox = styled.div<{ uploadState: DataUploadState }>`
       uploadState === AWAITING_UPLOAD || uploadState === UPLOAD_PENDING
         ? theme.accent
         : uploadState === UPLOAD_SUCCESSFUL
-        ? theme.primary
-        : theme.red};
+          ? theme.primary
+          : theme.red};
 
   ${Hover()}
 `;
