@@ -8,10 +8,12 @@ export interface NotificationEmailModalState {
 
 interface NotificationEmailModalOpenAction {
   type: typeof NOTIFICATION_EMAIL_MODAL_OPEN;
+  [key: string]: any;
 }
 
 interface NotificationEmailModalCloseAction {
   type: typeof NOTIFICATION_EMAIL_MODAL_CLOSE;
+  [key: string]: any;
 }
 
 export type NotificationEmailModalAction =

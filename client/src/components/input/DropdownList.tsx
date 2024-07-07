@@ -53,7 +53,7 @@ const DropdownList = ({
 
   useOnClickOutside(ref, () => setOpen(false));
 
-  const handleUserKeyPress = useCallback((event) => {
+  const handleUserKeyPress = useCallback((event: { keyCode: any }) => {
     const { keyCode } = event;
     if (keyCode === KeycodeConstants.ESCAPE) {
       setOpen(false);

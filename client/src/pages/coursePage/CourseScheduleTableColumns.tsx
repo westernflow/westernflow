@@ -3,15 +3,15 @@ import { Cell } from 'react-table';
 import { getProfPageRoute } from 'Routes';
 
 import { LAB, LEC, TUT } from 'constants/CourseSection';
-import { processDateString, weekDayLetters } from 'utils/Misc';
+import { weekDayLetters } from 'utils/Misc';
 
 import { Professor } from '../../hc-generated/graphql';
 
+import ScheduleNotificationBell from './ScheduleNotificationBell';
 import {
   BoldWeekDay,
   ColorBar,
   ContentWrapper,
-  DateText,
   EnrollmentText,
   GreyWeekDay,
   InstructorLink,
@@ -20,10 +20,9 @@ import {
   SectionContentWrapper,
   SpaceMargin,
 } from './styles/CourseSchedule';
-import ScheduleNotificationBell from './ScheduleNotificationBell';
 
 type CellProps = {
-  cell: Cell<{}, any>;
+  cell: Cell<object, any>;
 };
 
 const contentSpace = (spaces: number) => {
