@@ -17,8 +17,10 @@ module.exports = {
     },
   },
   rules: {
-    '@typescript-eslint/camelcase': 'off',
+    '@typescript-eslint/naming-convention': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/default-param-last': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'import/extensions': 'off',
@@ -39,25 +41,6 @@ module.exports = {
     'react/display-name': 'off',
     'react/prefer-default-export': 'off',
     'react/prop-types': 'off',
-    'simple-import-sort/sort': [
-      'error',
-      {
-        groups: [
-          // Packages, `react` related packages come first.
-          ['^react', '^@?\\w'],
-          // Internal packages
-          ['^(@|constants|components|data|graphql|hooks|img|pages|search|types|utils)(/.*|$)'],
-          // Side effect imports
-          ['^\\u0000'],
-          // Parent imports, put `..` last
-          ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
-          // Other relative imports, put same-folder imports and `.` last
-          ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
-          // Style imports
-          ['^.+\\.s?css$'],
-        ],
-      },
-    ],
     'sort-imports': 'off',
   },
   settings: {
@@ -73,5 +56,4 @@ module.exports = {
   env: {
     browser: true,
   },
-  plugins: ['simple-import-sort'],
 };
