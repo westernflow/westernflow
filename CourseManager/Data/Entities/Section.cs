@@ -32,7 +32,7 @@ public class Section : IEntity
 
     public int CourseOfferingId { get; set; }
 
-    [ForeignKey(nameof(CourseOfferingId))] public CourseOffering CourseOffering { get; set; } = null!;
+    [ForeignKey(nameof(CourseOfferingId))] public CourseOffering CourseOffering { get; set; }
 
     public List<Professor> Professors { get; set; } = new List<Professor>();
 

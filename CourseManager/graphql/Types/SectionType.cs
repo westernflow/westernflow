@@ -15,5 +15,21 @@ public class SectionType : ObjectType<Section>
                 var timingDetailsGroupedDataLoader = context.Service<TimingDetailsGroupedDataLoader>();
                 return timingDetailsGroupedDataLoader.LoadAsync(context.Parent<Section>().Id, context.RequestAborted);
             });
+        
+        descriptor.Field(s => s.Professors)
+            .Resolve(context =>
+            {
+                var professorGroupedDataLoader = context.Service<ProfessorGroupedDataLoader>();
+                return professorGroupedDataLoader.LoadAsync(context.Parent<Section>().Id, context.RequestAborted);
+            });
+
+        descriptor.Field(s => s.CourseOffering)
+            .Resolve(async context =>
+            {
+                var courseOfferingRepository = context.Service<ICourseOfferingRepository>();
+                return await courseOfferingRepository.GetSingleOrDefaultAsync(co =>
+                    co.Id == context.Parent<Section>().CourseOfferingId);
+            });
+
     }
 }
