@@ -1,4 +1,4 @@
-import {Spacer, VStack} from "@chakra-ui/react";
+import { Spacer, VStack } from "@chakra-ui/react";
 import { Suspense } from "react";
 import ContentContainer from "../components/ContentContainer";
 import Footer from "../components/Footer";
@@ -8,8 +8,8 @@ import SuspenseScreen from "../components/Spinner";
 
 export default function Home() {
     return (
-        <div className="bg-slate-50">
-            <ContentContainer additionalClasses="border bg-white">
+        <div className="bg-wf">
+            <ContentContainer additionalClasses="bg-transparent">
                 <VStack className="min-h-screen">
                     <Navbar showSearchBar={false} />
                     <div className="flex justify-center flex-col xl:flex-row">
@@ -30,7 +30,8 @@ export default function Home() {
 
 export function HeaderSection() {
     return (
-        <div className="bg-white py-4 sm:py-10">
+        <div className="bg-transparent py-4 sm:py-10">
+            {/* <GradientBackground /> */}
             <div className="mx-auto px-3">
                 <div className="mx-auto">
                     <a
