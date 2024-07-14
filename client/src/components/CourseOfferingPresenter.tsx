@@ -84,7 +84,7 @@ export function CourseOfferingPresenter(props: CourseOfferingPresenterProps) {
 								</th>
 							</tr>
 							</thead>
-							<tbody className="divide-y divide-gray-200 bg-white">
+							<tbody className="divide-y divide-gray-200 bg-slate-500">
 							{selectedOffering?.sections?.map((section, sectionIndex) => (
 								<tr key={sectionIndex} className="hover:bg-gray-50">
 									<td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">

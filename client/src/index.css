@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    body {
+        background-image: linear-gradient(
+            to right,
+            var(--tw-color-wf-blue),
+            var(--tw-color-wf-cyan),
+            var(--tw-color-wf-purple)
+        );
+    }
+}
+
+@layer components {
+    .wf-bg {
+        background-image: linear-gradient(
+            to right,
+            var(--tw-color-wf-blue),
+            var(--tw-color-wf-cyan),
+            var(--tw-color-wf-purple)
+        );
+    }
+}
